@@ -22,7 +22,10 @@ type Client struct {
 	password  string
 	basicAuth bool
 
-	GC *GCApplication
+	Worker int
+
+	GC  *GCApplication
+	CCM *CCMApplication
 }
 
 func NewClient(baseUrl, user, password string) (*Client, error) {
@@ -46,9 +49,11 @@ func NewClient(baseUrl, user, password string) (*Client, error) {
 		user:    user,
 		// hide password in debugger
 		password: base64.StdEncoding.EncodeToString([]byte(password)),
+		Worker:   4,
 	}
 
 	client.GC = &GCApplication{client: client}
+	client.CCM = &CCMApplication{client: client}
 
 	return client, nil
 }
