@@ -36,7 +36,7 @@ type BaseObject struct {
 	// The timestamp of the last modification date of this resource.
 	Modified time.Time `jazz:"modified"`
 
-	// A boolean indicating whether or not the resource is "archived". Archived resources are typically hidden from the UI and filtered out of queries.
+	// A boolean indicating whether the resource is "archived". Archived resources are typically hidden from the UI and filtered out of queries.
 	Archived bool `jazz:"archived"`
 
 	ReportableUrl string `jazz:"reportableUrl"`
@@ -45,7 +45,7 @@ type BaseObject struct {
 }
 
 type ObjectSpec struct {
-	// Resource identifier of object. Should be overridden
+	// Resource identifier of object.
 	// # https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#Resources_provided_by_RTC
 	//
 	// * foundation: Common artifacts such as project areas, team areas, contributors, iterations and links
@@ -55,7 +55,7 @@ type ObjectSpec struct {
 	// * workitem: Work Item artifacts such as work items, categories, severities, and priorities
 	ResourceID string
 
-	// Identifier of element inside resource. Should be overridden
+	// Identifier of element inside resource.
 	// # https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#Resources_provided_by_RTC
 	ElementID string
 
@@ -86,23 +86,12 @@ func LoadObjectSpec(model interface{}) (*ObjectSpec, error) {
 	}
 
 	field, _ := t.FieldByName("BaseObject")
-	ids := strings.Split(field.Tag.Get("jazz"), ",")
-
-	if len(ids) < 2 {
-		return nil, fmt.Errorf("invalid object spec: %s", field.Tag.Get("jazz"))
-	}
-
-	spec := ObjectSpec{
-		ResourceID: ids[0],
-		TypeID:     ids[1],
+	return &ObjectSpec{
+		ResourceID: field.Tag.Get("jazz_resource"),
+		ElementID:  field.Tag.Get("jazz_element"),
+		TypeID:     field.Tag.Get("jazz_type"),
 		Type:       t,
-	}
-
-	if len(ids) > 2 {
-		spec.ElementID = ids[2]
-	}
-
-	return &spec, nil
+	}, nil
 }
 
 // ListURL returns the URL to get a list of objects
@@ -185,7 +174,7 @@ func (o *ObjectSpec) NewList() interface{} {
 }
 func (o *ObjectSpec) Load(element *etree.Element) (interface{}, error) {
 	objPtr := reflect.New(o.Type)
-	err := o.loadFields(objPtr.Elem(), element.FindElement(o.ElementID))
+	err := o.loadFields(objPtr.Elem(), element)
 	return objPtr.Interface(), err
 }
 
@@ -208,7 +197,7 @@ func (o *ObjectSpec) loadFields(obj reflect.Value, element *etree.Element) error
 
 			// skip empty
 			fieldElement := element.SelectElement(tag)
-			if len(fieldElement.Child) == 0 {
+			if fieldElement == nil || len(fieldElement.Child) == 0 {
 				continue
 			}
 

@@ -133,5 +133,5 @@ func (a *CCMApplication) get(spec *ObjectSpec, id string) (interface{}, error) {
 		return nil, errors.New(root.FindElement("//qm:message/text()").Text())
 	}
 
-	return spec.Load(root)
+	return spec.Load(root.FindElement(spec.ElementID))
 }
