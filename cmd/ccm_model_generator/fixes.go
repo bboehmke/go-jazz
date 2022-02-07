@@ -28,3 +28,15 @@ var invalidTypes = map[string]string{
 	"com.ibm.team.workitem.Approvals":   "com.ibm.team.workitem.Approval",
 	"com.ibm.workitem.Deliverable":      "com.ibm.team.workitem.Deliverable",
 }
+
+// fields to ignore on objects
+var skipFields = map[string]map[string]struct{}{
+	"com.ibm.team.workitem.Approval": {
+		"approvalDescriptor": {}, // causes infinite recursion
+	},
+}
+
+// mapping of invalid element IDs to correct ones
+var invalidElementIDs = map[string]string{
+	"com.ibm.team.workitem.ExtensionEntry": "",
+}

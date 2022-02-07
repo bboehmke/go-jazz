@@ -102,10 +102,10 @@ type Iteration struct {
 	Id string `jazz:"id"`
 
 	// The start date of this iteration
-	StartDate time.Time `jazz:"startDate"`
+	StartDate *time.Time `jazz:"startDate"`
 
 	// The end date of this iteration
-	EndDate time.Time `jazz:"endDate"`
+	EndDate *time.Time `jazz:"endDate"`
 
 	// The parent iteration of this iteration, if any
 	Parent *Iteration `jazz:"parent"`
@@ -131,10 +131,10 @@ type DevelopmentLine struct {
 	Name string `jazz:"name"`
 
 	// The start date of this development line
-	StartDate time.Time `jazz:"startDate"`
+	StartDate *time.Time `jazz:"startDate"`
 
 	// The end date of this development line
-	EndDate time.Time `jazz:"endDate"`
+	EndDate *time.Time `jazz:"endDate"`
 
 	// The child iterations of this development line
 	Iterations []*Iteration `jazz:"iterations"`
@@ -348,7 +348,7 @@ type BuildResult struct {
 	PersonalBuild bool `jazz:"personalBuild"`
 
 	// The start time of the build
-	StartTime time.Time `jazz:"startTime"`
+	StartTime *time.Time `jazz:"startTime"`
 
 	// How long the build waited in the queue, in milliseconds
 	TimeWaiting int64 `jazz:"timeWaiting"`
@@ -449,17 +449,17 @@ type WorkItem struct {
 
 	// The date and time when the work item was resolved, or null if the work item
 	// has not been resolved
-	ResolutionDate time.Time `jazz:"resolutionDate"`
+	ResolutionDate *time.Time `jazz:"resolutionDate"`
 
 	// The one-line summary (or title) of the work item
 	Summary string `jazz:"summary"`
 
 	// The date and time when the work item was created
-	CreationDate time.Time `jazz:"creationDate"`
+	CreationDate *time.Time `jazz:"creationDate"`
 
 	// The date and time when the work item is scheduled for completion, or null
 	// if no due date has been specified
-	DueDate time.Time `jazz:"dueDate"`
+	DueDate *time.Time `jazz:"dueDate"`
 
 	// The multi-line description of the work item
 	Description string `jazz:"description"`
@@ -484,7 +484,7 @@ type WorkItem struct {
 	CorrectedEstimate int64 `jazz:"correctedEstimate"`
 
 	// The day on which the work item was last modified
-	DayModified time.Time `jazz:"dayModified"`
+	DayModified *time.Time `jazz:"dayModified"`
 
 	// The contributor who created the work item
 	Creator *Contributor `jazz:"creator"`
@@ -611,16 +611,16 @@ type WorkItem struct {
 	StringExtensions []*StringExtensionEntry `jazz:"stringExtensions"`
 
 	// A collection of zero or more custom attributes of all types
-	AllExtensions []*AllExtensions `jazz:"allExtensions"`
+	AllExtensions []*ExtensionEntry `jazz:"allExtensions"`
 
 	// A collection of zero or more timesheet entries linked to the work item
 	TimeSheetEntries []*TimeSheetEntry `jazz:"timeSheetEntries"`
 
 	// The work item's planned start date as specified in the plan.
-	PlannedStartDate time.Time `jazz:"plannedStartDate"`
+	PlannedStartDate *time.Time `jazz:"plannedStartDate"`
 
 	// The work item's planned end date as specified in the plan.
-	PlannedEndDate time.Time `jazz:"plannedEndDate"`
+	PlannedEndDate *time.Time `jazz:"plannedEndDate"`
 }
 
 // Comment (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Comment)
@@ -629,7 +629,7 @@ type Comment struct {
 	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.Comment" jazz_element:""`
 
 	// The date/time that the comment was saved in the work item
-	CreationDate time.Time `jazz:"creationDate"`
+	CreationDate *time.Time `jazz:"creationDate"`
 
 	// The string content of the comment
 	Content string `jazz:"content"`
@@ -670,16 +670,13 @@ type Approval struct {
 	StateIdentifier string `jazz:"stateIdentifier"`
 
 	// The date the state was assigned
-	StateDate time.Time `jazz:"stateDate"`
+	StateDate *time.Time `jazz:"stateDate"`
 
 	// The name of the state
 	StateName string `jazz:"stateName"`
 
 	// The contributor who is asked for approval
 	Approver *Contributor `jazz:"approver"`
-
-	// The approval descriptor that aggregates the approval
-	ApprovalDescriptor *ApprovalDescriptor `jazz:"approvalDescriptor"`
 }
 
 // ApprovalDescriptor (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_ApprovalDe)
@@ -708,7 +705,7 @@ type ApprovalDescriptor struct {
 	CumulativeStateName string `jazz:"cumulativeStateName"`
 
 	// The date this approval is due
-	DueDate time.Time `jazz:"dueDate"`
+	DueDate *time.Time `jazz:"dueDate"`
 
 	// A collection of zero of more approvals aggregated by the approval
 	// descriptor
@@ -815,7 +812,7 @@ type Deliverable struct {
 	Description string `jazz:"description"`
 
 	// The creation date of the deliverable
-	CreationDate time.Time `jazz:"creationDate"`
+	CreationDate *time.Time `jazz:"creationDate"`
 
 	// The project area associated with the deliverable
 	ProjectArea *ProjectArea `jazz:"projectArea"`
@@ -825,10 +822,10 @@ type Deliverable struct {
 	Artifact *Item `jazz:"artifact"`
 }
 
-// AllExtensions (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#allExtensions_type_com_ibm_team)
+// ExtensionEntry (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#allExtensions_type_com_ibm_team)
 // This element represents the value of a custom attribute.
-type AllExtensions struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.ExtensionEntry" jazz_element:"allExtensions"`
+type ExtensionEntry struct {
+	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.ExtensionEntry" jazz_element:""`
 
 	// The name of the custom attribute
 	Key string `jazz:"key"`
@@ -864,7 +861,7 @@ type AllExtensions struct {
 
 	// Timestamp value if the type of the custom attribute is timestampValue, else
 	// null
-	TimestampValue time.Time `jazz:"timestampValue"`
+	TimestampValue *time.Time `jazz:"timestampValue"`
 
 	// Decimal value if the type of the custom attribute is decimalValue, else
 	// null
@@ -886,7 +883,7 @@ type TimeSheetEntry struct {
 	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.TimeSheetEntry" jazz_element:"timeSheetEntry"`
 
 	// The date for which the time sheet entry was entered
-	StartDate time.Time `jazz:"startDate"`
+	StartDate *time.Time `jazz:"startDate"`
 
 	// The time (in milliseconds) entered on the time sheet entry
 	TimeSpent int64 `jazz:"timeSpent"`

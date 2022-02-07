@@ -54,7 +54,7 @@ func (f Field) GoType() string {
 	case "xs:string":
 		return prefix + "string"
 	case "xs:time", "xs:date":
-		return prefix + "time.Time"
+		return prefix + "*time.Time"
 	case "xs:boolean":
 		return prefix + "bool"
 	case "xs:integer":

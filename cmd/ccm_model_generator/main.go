@@ -23,13 +23,19 @@ var modelTypeRef = make(map[string]*Model)
 var fieldRegEx = regexp.MustCompile(`(.+?) \(type: (.+?)\)\.(.+)`)
 
 // parse fields of the given selection
-func parseFields(selection *goquery.Selection) []Field {
+func parseFields(selection *goquery.Selection, typeId string) []Field {
 	var fields []Field
 
 	selection.Find("li").Each(func(i int, selection *goquery.Selection) {
 		match := fieldRegEx.FindStringSubmatch(strings.TrimSpace(selection.Text()))
 
 		if len(match) == 4 {
+			if badFields, ok := skipFields[typeId]; ok {
+				if _, ok = badFields[strings.TrimSpace(match[1])]; ok {
+					return // skip this one
+				}
+			}
+
 			fields = append(fields, Field{
 				Name:        strings.TrimSpace(match[1]),
 				Type:        strings.TrimSpace(match[2]),
@@ -120,6 +126,11 @@ func main() {
 						}
 					}
 
+					// fix element IDs
+					if e, ok := invalidElementIDs[typeId]; ok {
+						elementID = e
+					}
+
 					// create model and parse fields
 					model := Model{
 						LinkRef:     linkRef,
@@ -128,7 +139,7 @@ func main() {
 						ResourceID: resource,
 						ElementID:  elementID,
 						TypeID:     typeId,
-						Fields:     parseFields(s),
+						Fields:     parseFields(s, typeId),
 					}
 
 					if model.TypeID != "" {

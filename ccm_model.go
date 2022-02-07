@@ -34,7 +34,7 @@ type BaseObject struct {
 	ContextId string `jazz:"contextId"`
 
 	// The timestamp of the last modification date of this resource.
-	Modified time.Time `jazz:"modified"`
+	Modified *time.Time `jazz:"modified"`
 
 	// A boolean indicating whether the resource is "archived". Archived resources are typically hidden from the UI and filtered out of queries.
 	Archived bool `jazz:"archived"`
@@ -66,26 +66,27 @@ type ObjectSpec struct {
 	Type reflect.Type
 }
 
-func LoadObjectSpec(model interface{}) (*ObjectSpec, error) {
-	t, ok := model.(reflect.Type)
-	if !ok {
-		t = reflect.TypeOf(model)
+// LoadObjectSpec from given type
+func LoadObjectSpec(t reflect.Type) (*ObjectSpec, error) {
+	// get inner type of pointer or lists
+	if t.Kind() == reflect.Ptr ||
+		t.Kind() == reflect.Array ||
+		t.Kind() == reflect.Slice ||
+		t.Kind() == reflect.Chan {
+		return LoadObjectSpec(t.Elem())
 	}
 
-	if t.Kind() == reflect.Ptr {
-		t = t.Elem()
-	}
-	if t.Kind() == reflect.Array || t.Kind() == reflect.Slice {
-		t = t.Elem()
-	}
-	if t.Kind() == reflect.Ptr {
-		t = t.Elem()
-	}
+	// only structs can be CCM objects
 	if t.Kind() != reflect.Struct {
-		return nil, errors.New("invalid model type")
+		return nil, errors.New("invalid ccm object given")
 	}
 
-	field, _ := t.FieldByName("BaseObject")
+	// get BaseObject field to extract type metadata
+	field, ok := t.FieldByName("BaseObject")
+	if !ok {
+		return nil, errors.New("invalid ccm object given")
+	}
+
 	return &ObjectSpec{
 		ResourceID: field.Tag.Get("jazz_resource"),
 		ElementID:  field.Tag.Get("jazz_element"),
@@ -103,17 +104,17 @@ func (o *ObjectSpec) ListURL() string {
 		o.ResourceID, o.ElementID, o.ElementID)
 }
 
-// GetURL returns the URL to get a object
+// GetURL returns the URL to get an object
 // https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#Examples
 func (o *ObjectSpec) GetURL(id string) string {
 	return fmt.Sprintf(
 		"ccm/rpt/repository/%s?fields=%s/%s[itemId=%s]/(%s)",
 		o.ResourceID, o.ElementID, o.ElementID,
 		id,
-		strings.Join(getLoadFields(o.Type), "|")) // field selector
+		strings.Join(o.getLoadFields(o.Type), "|")) // field selector
 }
 
-func getLoadFields(t reflect.Type) []string {
+func (o *ObjectSpec) getLoadFields(t reflect.Type) []string {
 	fields := make([]string, 0)
 	simpleFields := false
 	for i := 0; i < t.NumField(); i++ {
@@ -121,7 +122,9 @@ func getLoadFields(t reflect.Type) []string {
 
 		// skip base object
 		if field.Type == BaseObjectType {
-			fields = append(fields, getLoadFields(field.Type)...)
+			if o.ElementID != "" {
+				fields = append(fields, o.getLoadFields(field.Type)...)
+			}
 			continue
 		}
 
@@ -144,7 +147,7 @@ func getLoadFields(t reflect.Type) []string {
 			continue
 		}
 
-		for _, field := range getLoadFields(spec.Type) {
+		for _, field := range spec.getLoadFields(spec.Type) {
 			fields = append(fields, fieldName+"/"+field)
 		}
 	}
@@ -152,10 +155,11 @@ func getLoadFields(t reflect.Type) []string {
 		fields = append(fields, "*")
 	}
 
-	return SliceUniqString(fields)
+	return sliceUniqString(fields)
 }
 
-func SliceUniqString(s []string) []string {
+//
+func sliceUniqString(s []string) []string {
 	seen := make(map[string]struct{}, len(s))
 	j := 0
 	for _, v := range s {
@@ -169,13 +173,33 @@ func SliceUniqString(s []string) []string {
 	return s[:j]
 }
 
-func (o *ObjectSpec) NewList() interface{} {
-	return reflect.MakeSlice(reflect.SliceOf(o.Type), 0, 0).Interface()
-}
-func (o *ObjectSpec) Load(element *etree.Element) (interface{}, error) {
-	objPtr := reflect.New(o.Type)
-	err := o.loadFields(objPtr.Elem(), element)
-	return objPtr.Interface(), err
+func (o *ObjectSpec) Load(value reflect.Value, element *etree.Element) error {
+	switch value.Kind() {
+	case reflect.Ptr:
+		return o.Load(value.Elem(), element)
+
+	case reflect.Slice:
+		valueType := value.Type()
+		sliceValue := reflect.MakeSlice(reflect.SliceOf(valueType.Elem()), 0, 0)
+
+		elemType := valueType.Elem()
+		for _, child := range element.ChildElements() {
+			v := reflect.New(elemType)
+			err := o.Load(v, child)
+			if err != nil {
+				return err
+			}
+			reflect.Append(sliceValue, v)
+		}
+		value.Set(sliceValue)
+		return nil
+
+	case reflect.Struct:
+		return o.loadFields(value, element)
+
+	default:
+		panic("unsupported type")
+	}
 }
 
 func (o *ObjectSpec) loadFields(obj reflect.Value, element *etree.Element) error {
@@ -196,16 +220,17 @@ func (o *ObjectSpec) loadFields(obj reflect.Value, element *etree.Element) error
 			}
 
 			// skip empty
-			fieldElement := element.SelectElement(tag)
-			if fieldElement == nil || len(fieldElement.Child) == 0 {
+			fieldElements := element.SelectElements(tag)
+			if len(fieldElements) == 0 {
 				continue
 			}
 
-			var data interface{}
-			data, err = parseValue(value.Type(), fieldElement)
-			if err == nil {
-				value.Set(reflect.ValueOf(data))
+			if value.Kind() == reflect.Slice {
+				err = parseValueList(value, field.Type, fieldElements)
+			} else if len(fieldElements[0].Child) > 0 {
+				err = parseValue(value, field.Type, fieldElements[0])
 			}
+
 		}
 		if err != nil {
 			return fmt.Errorf("failed to load %s: %w", field.Name, err)
@@ -214,35 +239,67 @@ func (o *ObjectSpec) loadFields(obj reflect.Value, element *etree.Element) error
 	return nil
 }
 
-func parseValue(t reflect.Type, element *etree.Element) (interface{}, error) {
-	switch t.Kind() {
+func parseValueList(value reflect.Value, valueType reflect.Type, element []*etree.Element) error {
+	objList := reflect.MakeSlice(reflect.SliceOf(valueType.Elem()), 0, len(element))
+
+	for _, e := range element {
+		v := reflect.New(valueType.Elem()).Elem()
+
+		err := parseValue(v, valueType.Elem(), e)
+		if err != nil {
+			return err
+		}
+		objList = reflect.Append(objList, v)
+	}
+
+	value.Set(objList)
+	return nil
+}
+
+func parseValue(value reflect.Value, valueType reflect.Type, element *etree.Element) error {
+	switch valueType.Kind() {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return cast.ToInt64E(element.Text())
+		value.SetInt(cast.ToInt64(element.Text()))
+		return nil
 
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return cast.ToUint64E(element.Text())
+		value.SetUint(cast.ToUint64(element.Text()))
+		return nil
+
+	case reflect.Float32, reflect.Float64:
+		value.SetFloat(cast.ToFloat64(element.Text()))
+		return nil
 
 	case reflect.String:
-		return element.Text(), nil
+		value.SetString(element.Text())
+		return nil
 
 	case reflect.Bool:
-		return cast.ToBoolE(element.Text())
+		value.SetBool(cast.ToBool(element.Text()))
+		return nil
 
 	case reflect.Struct:
-		if t == reflect.TypeOf(time.Time{}) {
-			return time.Parse("2006-01-02T15:04:05.000-0700", element.Text())
-
-		} else if _, ok := t.FieldByName("BaseObject"); ok {
-			spec, err := LoadObjectSpec(t)
+		if valueType == reflect.TypeOf(time.Time{}) {
+			parsedTime, err := time.Parse("2006-01-02T15:04:05.000-0700", element.Text())
 			if err != nil {
-				return nil, err
+				return err
 			}
-			return spec.Load(element)
+
+			value.Set(reflect.ValueOf(parsedTime))
+			return nil
+
+		} else if _, ok := valueType.FieldByName("BaseObject"); ok {
+			spec, err := LoadObjectSpec(valueType)
+			if err != nil {
+				return err
+			}
+			return spec.Load(value, element)
 		} else {
 			panic("unknown type")
 		}
 	case reflect.Ptr:
-		return parseValue(t.Elem(), element)
+		value.Set(reflect.New(valueType.Elem()))
+		return parseValue(value.Elem(), valueType.Elem(), element)
 
 	default:
 		panic("unknown type")

@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -76,8 +77,11 @@ func (c *Client) SimpleGet(url, contentType, errorMessage string, statusCode int
 		return nil, nil, errors.New(errorMessage)
 	}
 
+	bla, _ := io.ReadAll(response.Body)
+
 	doc := etree.NewDocument()
-	_, err = doc.ReadFrom(response.Body)
+	err = doc.ReadFromBytes(bla)
+	//_, err = doc.ReadFrom(response.Body)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to parse XML response: %w", err)
 	}
