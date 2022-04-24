@@ -2,7 +2,10 @@ package jazz
 
 // Code generated! DO NOT EDIT
 
-import "time"
+import (
+	"reflect"
+	"time"
+)
 
 // ProjectArea (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#projectArea_type_com_ibm_team_pr)
 // This element represents a Project Area.
@@ -34,6 +37,43 @@ type ProjectArea struct {
 	AllTeamAreas []*TeamArea `jazz:"allTeamAreas"`
 }
 
+// ProjectAreaType contains the reflection type of ProjectArea
+var goProjectAreaType = reflect.TypeOf(ProjectArea{})
+
+// Spec returns the specification object for ProjectArea
+func (o *ProjectArea) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "projectArea",
+		TypeID:     "com.ibm.team.process.ProjectArea",
+		Type:       goProjectAreaType,
+	}
+}
+
+// Load ProjectArea object
+func (o *ProjectArea) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of ProjectArea object
+func (o *ProjectArea) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.TeamMembers,
+		o.TeamAreaHierarchy,
+		o.DevelopmentLines,
+		o.ProjectDevelopmentLine,
+		o.Roles,
+		o.RoleAssignments,
+		o.AllTeamAreas,
+	)
+}
+
 // TeamAreaHierarchyRecord (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_TeamAreaHie)
 // This element appears only inside a Project Area, and represents a piece of
 // a team area hierarchy.
@@ -45,6 +85,28 @@ type TeamAreaHierarchyRecord struct {
 
 	// The children team areas of the parent team area
 	Children []*TeamArea `jazz:"children"`
+}
+
+// TeamAreaHierarchyRecordType contains the reflection type of TeamAreaHierarchyRecord
+var goTeamAreaHierarchyRecordType = reflect.TypeOf(TeamAreaHierarchyRecord{})
+
+// Spec returns the specification object for TeamAreaHierarchyRecord
+func (o *TeamAreaHierarchyRecord) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.process.TeamAreaHierarchyRecord",
+		Type:       goTeamAreaHierarchyRecordType,
+	}
+}
+
+// LoadAllFields of TeamAreaHierarchyRecord object
+func (o *TeamAreaHierarchyRecord) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Parent,
+		o.Children,
+	)
 }
 
 // TeamArea (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#teamArea_type_com_ibm_team_proce)
@@ -75,6 +137,41 @@ type TeamArea struct {
 	ParentTeamArea *TeamArea `jazz:"parentTeamArea"`
 }
 
+// TeamAreaType contains the reflection type of TeamArea
+var goTeamAreaType = reflect.TypeOf(TeamArea{})
+
+// Spec returns the specification object for TeamArea
+func (o *TeamArea) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "teamArea",
+		TypeID:     "com.ibm.team.process.TeamArea",
+		Type:       goTeamAreaType,
+	}
+}
+
+// Load TeamArea object
+func (o *TeamArea) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of TeamArea object
+func (o *TeamArea) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.TeamMembers,
+		o.ProjectArea,
+		o.Roles,
+		o.RoleAssignments,
+		o.ParentTeamArea,
+	)
+}
+
 // Contributor (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#contributor)
 // This element represents a Contributor (user).
 type Contributor struct {
@@ -88,6 +185,36 @@ type Contributor struct {
 
 	// The userId of the contributor, unique in this application (e.g. "jmoody")
 	UserId string `jazz:"userId"`
+}
+
+// ContributorType contains the reflection type of Contributor
+var goContributorType = reflect.TypeOf(Contributor{})
+
+// Spec returns the specification object for Contributor
+func (o *Contributor) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "contributor",
+		TypeID:     "com.ibm.team.repository.Contributor",
+		Type:       goContributorType,
+	}
+}
+
+// Load Contributor object
+func (o *Contributor) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of Contributor object
+func (o *Contributor) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
 }
 
 // Iteration (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#iteration_type_com_ibm_team_proc)
@@ -121,6 +248,39 @@ type Iteration struct {
 	HasDeliverable bool `jazz:"hasDeliverable"`
 }
 
+// IterationType contains the reflection type of Iteration
+var goIterationType = reflect.TypeOf(Iteration{})
+
+// Spec returns the specification object for Iteration
+func (o *Iteration) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "iteration",
+		TypeID:     "com.ibm.team.process.Iteration",
+		Type:       goIterationType,
+	}
+}
+
+// Load Iteration object
+func (o *Iteration) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of Iteration object
+func (o *Iteration) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Parent,
+		o.Children,
+		o.DevelopmentLine,
+	)
+}
+
 // DevelopmentLine (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#developmentLine_type_com_ibm_tea)
 // This element represents a development line.
 type DevelopmentLine struct {
@@ -146,6 +306,39 @@ type DevelopmentLine struct {
 	CurrentIteration *Iteration `jazz:"currentIteration"`
 }
 
+// DevelopmentLineType contains the reflection type of DevelopmentLine
+var goDevelopmentLineType = reflect.TypeOf(DevelopmentLine{})
+
+// Spec returns the specification object for DevelopmentLine
+func (o *DevelopmentLine) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "developmentLine",
+		TypeID:     "com.ibm.team.process.DevelopmentLine",
+		Type:       goDevelopmentLineType,
+	}
+}
+
+// Load DevelopmentLine object
+func (o *DevelopmentLine) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of DevelopmentLine object
+func (o *DevelopmentLine) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Iterations,
+		o.ProjectArea,
+		o.CurrentIteration,
+	)
+}
+
 // AuditableLink (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#auditableLink)
 // This element represents a link from one artifact to another. These links
 // may be either within the same repository, or between one artifact in this
@@ -164,6 +357,38 @@ type AuditableLink struct {
 
 	// The target of the link
 	TargetRef *Reference `jazz:"targetRef"`
+}
+
+// AuditableLinkType contains the reflection type of AuditableLink
+var goAuditableLinkType = reflect.TypeOf(AuditableLink{})
+
+// Spec returns the specification object for AuditableLink
+func (o *AuditableLink) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "auditableLink",
+		TypeID:     "",
+		Type:       goAuditableLinkType,
+	}
+}
+
+// Load AuditableLink object
+func (o *AuditableLink) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of AuditableLink object
+func (o *AuditableLink) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.SourceRef,
+		o.TargetRef,
+	)
 }
 
 // Reference (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_links_Reference)
@@ -198,6 +423,28 @@ type Reference struct {
 	ContentType string `jazz:"contentType"`
 }
 
+// ReferenceType contains the reflection type of Reference
+var goReferenceType = reflect.TypeOf(Reference{})
+
+// Spec returns the specification object for Reference
+func (o *Reference) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.links.Reference",
+		Type:       goReferenceType,
+	}
+}
+
+// LoadAllFields of Reference object
+func (o *Reference) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.ReferenceType,
+		o.ReferencedItem,
+	)
+}
+
 // ReferenceType (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_links_ReferenceType)
 // This element represents a reference type, indicating whether a reference is
 // by URI or itemID.
@@ -212,6 +459,26 @@ type ReferenceType struct {
 	Value int `jazz:"value"`
 }
 
+// ReferenceTypeType contains the reflection type of ReferenceType
+var goReferenceTypeType = reflect.TypeOf(ReferenceType{})
+
+// Spec returns the specification object for ReferenceType
+func (o *ReferenceType) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.links.ReferenceType",
+		Type:       goReferenceTypeType,
+	}
+}
+
+// LoadAllFields of ReferenceType object
+func (o *ReferenceType) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
 // ReadAccess (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#readAccess)
 // The readAccess element represents a mapping of contributors to project
 // areas that each contributor has permissions to read.
@@ -224,6 +491,36 @@ type ReadAccess struct {
 	// The itemID of the context object associated with the contributor (i.e. the
 	// project area)
 	ContributorContextId string `jazz:"contributorContextId"`
+}
+
+// ReadAccessType contains the reflection type of ReadAccess
+var goReadAccessType = reflect.TypeOf(ReadAccess{})
+
+// Spec returns the specification object for ReadAccess
+func (o *ReadAccess) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "readAccess",
+		TypeID:     "",
+		Type:       goReadAccessType,
+	}
+}
+
+// Load ReadAccess object
+func (o *ReadAccess) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of ReadAccess object
+func (o *ReadAccess) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
 }
 
 // Role (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_Role)
@@ -241,6 +538,26 @@ type Role struct {
 	Description string `jazz:"description"`
 }
 
+// RoleType contains the reflection type of Role
+var goRoleType = reflect.TypeOf(Role{})
+
+// Spec returns the specification object for Role
+func (o *Role) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.process.Role",
+		Type:       goRoleType,
+	}
+}
+
+// LoadAllFields of Role object
+func (o *Role) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
 // RoleAssignment (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_RoleAssignm)
 //
 type RoleAssignment struct {
@@ -251,6 +568,28 @@ type RoleAssignment struct {
 
 	// The roles assigned to the contributor
 	ContributorRoles []*Role `jazz:"contributorRoles"`
+}
+
+// RoleAssignmentType contains the reflection type of RoleAssignment
+var goRoleAssignmentType = reflect.TypeOf(RoleAssignment{})
+
+// Spec returns the specification object for RoleAssignment
+func (o *RoleAssignment) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.process.RoleAssignment",
+		Type:       goRoleAssignmentType,
+	}
+}
+
+// LoadAllFields of RoleAssignment object
+func (o *RoleAssignment) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Contributor,
+		o.ContributorRoles,
+	)
 }
 
 // Workspace (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#workspace_type_com_ibm_team_scm)
@@ -278,6 +617,38 @@ type Workspace struct {
 	Contributor *Contributor `jazz:"contributor"`
 }
 
+// WorkspaceType contains the reflection type of Workspace
+var goWorkspaceType = reflect.TypeOf(Workspace{})
+
+// Spec returns the specification object for Workspace
+func (o *Workspace) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "scm",
+		ElementID:  "workspace",
+		TypeID:     "com.ibm.team.scm.Workspace",
+		Type:       goWorkspaceType,
+	}
+}
+
+// Load Workspace object
+func (o *Workspace) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of Workspace object
+func (o *Workspace) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Properties,
+		o.Contributor,
+	)
+}
+
 // Property (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_scm_Property)
 // This element only occurs in a workspace, and represents a property of a
 // Workspace or Stream
@@ -288,6 +659,26 @@ type Property struct {
 	Key string `jazz:"key"`
 }
 
+// PropertyType contains the reflection type of Property
+var goPropertyType = reflect.TypeOf(Property{})
+
+// Spec returns the specification object for Property
+func (o *Property) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "scm",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.scm.Property",
+		Type:       goPropertyType,
+	}
+}
+
+// LoadAllFields of Property object
+func (o *Property) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
 // Component (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#component_type_com_ibm_team_scm)
 // This element represents an SCM Component
 type Component struct {
@@ -295,6 +686,36 @@ type Component struct {
 
 	// The name of the component
 	Name string `jazz:"name"`
+}
+
+// ComponentType contains the reflection type of Component
+var goComponentType = reflect.TypeOf(Component{})
+
+// Spec returns the specification object for Component
+func (o *Component) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "scm",
+		ElementID:  "component",
+		TypeID:     "com.ibm.team.scm.Component",
+		Type:       goComponentType,
+	}
+}
+
+// Load Component object
+func (o *Component) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of Component object
+func (o *Component) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
 }
 
 // ChangeSet (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#changeSet_type_com_ibm_team_scm)
@@ -307,6 +728,37 @@ type ChangeSet struct {
 
 	// The owner of the change set
 	Owner *Contributor `jazz:"owner"`
+}
+
+// ChangeSetType contains the reflection type of ChangeSet
+var goChangeSetType = reflect.TypeOf(ChangeSet{})
+
+// Spec returns the specification object for ChangeSet
+func (o *ChangeSet) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "scm",
+		ElementID:  "changeSet",
+		TypeID:     "com.ibm.team.scm.ChangeSet",
+		Type:       goChangeSetType,
+	}
+}
+
+// Load ChangeSet object
+func (o *ChangeSet) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of ChangeSet object
+func (o *ChangeSet) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Owner,
+	)
 }
 
 // BuildDefinition (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildDefinition_type_com_ibm_tea)
@@ -325,6 +777,38 @@ type BuildDefinition struct {
 
 	// The team area containing the build definition
 	TeamArea *TeamArea `jazz:"teamArea"`
+}
+
+// BuildDefinitionType contains the reflection type of BuildDefinition
+var goBuildDefinitionType = reflect.TypeOf(BuildDefinition{})
+
+// Spec returns the specification object for BuildDefinition
+func (o *BuildDefinition) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "build",
+		ElementID:  "buildDefinition",
+		TypeID:     "com.ibm.team.build.BuildDefinition",
+		Type:       goBuildDefinitionType,
+	}
+}
+
+// Load BuildDefinition object
+func (o *BuildDefinition) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of BuildDefinition object
+func (o *BuildDefinition) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.ProjectArea,
+		o.TeamArea,
+	)
 }
 
 // BuildResult (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildResult_type_com_ibm_team_bu)
@@ -372,6 +856,42 @@ type BuildResult struct {
 	UnitTestEvents []*UnitTestEvent `jazz:"unitTestEvents"`
 }
 
+// BuildResultType contains the reflection type of BuildResult
+var goBuildResultType = reflect.TypeOf(BuildResult{})
+
+// Spec returns the specification object for BuildResult
+func (o *BuildResult) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "build",
+		ElementID:  "buildResult",
+		TypeID:     "com.ibm.team.build.BuildResult",
+		Type:       goBuildResultType,
+	}
+}
+
+// Load BuildResult object
+func (o *BuildResult) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of BuildResult object
+func (o *BuildResult) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.BuildDefinition,
+		o.Creator,
+		o.BuildEngine,
+		o.CompilationResults,
+		o.UnitTestResults,
+		o.UnitTestEvents,
+	)
+}
+
 // CompilationResult (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_build_CompilationRe)
 // This element only occurs in a buildResult. The number of errors and
 // warnings for a particular component in the containing build result
@@ -388,6 +908,26 @@ type CompilationResult struct {
 	// The umber of compilation warnings for the component in the containing build
 	// result
 	Warnings int64 `jazz:"warnings"`
+}
+
+// CompilationResultType contains the reflection type of CompilationResult
+var goCompilationResultType = reflect.TypeOf(CompilationResult{})
+
+// Spec returns the specification object for CompilationResult
+func (o *CompilationResult) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "build",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.build.CompilationResult",
+		Type:       goCompilationResultType,
+	}
+}
+
+// LoadAllFields of CompilationResult object
+func (o *CompilationResult) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
 }
 
 // UnitTestResult (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_build_UnitTestResul)
@@ -413,6 +953,26 @@ type UnitTestResult struct {
 	Errors int64 `jazz:"errors"`
 }
 
+// UnitTestResultType contains the reflection type of UnitTestResult
+var goUnitTestResultType = reflect.TypeOf(UnitTestResult{})
+
+// Spec returns the specification object for UnitTestResult
+func (o *UnitTestResult) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "build",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.build.UnitTestResult",
+		Type:       goUnitTestResultType,
+	}
+}
+
+// LoadAllFields of UnitTestResult object
+func (o *UnitTestResult) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
 // UnitTestEvent (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_build_UnitTestEvent)
 // This element only occurs in a buildResult. It represents a single unit test
 // execution, along with a pass, fail or regression label
@@ -430,6 +990,26 @@ type UnitTestEvent struct {
 	Event string `jazz:"event"`
 }
 
+// UnitTestEventType contains the reflection type of UnitTestEvent
+var goUnitTestEventType = reflect.TypeOf(UnitTestEvent{})
+
+// Spec returns the specification object for UnitTestEvent
+func (o *UnitTestEvent) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "build",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.build.UnitTestEvent",
+		Type:       goUnitTestEventType,
+	}
+}
+
+// LoadAllFields of UnitTestEvent object
+func (o *UnitTestEvent) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
 // BuildEngine (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildEngine_type_com_ibm_team_bu)
 // This element represents a build engine.
 type BuildEngine struct {
@@ -437,6 +1017,36 @@ type BuildEngine struct {
 
 	// The id of this build engine
 	Id string `jazz:"id"`
+}
+
+// BuildEngineType contains the reflection type of BuildEngine
+var goBuildEngineType = reflect.TypeOf(BuildEngine{})
+
+// Spec returns the specification object for BuildEngine
+func (o *BuildEngine) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "build",
+		ElementID:  "buildEngine",
+		TypeID:     "com.ibm.team.build.BuildEngine",
+		Type:       goBuildEngineType,
+	}
+}
+
+// Load BuildEngine object
+func (o *BuildEngine) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of BuildEngine object
+func (o *BuildEngine) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
 }
 
 // WorkItem (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#workItem_type_com_ibm_team_worki)
@@ -623,6 +1233,74 @@ type WorkItem struct {
 	PlannedEndDate *time.Time `jazz:"plannedEndDate"`
 }
 
+// WorkItemType contains the reflection type of WorkItem
+var goWorkItemType = reflect.TypeOf(WorkItem{})
+
+// Spec returns the specification object for WorkItem
+func (o *WorkItem) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "workItem",
+		TypeID:     "com.ibm.team.workitem.WorkItem",
+		Type:       goWorkItemType,
+	}
+}
+
+// Load WorkItem object
+func (o *WorkItem) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of WorkItem object
+func (o *WorkItem) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Creator,
+		o.Owner,
+		o.Category,
+		o.Comments,
+		o.CustomAttributes,
+		o.Subscriptions,
+		o.ProjectArea,
+		o.Resolver,
+		o.Approvals,
+		o.ApprovalDescriptors,
+		o.Target,
+		o.FoundIn,
+		o.ItemHistory,
+		o.TeamArea,
+		o.State,
+		o.Resolution,
+		o.Type,
+		o.Severity,
+		o.Priority,
+		o.Parent,
+		o.Children,
+		o.Blocks,
+		o.DependsOn,
+		o.DuplicatedBy,
+		o.DuplicateOf,
+		o.Related,
+		o.ItemExtensions,
+		o.MultiItemExtensions,
+		o.MediumStringExtensions,
+		o.BooleanExtensions,
+		o.TimestampExtensions,
+		o.LongExtensions,
+		o.IntExtensions,
+		o.BigDecimalExtensions,
+		o.LargeStringExtensions,
+		o.StringExtensions,
+		o.AllExtensions,
+		o.TimeSheetEntries,
+	)
+}
+
 // Comment (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Comment)
 // This element represents a single work item comment.
 type Comment struct {
@@ -639,6 +1317,27 @@ type Comment struct {
 
 	// The contributor who created the comment
 	Creator *Contributor `jazz:"creator"`
+}
+
+// CommentType contains the reflection type of Comment
+var goCommentType = reflect.TypeOf(Comment{})
+
+// Spec returns the specification object for Comment
+func (o *Comment) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.workitem.Comment",
+		Type:       goCommentType,
+	}
+}
+
+// LoadAllFields of Comment object
+func (o *Comment) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Creator,
+	)
 }
 
 // Attribute (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Attribute)
@@ -660,6 +1359,27 @@ type Attribute struct {
 	ProjectArea *ProjectArea `jazz:"projectArea"`
 }
 
+// AttributeType contains the reflection type of Attribute
+var goAttributeType = reflect.TypeOf(Attribute{})
+
+// Spec returns the specification object for Attribute
+func (o *Attribute) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.workitem.Attribute",
+		Type:       goAttributeType,
+	}
+}
+
+// LoadAllFields of Attribute object
+func (o *Attribute) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.ProjectArea,
+	)
+}
+
 // Approval (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Approval)
 // This element represents an approval from a single contributor with a
 // particular state.
@@ -677,6 +1397,27 @@ type Approval struct {
 
 	// The contributor who is asked for approval
 	Approver *Contributor `jazz:"approver"`
+}
+
+// ApprovalType contains the reflection type of Approval
+var goApprovalType = reflect.TypeOf(Approval{})
+
+// Spec returns the specification object for Approval
+func (o *Approval) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.workitem.Approval",
+		Type:       goApprovalType,
+	}
+}
+
+// LoadAllFields of Approval object
+func (o *Approval) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Approver,
+	)
 }
 
 // ApprovalDescriptor (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_ApprovalDe)
@@ -712,6 +1453,27 @@ type ApprovalDescriptor struct {
 	Approvals []*Approval `jazz:"approvals"`
 }
 
+// ApprovalDescriptorType contains the reflection type of ApprovalDescriptor
+var goApprovalDescriptorType = reflect.TypeOf(ApprovalDescriptor{})
+
+// Spec returns the specification object for ApprovalDescriptor
+func (o *ApprovalDescriptor) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.workitem.ApprovalDescriptor",
+		Type:       goApprovalDescriptorType,
+	}
+}
+
+// LoadAllFields of ApprovalDescriptor object
+func (o *ApprovalDescriptor) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Approvals,
+	)
+}
+
 // State (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_State)
 // This element represents the state of a work item. States are defined by the
 // user in the process specification for a project area.
@@ -734,6 +1496,26 @@ type State struct {
 	Group string `jazz:"group"`
 }
 
+// StateType contains the reflection type of State
+var goStateType = reflect.TypeOf(State{})
+
+// Spec returns the specification object for State
+func (o *State) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.workitem.State",
+		Type:       goStateType,
+	}
+}
+
+// LoadAllFields of State object
+func (o *State) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
 // Resolution (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Resolution)
 // This element represents the resolution of a work item. This indicates how
 // or why a work item was resolved; for example, "Fixed", "Invalid", "Won't
@@ -747,6 +1529,26 @@ type Resolution struct {
 
 	// The name of the resolution (e.g. "Fixed"). Not necessarily unique.
 	Name string `jazz:"name"`
+}
+
+// ResolutionType contains the reflection type of Resolution
+var goResolutionType = reflect.TypeOf(Resolution{})
+
+// Spec returns the specification object for Resolution
+func (o *Resolution) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.workitem.Resolution",
+		Type:       goResolutionType,
+	}
+}
+
+// LoadAllFields of Resolution object
+func (o *Resolution) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
 }
 
 // WorkItemType (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_WorkItemTy)
@@ -763,6 +1565,26 @@ type WorkItemType struct {
 	Name string `jazz:"name"`
 }
 
+// WorkItemTypeType contains the reflection type of WorkItemType
+var goWorkItemTypeType = reflect.TypeOf(WorkItemType{})
+
+// Spec returns the specification object for WorkItemType
+func (o *WorkItemType) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.workitem.WorkItemType",
+		Type:       goWorkItemTypeType,
+	}
+}
+
+// LoadAllFields of WorkItemType object
+func (o *WorkItemType) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
 // Literal (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Literal)
 // This element represents a user-defined literal value, used for priority and
 // severity in a work item. Work item severities and priorities are
@@ -776,6 +1598,26 @@ type Literal struct {
 
 	// The name of the literal (e.g. "Blocking"). Not necessarily unique.
 	Name string `jazz:"name"`
+}
+
+// LiteralType contains the reflection type of Literal
+var goLiteralType = reflect.TypeOf(Literal{})
+
+// Spec returns the specification object for Literal
+func (o *Literal) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.workitem.Literal",
+		Type:       goLiteralType,
+	}
+}
+
+// LoadAllFields of Literal object
+func (o *Literal) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
 }
 
 // Category (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#category_type_com_ibm_team_worki)
@@ -796,6 +1638,36 @@ type Category struct {
 	// The slash-separated qualified name of the category, indicating its
 	// containment hierarchy (e.g. "/RTC Development/Reports").
 	QualifiedName string `jazz:"qualifiedName"`
+}
+
+// CategoryType contains the reflection type of Category
+var goCategoryType = reflect.TypeOf(Category{})
+
+// Spec returns the specification object for Category
+func (o *Category) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "category",
+		TypeID:     "com.ibm.team.workitem.Category",
+		Type:       goCategoryType,
+	}
+}
+
+// Load Category object
+func (o *Category) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of Category object
+func (o *Category) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
 }
 
 // Deliverable (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#deliverable_type_com_ibm_team_wo)
@@ -820,6 +1692,38 @@ type Deliverable struct {
 	// An optional link to a repository item associated with the deliverable. This
 	// field should be treated as internal.
 	Artifact *Item `jazz:"artifact"`
+}
+
+// DeliverableType contains the reflection type of Deliverable
+var goDeliverableType = reflect.TypeOf(Deliverable{})
+
+// Spec returns the specification object for Deliverable
+func (o *Deliverable) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "deliverable",
+		TypeID:     "com.ibm.team.workitem.Deliverable",
+		Type:       goDeliverableType,
+	}
+}
+
+// Load Deliverable object
+func (o *Deliverable) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of Deliverable object
+func (o *Deliverable) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.ProjectArea,
+		o.Artifact,
+	)
 }
 
 // ExtensionEntry (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#allExtensions_type_com_ibm_team)
@@ -876,6 +1780,28 @@ type ExtensionEntry struct {
 	ItemList []*Item `jazz:"itemList"`
 }
 
+// ExtensionEntryType contains the reflection type of ExtensionEntry
+var goExtensionEntryType = reflect.TypeOf(ExtensionEntry{})
+
+// Spec returns the specification object for ExtensionEntry
+func (o *ExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.workitem.ExtensionEntry",
+		Type:       goExtensionEntryType,
+	}
+}
+
+// LoadAllFields of ExtensionEntry object
+func (o *ExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.ItemValue,
+		o.ItemList,
+	)
+}
+
 // TimeSheetEntry (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#time_SheetEntry_type_com_ibm_tea)
 // This element represents a time sheet entry, each of the cells seen in the
 // Time Tracking tab of a work item.
@@ -899,4 +1825,35 @@ type TimeSheetEntry struct {
 
 	// Work item to which the time sheet entry is related to.
 	WorkItem *WorkItem `jazz:"workItem"`
+}
+
+// TimeSheetEntryType contains the reflection type of TimeSheetEntry
+var goTimeSheetEntryType = reflect.TypeOf(TimeSheetEntry{})
+
+// Spec returns the specification object for TimeSheetEntry
+func (o *TimeSheetEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "timeSheetEntry",
+		TypeID:     "com.ibm.team.workitem.TimeSheetEntry",
+		Type:       goTimeSheetEntryType,
+	}
+}
+
+// Load TimeSheetEntry object
+func (o *TimeSheetEntry) Load() (err error) {
+	o.init.Do(func() {
+		if o.ReportableUrl == "" {
+			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+		}
+	})
+	return
+}
+
+// LoadAllFields of TimeSheetEntry object
+func (o *TimeSheetEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.WorkItem,
+	)
 }

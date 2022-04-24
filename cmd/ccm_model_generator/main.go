@@ -16,6 +16,16 @@ import (
 //go:embed type.go.tpl
 var tplStr string
 
+var modelHeaderStr = `package jazz
+
+// Code generated! DO NOT EDIT
+
+import (
+	"reflect"
+	"time"
+)
+`
+
 // map of known models based on the type ID
 var modelTypeRef = make(map[string]*Model)
 
@@ -168,15 +178,7 @@ func main() {
 	defer goFile.Close()
 
 	// write header
-	_, err = goFile.WriteString("package jazz\n\n")
-	if err != nil {
-		panic(err)
-	}
-	_, err = goFile.WriteString("// Code generated! DO NOT EDIT\n\n")
-	if err != nil {
-		panic(err)
-	}
-	_, err = goFile.WriteString("import \"time\"\n")
+	_, err = goFile.WriteString(modelHeaderStr)
 	if err != nil {
 		panic(err)
 	}

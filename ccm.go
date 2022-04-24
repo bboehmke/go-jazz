@@ -112,18 +112,36 @@ func (a *CCMApplication) List(data interface{}) error {
 	return nil
 }
 
+// CCMGet object of the given type
+func CCMGet[T CCMObject](ccm *CCMApplication, id string) (T, error) {
+	var value T
+	spec := value.Spec()
+
+	resp, root, err := ccm.client.SimpleGet(spec.GetURL(id),
+		"application/xml",
+		"failed get element "+id, 0)
+	if err != nil {
+		return value, err
+	}
+	if resp.StatusCode != 200 {
+		return value, errors.New(root.FindElement("//qm:message/text()").Text())
+	}
+
+	return value, spec.Load(ccm, reflect.ValueOf(&value), root.FindElement(spec.ElementID))
+}
+
 // Get object with the given id
 func (a *CCMApplication) Get(data interface{}, id string) error {
 	spec, err := LoadObjectSpec(reflect.TypeOf(data))
 	if err != nil {
-		return fmt.Errorf("failed to list elements: %w", err)
+		return fmt.Errorf("failed to load object spec: %w", err)
 	}
 
 	return a.get(spec, reflect.ValueOf(data), id)
 }
 
 func (a *CCMApplication) get(spec *ObjectSpec, value reflect.Value, id string) error {
-	resp, root, err := a.client.SimpleGet(spec.GetURL(id), //nolint:bodyclose
+	resp, root, err := a.client.SimpleGet(spec.GetURL(id),
 		"application/xml",
 		"failed get element "+id, 0)
 	if err != nil {
@@ -133,5 +151,5 @@ func (a *CCMApplication) get(spec *ObjectSpec, value reflect.Value, id string) e
 		return errors.New(root.FindElement("//qm:message/text()").Text())
 	}
 
-	return spec.Load(value, root.FindElement(spec.ElementID))
+	return spec.Load(a, value, root.FindElement(spec.ElementID))
 }

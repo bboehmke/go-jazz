@@ -25,6 +25,26 @@ func (f Field) GoName() string {
 	return strings.Title(f.Name)
 }
 
+// IsCCMType returns true if this is a CCM field
+func (f Field) IsCCMType() bool {
+	// remove note about list entries from type
+	t := listFieldRegEx.ReplaceAllString(f.Type, "")
+
+	// replace invalid types
+	if fixedType, ok := invalidTypes[t]; ok {
+		t = fixedType
+	}
+
+	// check if the type is an object
+	if _, ok := modelTypeRef[t]; ok {
+		return true
+	}
+	if _, ok := preDefinedTypes[t]; ok {
+		return true
+	}
+	return false
+}
+
 // GoType returns the type for the Go struct field
 func (f Field) GoType() string {
 	// remove note about list entries from type

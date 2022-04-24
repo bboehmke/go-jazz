@@ -35,3 +35,16 @@ func (m Model) Name() string {
 func (m Model) String() string {
 	return fmt.Sprintf("%s, %s, %s", m.ResourceID, m.ElementID, m.TypeID)
 }
+func (m Model) IsLoadable() bool {
+	return m.ElementID != ""
+}
+
+func (m Model) CCMFields() []Field {
+	fields := make([]Field, 0, len(m.Fields))
+	for _, field := range m.Fields {
+		if field.IsCCMType() {
+			fields = append(fields, field)
+		}
+	}
+	return fields
+}

@@ -14,6 +14,19 @@ import (
 
 var BaseObjectType = reflect.TypeOf(BaseObject{})
 
+type CCMObject interface {
+	Spec() *ObjectSpec
+}
+
+type CCMLoadableObject interface {
+	CCMObject
+	Load() error
+}
+
+type initObject interface {
+	setCCM(ccm *CCMApplication)
+}
+
 type BaseObject struct {
 	// Common fields of every object
 	// https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#Common_properties
@@ -21,7 +34,9 @@ type BaseObject struct {
 	init sync.Once
 	ccm  *CCMApplication
 
-	//  The UUID representing the item in storage. This is technically an internal detail, and resources should mostly be referred to by their unique URLs. In some cases the itemId may be the only unique identifier, however.
+	// The UUID representing the item in storage. This is technically an internal
+	// detail, and resources should mostly be referred to by their unique URLs.
+	// In some cases the itemId may be the only unique identifier, however.
 	ItemId string `jazz:"itemId"`
 
 	// An MD5 hash of the URI for this element
@@ -36,12 +51,44 @@ type BaseObject struct {
 	// The timestamp of the last modification date of this resource.
 	Modified *time.Time `jazz:"modified"`
 
-	// A boolean indicating whether the resource is "archived". Archived resources are typically hidden from the UI and filtered out of queries.
+	// A boolean indicating whether the resource is "archived". Archived
+	// resources are typically hidden from the UI and filtered out of queries.
 	Archived bool `jazz:"archived"`
 
 	ReportableUrl string `jazz:"reportableUrl"`
 
 	ModifiedBy *Contributor `jazz:"modifiedBy"`
+}
+
+// String returns the ItemId of this object (used for filter)
+func (o *BaseObject) String() string {
+	return o.ItemId
+}
+
+// setCCM application used for read and write actions
+func (o *BaseObject) setCCM(ccm *CCMApplication) {
+	o.ccm = ccm
+}
+
+// loadFields of the given object
+func (o *BaseObject) loadFields(fields ...interface{}) error {
+	for _, field := range fields {
+		if fields, ok := field.([]CCMLoadableObject); ok {
+			for _, f := range fields {
+				if err := f.Load(); err != nil {
+					return err
+				}
+			}
+		} else if f, ok := field.(CCMLoadableObject); ok {
+			if reflect.ValueOf(f).IsNil() {
+				continue
+			}
+			if err := f.Load(); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 type ObjectSpec struct {
@@ -114,6 +161,7 @@ func (o *ObjectSpec) GetURL(id string) string {
 		strings.Join(o.getLoadFields(o.Type), "|")) // field selector
 }
 
+// getLoadFields for the given CCM object type
 func (o *ObjectSpec) getLoadFields(t reflect.Type) []string {
 	fields := make([]string, 0)
 	simpleFields := false
@@ -147,8 +195,8 @@ func (o *ObjectSpec) getLoadFields(t reflect.Type) []string {
 			continue
 		}
 
-		for _, field := range spec.getLoadFields(spec.Type) {
-			fields = append(fields, fieldName+"/"+field)
+		for _, subFieldName := range spec.getLoadFields(spec.Type) {
+			fields = append(fields, fieldName+"/"+subFieldName)
 		}
 	}
 	if simpleFields {
@@ -158,7 +206,7 @@ func (o *ObjectSpec) getLoadFields(t reflect.Type) []string {
 	return sliceUniqString(fields)
 }
 
-//
+// sliceUniqString removes duplicates from string slice
 func sliceUniqString(s []string) []string {
 	seen := make(map[string]struct{}, len(s))
 	j := 0
@@ -173,10 +221,19 @@ func sliceUniqString(s []string) []string {
 	return s[:j]
 }
 
-func (o *ObjectSpec) Load(value reflect.Value, element *etree.Element) error {
+// Load object from XML element
+func (o *ObjectSpec) Load(ccm *CCMApplication, value reflect.Value, element *etree.Element) error {
 	switch value.Kind() {
 	case reflect.Ptr:
-		return o.Load(value.Elem(), element)
+		if value.IsNil() {
+			value.Set(reflect.New(value.Type().Elem()))
+		}
+
+		err := o.Load(ccm, value.Elem(), element)
+		if err != nil {
+			return err
+		}
+		return nil
 
 	case reflect.Slice:
 		valueType := value.Type()
@@ -185,7 +242,7 @@ func (o *ObjectSpec) Load(value reflect.Value, element *etree.Element) error {
 		elemType := valueType.Elem()
 		for _, child := range element.ChildElements() {
 			v := reflect.New(elemType)
-			err := o.Load(v, child)
+			err := o.Load(ccm, v, child)
 			if err != nil {
 				return err
 			}
@@ -195,14 +252,15 @@ func (o *ObjectSpec) Load(value reflect.Value, element *etree.Element) error {
 		return nil
 
 	case reflect.Struct:
-		return o.loadFields(value, element)
+		return o.loadFields(ccm, value, element)
 
 	default:
 		panic("unsupported type")
 	}
 }
 
-func (o *ObjectSpec) loadFields(obj reflect.Value, element *etree.Element) error {
+// loadFields of object from XML element
+func (o *ObjectSpec) loadFields(ccm *CCMApplication, obj reflect.Value, element *etree.Element) error {
 	t := obj.Type()
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
@@ -210,7 +268,11 @@ func (o *ObjectSpec) loadFields(obj reflect.Value, element *etree.Element) error
 
 		var err error
 		if field.Type == BaseObjectType {
-			err = o.loadFields(value, element)
+			// add ccm instance to CCM objects
+			if initObj, ok := value.Addr().Interface().(initObject); ok {
+				initObj.setCCM(ccm)
+			}
+			err = o.loadFields(ccm, value, element)
 		} else {
 			tag := field.Tag.Get("jazz")
 
@@ -226,9 +288,9 @@ func (o *ObjectSpec) loadFields(obj reflect.Value, element *etree.Element) error
 			}
 
 			if value.Kind() == reflect.Slice {
-				err = parseValueList(value, field.Type, fieldElements)
+				err = loadListValue(ccm, value, field.Type, fieldElements)
 			} else if len(fieldElements[0].Child) > 0 {
-				err = parseValue(value, field.Type, fieldElements[0])
+				err = loadValue(ccm, value, field.Type, fieldElements[0])
 			}
 
 		}
@@ -239,13 +301,14 @@ func (o *ObjectSpec) loadFields(obj reflect.Value, element *etree.Element) error
 	return nil
 }
 
-func parseValueList(value reflect.Value, valueType reflect.Type, element []*etree.Element) error {
+// loadListValue from XML element
+func loadListValue(ccm *CCMApplication, value reflect.Value, valueType reflect.Type, element []*etree.Element) error {
 	objList := reflect.MakeSlice(reflect.SliceOf(valueType.Elem()), 0, len(element))
 
 	for _, e := range element {
 		v := reflect.New(valueType.Elem()).Elem()
 
-		err := parseValue(v, valueType.Elem(), e)
+		err := loadValue(ccm, v, valueType.Elem(), e)
 		if err != nil {
 			return err
 		}
@@ -256,7 +319,8 @@ func parseValueList(value reflect.Value, valueType reflect.Type, element []*etre
 	return nil
 }
 
-func parseValue(value reflect.Value, valueType reflect.Type, element *etree.Element) error {
+// loadValue from XML element
+func loadValue(ccm *CCMApplication, value reflect.Value, valueType reflect.Type, element *etree.Element) error {
 	switch valueType.Kind() {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		value.SetInt(cast.ToInt64(element.Text()))
@@ -293,13 +357,13 @@ func parseValue(value reflect.Value, valueType reflect.Type, element *etree.Elem
 			if err != nil {
 				return err
 			}
-			return spec.Load(value, element)
+			return spec.Load(ccm, value, element)
 		} else {
 			panic("unknown type")
 		}
 	case reflect.Ptr:
 		value.Set(reflect.New(valueType.Elem()))
-		return parseValue(value.Elem(), valueType.Elem(), element)
+		return loadValue(ccm, value.Elem(), valueType.Elem(), element)
 
 	default:
 		panic("unknown type")
