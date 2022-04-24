@@ -13,7 +13,10 @@ func init() {
 {{- end }}
 }
 {{ range .}}
+
+{{- if .LinkRef }}
 // {{ .Name }} (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#{{ .LinkRef }})
+{{- end }}
 {{- range .Description}}
 // {{.}}
 {{- end}}

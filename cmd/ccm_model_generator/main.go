@@ -161,6 +161,9 @@ func main() {
 		}
 	})
 
+	// add objects missing in documentation
+	models = append(models, missingObjects...)
+
 	// use template to generate model definition
 	tpl, err := template.New("").Parse(tplStr)
 	if err != nil {

@@ -43,6 +43,17 @@ func init() {
 	ccmRegisterType(new(Deliverable))
 	ccmRegisterType(new(ExtensionEntry))
 	ccmRegisterType(new(TimeSheetEntry))
+	ccmRegisterType(new(Item))
+	ccmRegisterType(new(BooleanExtensionEntry))
+	ccmRegisterType(new(IntExtensionEntry))
+	ccmRegisterType(new(LongExtensionEntry))
+	ccmRegisterType(new(StringExtensionEntry))
+	ccmRegisterType(new(MediumStringExtensionEntry))
+	ccmRegisterType(new(LargeStringExtensionEntry))
+	ccmRegisterType(new(TimestampExtensionEntry))
+	ccmRegisterType(new(BigDecimalExtensionEntry))
+	ccmRegisterType(new(ItemExtensionEntry))
+	ccmRegisterType(new(MultiItemExtensionEntry))
 }
 
 // ProjectArea (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#projectArea_type_com_ibm_team_pr)
@@ -1891,5 +1902,344 @@ func (o *TimeSheetEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.WorkItem,
+	)
+}
+
+// Item (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_repository_Item)
+// Item The only time you're likely to see a raw Item is when using the referencedItem
+// field of a Reference. Most of the time you'll want to fetch whichever concrete item
+// type is represented by this artifact (e.g. a Work Item). The only standard field here
+// likely to be useful is itemId, which can be used to look up the concrete element.
+// This element is always contained in a com.ibm.team.links.Reference, and represents
+// whether the reference is by uri or by itemId.
+type Item struct {
+	BaseObject
+
+	// Type of item
+	ItemType string `jazz:"itemType"`
+
+	// The UUID representing the item in storage
+	ItemId string `jazz:"itemId"`
+}
+
+// ItemType contains the reflection type of Item
+var goItemType = reflect.TypeOf(Item{})
+
+// Spec returns the specification object for Item
+func (o *Item) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "foundation",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.Item",
+		Type:       goItemType,
+	}
+}
+
+// LoadAllFields of Item object
+func (o *Item) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
+type BooleanExtensionEntry struct {
+	BaseObject
+
+	// Key of the custom attribute
+	Key string `jazz:"key"`
+
+	// Value of the custom attribute
+	Value bool `jazz:"value"`
+}
+
+// BooleanExtensionEntryType contains the reflection type of BooleanExtensionEntry
+var goBooleanExtensionEntryType = reflect.TypeOf(BooleanExtensionEntry{})
+
+// Spec returns the specification object for BooleanExtensionEntry
+func (o *BooleanExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.BooleanExtensionEntry",
+		Type:       goBooleanExtensionEntryType,
+	}
+}
+
+// LoadAllFields of BooleanExtensionEntry object
+func (o *BooleanExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
+type IntExtensionEntry struct {
+	BaseObject
+
+	// Key of the custom attribute
+	Key string `jazz:"key"`
+
+	// Value of the custom attribute
+	Value int `jazz:"value"`
+}
+
+// IntExtensionEntryType contains the reflection type of IntExtensionEntry
+var goIntExtensionEntryType = reflect.TypeOf(IntExtensionEntry{})
+
+// Spec returns the specification object for IntExtensionEntry
+func (o *IntExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.IntExtensionEntry",
+		Type:       goIntExtensionEntryType,
+	}
+}
+
+// LoadAllFields of IntExtensionEntry object
+func (o *IntExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
+type LongExtensionEntry struct {
+	BaseObject
+
+	// Key of the custom attribute
+	Key string `jazz:"key"`
+
+	// Value of the custom attribute
+	Value int64 `jazz:"value"`
+}
+
+// LongExtensionEntryType contains the reflection type of LongExtensionEntry
+var goLongExtensionEntryType = reflect.TypeOf(LongExtensionEntry{})
+
+// Spec returns the specification object for LongExtensionEntry
+func (o *LongExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.LongExtensionEntry",
+		Type:       goLongExtensionEntryType,
+	}
+}
+
+// LoadAllFields of LongExtensionEntry object
+func (o *LongExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
+type StringExtensionEntry struct {
+	BaseObject
+
+	// Key of the custom attribute
+	Key string `jazz:"key"`
+
+	// Value of the custom attribute
+	Value string `jazz:"value"`
+}
+
+// StringExtensionEntryType contains the reflection type of StringExtensionEntry
+var goStringExtensionEntryType = reflect.TypeOf(StringExtensionEntry{})
+
+// Spec returns the specification object for StringExtensionEntry
+func (o *StringExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.StringExtensionEntry",
+		Type:       goStringExtensionEntryType,
+	}
+}
+
+// LoadAllFields of StringExtensionEntry object
+func (o *StringExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
+type MediumStringExtensionEntry struct {
+	BaseObject
+
+	// Key of the custom attribute
+	Key string `jazz:"key"`
+
+	// Value of the custom attribute
+	Value string `jazz:"value"`
+}
+
+// MediumStringExtensionEntryType contains the reflection type of MediumStringExtensionEntry
+var goMediumStringExtensionEntryType = reflect.TypeOf(MediumStringExtensionEntry{})
+
+// Spec returns the specification object for MediumStringExtensionEntry
+func (o *MediumStringExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.MediumStringExtensionEntry",
+		Type:       goMediumStringExtensionEntryType,
+	}
+}
+
+// LoadAllFields of MediumStringExtensionEntry object
+func (o *MediumStringExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
+type LargeStringExtensionEntry struct {
+	BaseObject
+
+	// Key of the custom attribute
+	Key string `jazz:"key"`
+
+	// Value of the custom attribute
+	Value string `jazz:"value"`
+}
+
+// LargeStringExtensionEntryType contains the reflection type of LargeStringExtensionEntry
+var goLargeStringExtensionEntryType = reflect.TypeOf(LargeStringExtensionEntry{})
+
+// Spec returns the specification object for LargeStringExtensionEntry
+func (o *LargeStringExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.LargeStringExtensionEntry",
+		Type:       goLargeStringExtensionEntryType,
+	}
+}
+
+// LoadAllFields of LargeStringExtensionEntry object
+func (o *LargeStringExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
+type TimestampExtensionEntry struct {
+	BaseObject
+
+	// Key of the custom attribute
+	Key string `jazz:"key"`
+
+	// Value of the custom attribute
+	Value *time.Time `jazz:"value"`
+}
+
+// TimestampExtensionEntryType contains the reflection type of TimestampExtensionEntry
+var goTimestampExtensionEntryType = reflect.TypeOf(TimestampExtensionEntry{})
+
+// Spec returns the specification object for TimestampExtensionEntry
+func (o *TimestampExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.TimestampExtensionEntry",
+		Type:       goTimestampExtensionEntryType,
+	}
+}
+
+// LoadAllFields of TimestampExtensionEntry object
+func (o *TimestampExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
+type BigDecimalExtensionEntry struct {
+	BaseObject
+
+	// Key of the custom attribute
+	Key string `jazz:"key"`
+
+	// Value of the custom attribute
+	Value float64 `jazz:"value"`
+}
+
+// BigDecimalExtensionEntryType contains the reflection type of BigDecimalExtensionEntry
+var goBigDecimalExtensionEntryType = reflect.TypeOf(BigDecimalExtensionEntry{})
+
+// Spec returns the specification object for BigDecimalExtensionEntry
+func (o *BigDecimalExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.BigDecimalExtensionEntry",
+		Type:       goBigDecimalExtensionEntryType,
+	}
+}
+
+// LoadAllFields of BigDecimalExtensionEntry object
+func (o *BigDecimalExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+	)
+}
+
+type ItemExtensionEntry struct {
+	BaseObject
+
+	// Key of the custom attribute
+	Key string `jazz:"key"`
+
+	// Value of the custom attribute
+	Value *Item `jazz:"value"`
+}
+
+// ItemExtensionEntryType contains the reflection type of ItemExtensionEntry
+var goItemExtensionEntryType = reflect.TypeOf(ItemExtensionEntry{})
+
+// Spec returns the specification object for ItemExtensionEntry
+func (o *ItemExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.ItemExtensionEntry",
+		Type:       goItemExtensionEntryType,
+	}
+}
+
+// LoadAllFields of ItemExtensionEntry object
+func (o *ItemExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Value,
+	)
+}
+
+type MultiItemExtensionEntry struct {
+	BaseObject
+
+	// Key of the custom attribute
+	Key string `jazz:"key"`
+
+	// Value of the custom attribute
+	Value []*Item `jazz:"value"`
+}
+
+// MultiItemExtensionEntryType contains the reflection type of MultiItemExtensionEntry
+var goMultiItemExtensionEntryType = reflect.TypeOf(MultiItemExtensionEntry{})
+
+// Spec returns the specification object for MultiItemExtensionEntry
+func (o *MultiItemExtensionEntry) Spec() *ObjectSpec {
+	return &ObjectSpec{
+		ResourceID: "workitem",
+		ElementID:  "",
+		TypeID:     "com.ibm.team.repository.MultiItemExtensionEntry",
+		Type:       goMultiItemExtensionEntryType,
+	}
+}
+
+// LoadAllFields of MultiItemExtensionEntry object
+func (o *MultiItemExtensionEntry) LoadAllFields() error {
+	return o.loadFields(
+		o.ModifiedBy,
+		o.Value,
 	)
 }
