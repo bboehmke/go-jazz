@@ -118,8 +118,14 @@ func (o *ObjectSpec) getLoadFields(t reflect.Type) []string {
 			continue
 		}
 
-		for _, subFieldName := range spec.getLoadFields(spec.Type) {
-			fields = append(fields, fieldName+"/"+subFieldName)
+		subFields := spec.getLoadFields(spec.Type)
+		if len(subFields) > 1 {
+			fields = append(fields,
+				fmt.Sprintf("%s/(%s)", fieldName,
+					strings.Join(subFields, "|")))
+		} else {
+			fields = append(fields,
+				fmt.Sprintf("%s/%s", fieldName, subFields[0]))
 		}
 	}
 	if simpleFields {
