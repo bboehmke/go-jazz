@@ -13,18 +13,8 @@ import (
 	"github.com/mitchellh/go-wordwrap"
 )
 
-//go:embed type.go.tpl
+//go:embed ccm_model_gen.go.tpl
 var tplStr string
-
-var modelHeaderStr = `package jazz
-
-// Code generated! DO NOT EDIT
-
-import (
-	"reflect"
-	"time"
-)
-`
 
 // map of known models based on the type ID
 var modelTypeRef = make(map[string]*Model)
@@ -141,10 +131,16 @@ func main() {
 						elementID = e
 					}
 
+					// remove empty descriptions
+					var splitDescription []string
+					if len(description) > 0 {
+						splitDescription = strings.Split(wordwrap.WrapString(description, 75), "\n")
+					}
+
 					// create model and parse fields
 					model := Model{
 						LinkRef:     linkRef,
-						Description: strings.Split(wordwrap.WrapString(description, 75), "\n"),
+						Description: splitDescription,
 
 						ResourceID: resource,
 						ElementID:  elementID,
@@ -177,17 +173,9 @@ func main() {
 	}
 	defer goFile.Close()
 
-	// write header
-	_, err = goFile.WriteString(modelHeaderStr)
+	// write models
+	err = tpl.Execute(goFile, models)
 	if err != nil {
 		panic(err)
-	}
-
-	// write models
-	for _, model := range models {
-		err = tpl.Execute(goFile, model)
-		if err != nil {
-			panic(err)
-		}
 	}
 }

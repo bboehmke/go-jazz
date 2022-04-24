@@ -1,10 +1,24 @@
+package jazz
 
+// Code generated! DO NOT EDIT
+
+import (
+	"reflect"
+	"time"
+)
+
+func init() {
+{{- range .}}
+	ccmRegisterType(new({{ .Name }}))
+{{- end }}
+}
+{{ range .}}
 // {{ .Name }} (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#{{ .LinkRef }})
 {{- range .Description}}
 // {{.}}
 {{- end}}
 type {{ .Name }} struct {
-	BaseObject `jazz_resource:"{{ .ResourceID }}" jazz_type:"{{ .TypeID }}" jazz_element:"{{ .ElementID }}"`
+	BaseObject
 {{- range .Fields}}
 {{ range .Description}}
 	// {{.}}
@@ -35,8 +49,7 @@ func (o *{{ .Name }}) Load() (err error) {
 	})
 	return
 }
-{{- end }}
-
+{{ end }}
 // LoadAllFields of {{ .Name }} object
 func (o *{{ .Name }}) LoadAllFields() error {
 	return o.loadFields(
@@ -46,3 +59,4 @@ func (o *{{ .Name }}) LoadAllFields() error {
 	{{- end}}
 	)
 }
+{{ end }}

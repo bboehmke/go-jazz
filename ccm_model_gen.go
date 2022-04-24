@@ -7,10 +7,48 @@ import (
 	"time"
 )
 
+func init() {
+	ccmRegisterType(new(ProjectArea))
+	ccmRegisterType(new(TeamAreaHierarchyRecord))
+	ccmRegisterType(new(TeamArea))
+	ccmRegisterType(new(Contributor))
+	ccmRegisterType(new(Iteration))
+	ccmRegisterType(new(DevelopmentLine))
+	ccmRegisterType(new(AuditableLink))
+	ccmRegisterType(new(Reference))
+	ccmRegisterType(new(ReferenceType))
+	ccmRegisterType(new(ReadAccess))
+	ccmRegisterType(new(Role))
+	ccmRegisterType(new(RoleAssignment))
+	ccmRegisterType(new(Workspace))
+	ccmRegisterType(new(Property))
+	ccmRegisterType(new(Component))
+	ccmRegisterType(new(ChangeSet))
+	ccmRegisterType(new(BuildDefinition))
+	ccmRegisterType(new(BuildResult))
+	ccmRegisterType(new(CompilationResult))
+	ccmRegisterType(new(UnitTestResult))
+	ccmRegisterType(new(UnitTestEvent))
+	ccmRegisterType(new(BuildEngine))
+	ccmRegisterType(new(WorkItem))
+	ccmRegisterType(new(Comment))
+	ccmRegisterType(new(Attribute))
+	ccmRegisterType(new(Approval))
+	ccmRegisterType(new(ApprovalDescriptor))
+	ccmRegisterType(new(State))
+	ccmRegisterType(new(Resolution))
+	ccmRegisterType(new(WorkItemType))
+	ccmRegisterType(new(Literal))
+	ccmRegisterType(new(Category))
+	ccmRegisterType(new(Deliverable))
+	ccmRegisterType(new(ExtensionEntry))
+	ccmRegisterType(new(TimeSheetEntry))
+}
+
 // ProjectArea (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#projectArea_type_com_ibm_team_pr)
 // This element represents a Project Area.
 type ProjectArea struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"com.ibm.team.process.ProjectArea" jazz_element:"projectArea"`
+	BaseObject
 
 	// The human-readable name of the project area (e.g. "My Project")
 	Name string `jazz:"name"`
@@ -78,7 +116,7 @@ func (o *ProjectArea) LoadAllFields() error {
 // This element appears only inside a Project Area, and represents a piece of
 // a team area hierarchy.
 type TeamAreaHierarchyRecord struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"com.ibm.team.process.TeamAreaHierarchyRecord" jazz_element:""`
+	BaseObject
 
 	// The parent team area
 	Parent *TeamArea `jazz:"parent"`
@@ -112,7 +150,7 @@ func (o *TeamAreaHierarchyRecord) LoadAllFields() error {
 // TeamArea (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#teamArea_type_com_ibm_team_proce)
 // This element represents a Team Area.
 type TeamArea struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"com.ibm.team.process.TeamArea" jazz_element:"teamArea"`
+	BaseObject
 
 	// The human-readable name of the project area (e.g. "My Team")
 	Name string `jazz:"name"`
@@ -175,7 +213,7 @@ func (o *TeamArea) LoadAllFields() error {
 // Contributor (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#contributor)
 // This element represents a Contributor (user).
 type Contributor struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"com.ibm.team.repository.Contributor" jazz_element:"contributor"`
+	BaseObject
 
 	// The human-readable name of the contributor (e.g. "James Moody")
 	Name string `jazz:"name"`
@@ -220,7 +258,7 @@ func (o *Contributor) LoadAllFields() error {
 // Iteration (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#iteration_type_com_ibm_team_proc)
 // This element represents a single iteration (milestone, sprint).
 type Iteration struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"com.ibm.team.process.Iteration" jazz_element:"iteration"`
+	BaseObject
 
 	// The human-readable name of this iteration (e.g. "M1")
 	Name string `jazz:"name"`
@@ -284,7 +322,7 @@ func (o *Iteration) LoadAllFields() error {
 // DevelopmentLine (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#developmentLine_type_com_ibm_tea)
 // This element represents a development line.
 type DevelopmentLine struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"com.ibm.team.process.DevelopmentLine" jazz_element:"developmentLine"`
+	BaseObject
 
 	// The human-readable name of this development line (e.g. "Maintenance
 	// Development")
@@ -346,7 +384,7 @@ func (o *DevelopmentLine) LoadAllFields() error {
 // made either by uri (for any artifact) or by referencedItem (in the case of
 // local artifacts).
 type AuditableLink struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"" jazz_element:"auditableLink"`
+	BaseObject
 
 	// The id of this link type (e.g. "com.ibm.team.workitem.parentChild"). This
 	// describes the relationship represented by this link.
@@ -397,7 +435,7 @@ func (o *AuditableLink) LoadAllFields() error {
 // uri (for any artifact) or by referencedItem (in the case of local
 // artifacts). Which one can be determined by the referenceType field.
 type Reference struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"com.ibm.team.links.Reference" jazz_element:""`
+	BaseObject
 
 	// A human-readable comment about the reference. In some cases the comment may
 	// suffice rather than fetching the content on the other end of the link. For
@@ -449,7 +487,7 @@ func (o *Reference) LoadAllFields() error {
 // This element represents a reference type, indicating whether a reference is
 // by URI or itemID.
 type ReferenceType struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"com.ibm.team.links.ReferenceType" jazz_element:""`
+	BaseObject
 
 	// Either "ITEM_REFERENCE" or "URI_REFERENCE"
 	Literal string `jazz:"literal"`
@@ -483,7 +521,7 @@ func (o *ReferenceType) LoadAllFields() error {
 // The readAccess element represents a mapping of contributors to project
 // areas that each contributor has permissions to read.
 type ReadAccess struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"" jazz_element:"readAccess"`
+	BaseObject
 
 	// The itemId of the Contributor
 	ContributorItemId string `jazz:"contributorItemId"`
@@ -524,9 +562,8 @@ func (o *ReadAccess) LoadAllFields() error {
 }
 
 // Role (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_Role)
-//
 type Role struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"com.ibm.team.process.Role" jazz_element:""`
+	BaseObject
 
 	// The role Id
 	Id string `jazz:"id"`
@@ -559,9 +596,8 @@ func (o *Role) LoadAllFields() error {
 }
 
 // RoleAssignment (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_RoleAssignm)
-//
 type RoleAssignment struct {
-	BaseObject `jazz_resource:"foundation" jazz_type:"com.ibm.team.process.RoleAssignment" jazz_element:""`
+	BaseObject
 
 	// The contributor with assigned roles
 	Contributor *Contributor `jazz:"contributor"`
@@ -595,7 +631,7 @@ func (o *RoleAssignment) LoadAllFields() error {
 // Workspace (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#workspace_type_com_ibm_team_scm)
 // This element represents an SCM Workspace or Stream
 type Workspace struct {
-	BaseObject `jazz_resource:"scm" jazz_type:"com.ibm.team.scm.Workspace" jazz_element:"workspace"`
+	BaseObject
 
 	// The name of the workspace or stream
 	Name string `jazz:"name"`
@@ -653,7 +689,7 @@ func (o *Workspace) LoadAllFields() error {
 // This element only occurs in a workspace, and represents a property of a
 // Workspace or Stream
 type Property struct {
-	BaseObject `jazz_resource:"scm" jazz_type:"com.ibm.team.scm.Property" jazz_element:""`
+	BaseObject
 
 	// The property key
 	Key string `jazz:"key"`
@@ -682,7 +718,7 @@ func (o *Property) LoadAllFields() error {
 // Component (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#component_type_com_ibm_team_scm)
 // This element represents an SCM Component
 type Component struct {
-	BaseObject `jazz_resource:"scm" jazz_type:"com.ibm.team.scm.Component" jazz_element:"component"`
+	BaseObject
 
 	// The name of the component
 	Name string `jazz:"name"`
@@ -721,7 +757,7 @@ func (o *Component) LoadAllFields() error {
 // ChangeSet (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#changeSet_type_com_ibm_team_scm)
 // This element represents an SCM Change Set
 type ChangeSet struct {
-	BaseObject `jazz_resource:"scm" jazz_type:"com.ibm.team.scm.ChangeSet" jazz_element:"changeSet"`
+	BaseObject
 
 	// The comment on the change set
 	Comment string `jazz:"comment"`
@@ -764,7 +800,7 @@ func (o *ChangeSet) LoadAllFields() error {
 // BuildDefinition (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildDefinition_type_com_ibm_tea)
 // This element represents a Build Definition.
 type BuildDefinition struct {
-	BaseObject `jazz_resource:"build" jazz_type:"com.ibm.team.build.BuildDefinition" jazz_element:"buildDefinition"`
+	BaseObject
 
 	// The id of the build definition
 	Id string `jazz:"id"`
@@ -814,7 +850,7 @@ func (o *BuildDefinition) LoadAllFields() error {
 // BuildResult (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildResult_type_com_ibm_team_bu)
 // This element represents a Build Result.
 type BuildResult struct {
-	BaseObject `jazz_resource:"build" jazz_type:"com.ibm.team.build.BuildResult" jazz_element:"buildResult"`
+	BaseObject
 
 	// James: To Do
 	BuildStatus string `jazz:"buildStatus"`
@@ -896,7 +932,7 @@ func (o *BuildResult) LoadAllFields() error {
 // This element only occurs in a buildResult. The number of errors and
 // warnings for a particular component in the containing build result
 type CompilationResult struct {
-	BaseObject `jazz_resource:"build" jazz_type:"com.ibm.team.build.CompilationResult" jazz_element:""`
+	BaseObject
 
 	// The component for which the errors and warnings are being reported
 	Component string `jazz:"component"`
@@ -935,7 +971,7 @@ func (o *CompilationResult) LoadAllFields() error {
 // along with number of failures and errors, for a particular component in the
 // containing build result
 type UnitTestResult struct {
-	BaseObject `jazz_resource:"build" jazz_type:"com.ibm.team.build.UnitTestResult" jazz_element:""`
+	BaseObject
 
 	// The component for which the tests, errors and failures are being reported
 	Component string `jazz:"component"`
@@ -977,7 +1013,7 @@ func (o *UnitTestResult) LoadAllFields() error {
 // This element only occurs in a buildResult. It represents a single unit test
 // execution, along with a pass, fail or regression label
 type UnitTestEvent struct {
-	BaseObject `jazz_resource:"build" jazz_type:"com.ibm.team.build.UnitTestEvent" jazz_element:""`
+	BaseObject
 
 	// The component for which the test and event is being reported
 	Component string `jazz:"component"`
@@ -1013,7 +1049,7 @@ func (o *UnitTestEvent) LoadAllFields() error {
 // BuildEngine (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildEngine_type_com_ibm_team_bu)
 // This element represents a build engine.
 type BuildEngine struct {
-	BaseObject `jazz_resource:"build" jazz_type:"com.ibm.team.build.BuildEngine" jazz_element:"buildEngine"`
+	BaseObject
 
 	// The id of this build engine
 	Id string `jazz:"id"`
@@ -1052,7 +1088,7 @@ func (o *BuildEngine) LoadAllFields() error {
 // WorkItem (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#workItem_type_com_ibm_team_worki)
 // This element represents a Work Item.
 type WorkItem struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.WorkItem" jazz_element:"workItem"`
+	BaseObject
 
 	// The system-generated id number for the work item (e.g. "123")
 	Id int `jazz:"id"`
@@ -1304,7 +1340,7 @@ func (o *WorkItem) LoadAllFields() error {
 // Comment (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Comment)
 // This element represents a single work item comment.
 type Comment struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.Comment" jazz_element:""`
+	BaseObject
 
 	// The date/time that the comment was saved in the work item
 	CreationDate *time.Time `jazz:"creationDate"`
@@ -1344,7 +1380,7 @@ func (o *Comment) LoadAllFields() error {
 // This element represents information about a custom attribute declaration.
 // Custom attribute declarations are process-specific.
 type Attribute struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.Attribute" jazz_element:""`
+	BaseObject
 
 	// An identifier for the custom attribute, unique within a project area
 	Identifier string `jazz:"identifier"`
@@ -1384,7 +1420,7 @@ func (o *Attribute) LoadAllFields() error {
 // This element represents an approval from a single contributor with a
 // particular state.
 type Approval struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.Approval" jazz_element:""`
+	BaseObject
 
 	// The state of the approval
 	StateIdentifier string `jazz:"stateIdentifier"`
@@ -1424,7 +1460,7 @@ func (o *Approval) LoadAllFields() error {
 // This element represents an approval descriptor aggregates approvals from
 // contributors.
 type ApprovalDescriptor struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.ApprovalDescriptor" jazz_element:""`
+	BaseObject
 
 	// An identifier for this approval
 	Id int `jazz:"id"`
@@ -1478,7 +1514,7 @@ func (o *ApprovalDescriptor) LoadAllFields() error {
 // This element represents the state of a work item. States are defined by the
 // user in the process specification for a project area.
 type State struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.State" jazz_element:""`
+	BaseObject
 
 	// The id of the state (e.g. "com.ibm.team.workitem.defect.inProgress"),
 	// unique in a repository.
@@ -1521,7 +1557,7 @@ func (o *State) LoadAllFields() error {
 // or why a work item was resolved; for example, "Fixed", "Invalid", "Won't
 // Fix". Resolutions are process-dependent.
 type Resolution struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.Resolution" jazz_element:""`
+	BaseObject
 
 	// The id of the resolution (e.g. "com.ibm.team.workitem.defect.fixed"),
 	// unique in a repository.
@@ -1555,7 +1591,7 @@ func (o *Resolution) LoadAllFields() error {
 // This element represents the type of a work item. Work item types are
 // process-dependent.
 type WorkItemType struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.WorkItemType" jazz_element:""`
+	BaseObject
 
 	// The id of the type (e.g. "com.ibm.team.workitem.defect"), unique in a
 	// repository.
@@ -1590,7 +1626,7 @@ func (o *WorkItemType) LoadAllFields() error {
 // severity in a work item. Work item severities and priorities are
 // process-dependent.
 type Literal struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.Literal" jazz_element:""`
+	BaseObject
 
 	// The id of the literal (e.g. "com.ibm.team.workitem.blocking"), unique in a
 	// repository.
@@ -1624,7 +1660,7 @@ func (o *Literal) LoadAllFields() error {
 // This element represents a work item Category. Work item categories are
 // process-dependent.
 type Category struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.Category" jazz_element:"category"`
+	BaseObject
 
 	// The id of the category, unique in a repository.
 	Id string `jazz:"id"`
@@ -1675,7 +1711,7 @@ func (o *Category) LoadAllFields() error {
 // in which deliverable a work item was found ("Found In"). Deliverables are
 // process-dependent.
 type Deliverable struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.Deliverable" jazz_element:"deliverable"`
+	BaseObject
 
 	// The name of the deliverable (e.g. "RTC 3.0")
 	Name string `jazz:"name"`
@@ -1729,7 +1765,7 @@ func (o *Deliverable) LoadAllFields() error {
 // ExtensionEntry (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#allExtensions_type_com_ibm_team)
 // This element represents the value of a custom attribute.
 type ExtensionEntry struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.ExtensionEntry" jazz_element:""`
+	BaseObject
 
 	// The name of the custom attribute
 	Key string `jazz:"key"`
@@ -1806,7 +1842,7 @@ func (o *ExtensionEntry) LoadAllFields() error {
 // This element represents a time sheet entry, each of the cells seen in the
 // Time Tracking tab of a work item.
 type TimeSheetEntry struct {
-	BaseObject `jazz_resource:"workitem" jazz_type:"com.ibm.team.workitem.TimeSheetEntry" jazz_element:"timeSheetEntry"`
+	BaseObject
 
 	// The date for which the time sheet entry was entered
 	StartDate *time.Time `jazz:"startDate"`

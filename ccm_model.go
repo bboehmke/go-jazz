@@ -27,6 +27,13 @@ type initObject interface {
 	setCCM(ccm *CCMApplication)
 }
 
+var ccmObjects = make(map[string]*ObjectSpec)
+
+func ccmRegisterType(obj CCMObject) {
+	spec := obj.Spec()
+	ccmObjects[spec.Type.String()] = spec
+}
+
 type BaseObject struct {
 	// Common fields of every object
 	// https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#Common_properties
@@ -128,18 +135,12 @@ func LoadObjectSpec(t reflect.Type) (*ObjectSpec, error) {
 		return nil, errors.New("invalid ccm object given")
 	}
 
-	// get BaseObject field to extract type metadata
-	field, ok := t.FieldByName("BaseObject")
+	// check if CCM object
+	spec, ok := ccmObjects[t.String()]
 	if !ok {
 		return nil, errors.New("invalid ccm object given")
 	}
-
-	return &ObjectSpec{
-		ResourceID: field.Tag.Get("jazz_resource"),
-		ElementID:  field.Tag.Get("jazz_element"),
-		TypeID:     field.Tag.Get("jazz_type"),
-		Type:       t,
-	}, nil
+	return spec, nil
 }
 
 // ListURL returns the URL to get a list of objects
