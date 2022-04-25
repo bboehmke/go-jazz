@@ -2,9 +2,10 @@ package jazz
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"sync"
+
+	"golang.org/x/sync/errgroup"
 )
 
 // CCMApplication interface
@@ -27,52 +28,58 @@ func (a *CCMApplication) Client() *Client {
 	return a.client
 }
 
-// List object of the given type
-func (a *CCMApplication) List(data interface{}) error {
-	dataType := reflect.TypeOf(data)
+// CCMList object of the given type
+func CCMList[T CCMObject](ccm *CCMApplication, filter CCMFilter) ([]T, error) {
+	results := make(chan T)
+	objects := make([]T, 0)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		for obj := range results {
+			objects = append(objects, obj)
+		}
+		wg.Done()
+	}()
 
-	// get specification of object
-	spec, err := LoadObjectSpec(reflect.TypeOf(data))
-	if err != nil {
-		return fmt.Errorf("failed to list elements: %w", err)
-	}
+	err := CCMListChan[T](ccm, filter, results)
+	close(results)
 
-	// prepare list for results
-	objList := reflect.MakeSlice(reflect.SliceOf(dataType.Elem().Elem()), 0, 0)
+	// wait for all results to be handled
+	wg.Wait()
+	return objects, err
+}
+
+// CCMListChan object of the given type returned via a channel
+func CCMListChan[T CCMObject](ccm *CCMApplication, filter CCMFilter, results chan T) error {
+	spec := (*new(T)).Spec()
 
 	// load object returned by list
 	requestChan := make(chan string, 100*2)
-	var mutex sync.Mutex
-	var wg sync.WaitGroup
-	var getErr error
-	for i := 0; i < a.client.Worker; i++ {
-		wg.Add(1)
-		go func() {
+	g := new(errgroup.Group)
+	for i := 0; i < ccm.client.Worker; i++ {
+		g.Go(func() error {
 			for id := range requestChan {
-
-				value := reflect.New(dataType.Elem().Elem())
-				err := a.get(spec, value, id)
-
-				mutex.Lock()
-				if err == nil {
-					objList = reflect.Append(objList, value.Elem())
+				var obj T
+				if err := ccm.get(spec, reflect.ValueOf(&obj), id); err != nil {
+					return err
 				} else {
-					getErr = err
+					results <- obj
 				}
-				mutex.Unlock()
 			}
-			wg.Done()
-		}()
+			return nil
+		})
 	}
 
 	// get initial URL request
-	url := spec.ListURL()
+	url, err := spec.ListURL(filter)
+	if err != nil {
+		return err
+	}
 
 	var counter uint64 // TODO remove
-
 	// request list until last page reached
 	for url != "" {
-		resp, root, err := a.client.SimpleGet(url, "application/xml", //nolint:bodyclose
+		resp, root, err := ccm.client.SimpleGet(url, "application/xml", //nolint:bodyclose
 			"failed get element list", 0)
 		if err != nil {
 			return err
@@ -81,6 +88,7 @@ func (a *CCMApplication) List(data interface{}) error {
 			return errors.New(root.FindElement("//qm:message/text()").Text())
 		}
 
+		// extract item IDs from result
 		entries := root.FindElements(spec.ElementID + "/itemId")
 		for _, entry := range entries {
 			requestChan <- entry.Text()
@@ -101,15 +109,8 @@ func (a *CCMApplication) List(data interface{}) error {
 
 	// stop background worker and wait for work is done
 	close(requestChan)
-	wg.Wait()
-
-	if getErr != nil {
-		return getErr
-	}
-
-	// write object list back
-	reflect.ValueOf(data).Elem().Set(objList)
-	return nil
+	err = g.Wait()
+	return err
 }
 
 // CCMGet object of the given type
@@ -128,16 +129,6 @@ func CCMGet[T CCMObject](ccm *CCMApplication, id string) (T, error) {
 	}
 
 	return value, spec.Load(ccm, reflect.ValueOf(&value), root.FindElement(spec.ElementID))
-}
-
-// Get object with the given id
-func (a *CCMApplication) Get(data interface{}, id string) error {
-	spec, err := LoadObjectSpec(reflect.TypeOf(data))
-	if err != nil {
-		return fmt.Errorf("failed to load object spec: %w", err)
-	}
-
-	return a.get(spec, reflect.ValueOf(data), id)
 }
 
 func (a *CCMApplication) get(spec *ObjectSpec, value reflect.Value, id string) error {

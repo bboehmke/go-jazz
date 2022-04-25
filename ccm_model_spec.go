@@ -42,6 +42,49 @@ type ObjectSpec struct {
 	Type reflect.Type
 }
 
+// CCMFilter is used to filter results in CCM list queries
+type CCMFilter map[string][]interface{}
+
+// buildFilterQuery for the given CCMFilter
+func (o *ObjectSpec) buildFilterQuery(filter CCMFilter) (string, error) {
+	if len(filter) == 0 {
+		return "", nil
+	}
+
+	var filterList []string
+	for key, values := range filter {
+		// error if field with name does not exist
+		field, ok := o.Type.FieldByName(key)
+		if !ok {
+			return "", fmt.Errorf("no field with name \"%s\"", key)
+		}
+
+		// non jazz fields are not supported
+		fieldName := field.Tag.Get("jazz")
+		if fieldName == "" {
+			return "", fmt.Errorf("no field with name \"%s\"", key)
+		}
+
+		// special handling for jazz fields
+		_, err := LoadObjectSpec(field.Type)
+		if err == nil {
+			fieldName = fieldName + "/itemId"
+		}
+
+		orFilter := make([]string, len(values))
+		for i, value := range values {
+			orFilter[i] = fmt.Sprintf("%s=\"%s\"", fieldName, cast.ToString(value))
+		}
+
+		if len(orFilter) == 1 {
+			filterList = append(filterList, orFilter[0])
+		} else {
+			filterList = append(filterList, fmt.Sprintf("(%s)", strings.Join(orFilter, " or ")))
+		}
+	}
+	return fmt.Sprintf("[%s]", strings.Join(filterList, " and ")), nil
+}
+
 // LoadObjectSpec from given type
 func LoadObjectSpec(t reflect.Type) (*ObjectSpec, error) {
 	// get inner type of pointer or lists
@@ -67,11 +110,15 @@ func LoadObjectSpec(t reflect.Type) (*ObjectSpec, error) {
 
 // ListURL returns the URL to get a list of objects
 // https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#Examples
-func (o *ObjectSpec) ListURL() string {
-	// TODO filter
+func (o *ObjectSpec) ListURL(filter CCMFilter) (string, error) {
+	filterQuery, err := o.buildFilterQuery(filter)
+	if err != nil {
+		return "", fmt.Errorf("failed to build filter: %w", err)
+	}
+
 	return fmt.Sprintf(
-		"ccm/rpt/repository/%s?fields=%s/%s/(itemId)",
-		o.ResourceID, o.ElementID, o.ElementID)
+		"ccm/rpt/repository/%s?fields=%s/%s%s/(itemId)",
+		o.ResourceID, o.ElementID, o.ElementID, filterQuery), nil
 }
 
 // GetURL returns the URL to get an object
@@ -151,6 +198,8 @@ func (o *ObjectSpec) Load(ccm *CCMApplication, value reflect.Value, element *etr
 	switch value.Kind() {
 	case reflect.Ptr:
 		if value.IsNil() {
+			bla := value.Interface()
+			_ = bla
 			value.Set(reflect.New(value.Type().Elem()))
 		}
 
