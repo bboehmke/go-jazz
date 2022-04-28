@@ -76,7 +76,6 @@ func CCMListChan[T CCMObject](ccm *CCMApplication, filter CCMFilter, results cha
 		return err
 	}
 
-	var counter uint64 // TODO remove
 	// request list until last page reached
 	for url != "" {
 		resp, root, err := ccm.client.SimpleGet(url, "application/xml", //nolint:bodyclose
@@ -92,18 +91,12 @@ func CCMListChan[T CCMObject](ccm *CCMApplication, filter CCMFilter, results cha
 		entries := root.FindElements(spec.ElementID + "/itemId")
 		for _, entry := range entries {
 			requestChan <- entry.Text()
-			counter++ // TODO remove
 		}
 
 		if len(entries) >= 100 {
 			url = root.SelectAttrValue("href", "")
 		} else {
 			url = ""
-		}
-
-		// TODO remove
-		if counter >= 200 {
-			break
 		}
 	}
 
