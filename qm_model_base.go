@@ -1,7 +1,6 @@
 package jazz
 
 import (
-	"encoding/json"
 	"strings"
 )
 
@@ -43,26 +42,53 @@ func (s QMString) String() string {
 	return string(s)
 }
 
+// QMRef reference to object
+type QMRef struct {
+	Href string `json:"href"`
+}
+
+func (s QMRef) String() string {
+	return s.Href
+}
+
 // QMRefList list of object references
-type QMRefList []string
+type QMRefList []QMRef
 
 func (s *QMRefList) UnmarshalJSON(b []byte) error {
-	type ref struct {
-		Href string `json:"href"`
-	}
-
-	var refs []ref
-	err := json.Unmarshal(b, &refs)
+	entries, err := UnmarshalJSONOptionalList[QMRef](b)
 	if err == nil {
-		for _, r := range refs {
-			*s = append(*s, r.Href)
-		}
-	} else if _, ok := err.(*json.UnmarshalTypeError); ok {
-		var r ref
-		err = json.Unmarshal(b, &r)
-		if err == nil {
-			*s = append(*s, r.Href)
-		}
+		*s = entries
+	}
+	return err
+}
+
+func (s QMRefList) IDList() []string {
+	ids := make([]string, len(s))
+	for i, ref := range s {
+		ids[i] = ref.Href
+	}
+	return ids
+}
+
+// QMUser provides name and ID of user
+type QMUser struct {
+	Id   string `json:"content"`
+	Name string `json:"name"`
+}
+
+// QMCategory entry of test case
+type QMCategory struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+// QMCategoryList contains list of categories
+type QMCategoryList []QMCategory
+
+func (l *QMCategoryList) UnmarshalJSON(b []byte) error {
+	entries, err := UnmarshalJSONOptionalList[QMCategory](b)
+	if err == nil {
+		*l = entries
 	}
 	return err
 }

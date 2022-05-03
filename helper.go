@@ -1,6 +1,9 @@
 package jazz
 
-import "sync"
+import (
+	"encoding/json"
+	"sync"
+)
 
 // Chan2List converts a channel to a slice
 func Chan2List[T any](f func(ch chan T) error) ([]T, error) {
@@ -23,5 +26,21 @@ func Chan2List[T any](f func(ch chan T) error) ([]T, error) {
 
 	// wait for all entries to be handled
 	wg.Wait()
+	return entries, err
+}
+
+// UnmarshalJSONOptionalList handles broken list in json on if single response
+func UnmarshalJSONOptionalList[T any](b []byte) ([]T, error) {
+	var entries []T
+	err := json.Unmarshal(b, &entries)
+	if err == nil {
+		return entries, nil
+	} else if _, ok := err.(*json.UnmarshalTypeError); ok {
+		var entry T
+		err = json.Unmarshal(b, &entry)
+		if err == nil {
+			entries = append(entries, entry)
+		}
+	}
 	return entries, err
 }

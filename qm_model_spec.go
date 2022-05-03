@@ -2,7 +2,6 @@ package jazz
 
 import (
 	"fmt"
-	"reflect"
 	"strconv"
 	"strings"
 )
@@ -14,8 +13,6 @@ type QMObjectSpec struct {
 	// Resource identifier of object.
 	// https://jazz.net/wiki/bin/view/Main/RqmApi#Resources_and_their_Supported_Op
 	ResourceID string
-
-	Type reflect.Type
 }
 
 func (o *QMObjectSpec) ListURL(proj *QMProject, filter QMFilter) (string, error) {
