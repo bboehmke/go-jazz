@@ -8,99 +8,99 @@ import (
 )
 
 func init() {
-	ccmRegisterType(new(ProjectArea))
-	ccmRegisterType(new(TeamAreaHierarchyRecord))
-	ccmRegisterType(new(TeamArea))
-	ccmRegisterType(new(Contributor))
-	ccmRegisterType(new(Iteration))
-	ccmRegisterType(new(DevelopmentLine))
-	ccmRegisterType(new(AuditableLink))
-	ccmRegisterType(new(Reference))
-	ccmRegisterType(new(ReferenceType))
-	ccmRegisterType(new(ReadAccess))
-	ccmRegisterType(new(Role))
-	ccmRegisterType(new(RoleAssignment))
-	ccmRegisterType(new(Workspace))
-	ccmRegisterType(new(Property))
-	ccmRegisterType(new(Component))
-	ccmRegisterType(new(ChangeSet))
-	ccmRegisterType(new(BuildDefinition))
-	ccmRegisterType(new(BuildResult))
-	ccmRegisterType(new(CompilationResult))
-	ccmRegisterType(new(UnitTestResult))
-	ccmRegisterType(new(UnitTestEvent))
-	ccmRegisterType(new(BuildEngine))
-	ccmRegisterType(new(WorkItem))
-	ccmRegisterType(new(Comment))
-	ccmRegisterType(new(Attribute))
-	ccmRegisterType(new(Approval))
-	ccmRegisterType(new(ApprovalDescriptor))
-	ccmRegisterType(new(State))
-	ccmRegisterType(new(Resolution))
-	ccmRegisterType(new(WorkItemType))
-	ccmRegisterType(new(Literal))
-	ccmRegisterType(new(Category))
-	ccmRegisterType(new(Deliverable))
-	ccmRegisterType(new(ExtensionEntry))
-	ccmRegisterType(new(TimeSheetEntry))
-	ccmRegisterType(new(Item))
-	ccmRegisterType(new(BooleanExtensionEntry))
-	ccmRegisterType(new(IntExtensionEntry))
-	ccmRegisterType(new(LongExtensionEntry))
-	ccmRegisterType(new(StringExtensionEntry))
-	ccmRegisterType(new(MediumStringExtensionEntry))
-	ccmRegisterType(new(LargeStringExtensionEntry))
-	ccmRegisterType(new(TimestampExtensionEntry))
-	ccmRegisterType(new(BigDecimalExtensionEntry))
-	ccmRegisterType(new(ItemExtensionEntry))
-	ccmRegisterType(new(MultiItemExtensionEntry))
+	ccmRegisterType(new(CCMProjectArea))
+	ccmRegisterType(new(CCMTeamAreaHierarchyRecord))
+	ccmRegisterType(new(CCMTeamArea))
+	ccmRegisterType(new(CCMContributor))
+	ccmRegisterType(new(CCMIteration))
+	ccmRegisterType(new(CCMDevelopmentLine))
+	ccmRegisterType(new(CCMAuditableLink))
+	ccmRegisterType(new(CCMReference))
+	ccmRegisterType(new(CCMReferenceType))
+	ccmRegisterType(new(CCMReadAccess))
+	ccmRegisterType(new(CCMRole))
+	ccmRegisterType(new(CCMRoleAssignment))
+	ccmRegisterType(new(CCMWorkspace))
+	ccmRegisterType(new(CCMProperty))
+	ccmRegisterType(new(CCMComponent))
+	ccmRegisterType(new(CCMChangeSet))
+	ccmRegisterType(new(CCMBuildDefinition))
+	ccmRegisterType(new(CCMBuildResult))
+	ccmRegisterType(new(CCMCompilationResult))
+	ccmRegisterType(new(CCMUnitTestResult))
+	ccmRegisterType(new(CCMUnitTestEvent))
+	ccmRegisterType(new(CCMBuildEngine))
+	ccmRegisterType(new(CCMWorkItem))
+	ccmRegisterType(new(CCMComment))
+	ccmRegisterType(new(CCMAttribute))
+	ccmRegisterType(new(CCMApproval))
+	ccmRegisterType(new(CCMApprovalDescriptor))
+	ccmRegisterType(new(CCMState))
+	ccmRegisterType(new(CCMResolution))
+	ccmRegisterType(new(CCMWorkItemType))
+	ccmRegisterType(new(CCMLiteral))
+	ccmRegisterType(new(CCMCategory))
+	ccmRegisterType(new(CCMDeliverable))
+	ccmRegisterType(new(CCMExtensionEntry))
+	ccmRegisterType(new(CCMTimeSheetEntry))
+	ccmRegisterType(new(CCMItem))
+	ccmRegisterType(new(CCMBooleanExtensionEntry))
+	ccmRegisterType(new(CCMIntExtensionEntry))
+	ccmRegisterType(new(CCMLongExtensionEntry))
+	ccmRegisterType(new(CCMStringExtensionEntry))
+	ccmRegisterType(new(CCMMediumStringExtensionEntry))
+	ccmRegisterType(new(CCMLargeStringExtensionEntry))
+	ccmRegisterType(new(CCMTimestampExtensionEntry))
+	ccmRegisterType(new(CCMBigDecimalExtensionEntry))
+	ccmRegisterType(new(CCMItemExtensionEntry))
+	ccmRegisterType(new(CCMMultiItemExtensionEntry))
 }
 
-// ProjectArea (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#projectArea_type_com_ibm_team_pr)
+// CCMProjectArea (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#projectArea_type_com_ibm_team_pr)
 // This element represents a Project Area.
-type ProjectArea struct {
-	BaseObject
+type CCMProjectArea struct {
+	CCMBaseObject
 
 	// The human-readable name of the project area (e.g. "My Project")
 	Name string `jazz:"name"`
 
 	// A list of members of this project
-	TeamMembers []*Contributor `jazz:"teamMembers"`
+	TeamMembers []*CCMMultiItemExtensionEntry `jazz:"teamMembers"`
 
 	// A list of records reflecting the team area hierarchy for this project area
-	TeamAreaHierarchy []*TeamAreaHierarchyRecord `jazz:"teamAreaHierarchy"`
+	TeamAreaHierarchy []*CCMMultiItemExtensionEntry `jazz:"teamAreaHierarchy"`
 
 	// A list of development lines for this project area
-	DevelopmentLines []*DevelopmentLine `jazz:"developmentLines"`
+	DevelopmentLines []*CCMMultiItemExtensionEntry `jazz:"developmentLines"`
 
 	// The main development line for this project area
-	ProjectDevelopmentLine *DevelopmentLine `jazz:"projectDevelopmentLine"`
+	ProjectDevelopmentLine *CCMMultiItemExtensionEntry `jazz:"projectDevelopmentLine"`
 
 	// The roles defined in the project area
-	Roles []*Role `jazz:"roles"`
+	Roles []*CCMMultiItemExtensionEntry `jazz:"roles"`
 
 	// The role assignments defined in the project area
-	RoleAssignments []*RoleAssignment `jazz:"roleAssignments"`
+	RoleAssignments []*CCMMultiItemExtensionEntry `jazz:"roleAssignments"`
 
 	// All the team areas contained in the project area
-	AllTeamAreas []*TeamArea `jazz:"allTeamAreas"`
+	AllTeamAreas []*CCMMultiItemExtensionEntry `jazz:"allTeamAreas"`
 }
 
-// ProjectAreaType contains the reflection type of ProjectArea
-var goProjectAreaType = reflect.TypeOf(ProjectArea{})
+// CCMProjectAreaType contains the reflection type of CCMProjectArea
+var goCCMProjectAreaType = reflect.TypeOf(CCMProjectArea{})
 
-// Spec returns the specification object for ProjectArea
-func (o *ProjectArea) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMProjectArea
+func (o *CCMProjectArea) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "projectArea",
 		TypeID:     "com.ibm.team.process.ProjectArea",
-		Type:       goProjectAreaType,
+		Type:       goCCMProjectAreaType,
 	}
 }
 
-// Load ProjectArea object
-func (o *ProjectArea) Load() (err error) {
+// Load CCMProjectArea object
+func (o *CCMProjectArea) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -109,8 +109,8 @@ func (o *ProjectArea) Load() (err error) {
 	return
 }
 
-// LoadAllFields of ProjectArea object
-func (o *ProjectArea) LoadAllFields() error {
+// LoadAllFields of CCMProjectArea object
+func (o *CCMProjectArea) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.TeamMembers,
@@ -123,34 +123,34 @@ func (o *ProjectArea) LoadAllFields() error {
 	)
 }
 
-// TeamAreaHierarchyRecord (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_TeamAreaHie)
+// CCMTeamAreaHierarchyRecord (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_TeamAreaHie)
 // This element appears only inside a Project Area, and represents a piece of
 // a team area hierarchy.
-type TeamAreaHierarchyRecord struct {
-	BaseObject
+type CCMTeamAreaHierarchyRecord struct {
+	CCMBaseObject
 
 	// The parent team area
-	Parent *TeamArea `jazz:"parent"`
+	Parent *CCMMultiItemExtensionEntry `jazz:"parent"`
 
 	// The children team areas of the parent team area
-	Children []*TeamArea `jazz:"children"`
+	Children []*CCMMultiItemExtensionEntry `jazz:"children"`
 }
 
-// TeamAreaHierarchyRecordType contains the reflection type of TeamAreaHierarchyRecord
-var goTeamAreaHierarchyRecordType = reflect.TypeOf(TeamAreaHierarchyRecord{})
+// CCMTeamAreaHierarchyRecordType contains the reflection type of CCMTeamAreaHierarchyRecord
+var goCCMTeamAreaHierarchyRecordType = reflect.TypeOf(CCMTeamAreaHierarchyRecord{})
 
-// Spec returns the specification object for TeamAreaHierarchyRecord
-func (o *TeamAreaHierarchyRecord) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMTeamAreaHierarchyRecord
+func (o *CCMTeamAreaHierarchyRecord) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.process.TeamAreaHierarchyRecord",
-		Type:       goTeamAreaHierarchyRecordType,
+		Type:       goCCMTeamAreaHierarchyRecordType,
 	}
 }
 
-// LoadAllFields of TeamAreaHierarchyRecord object
-func (o *TeamAreaHierarchyRecord) LoadAllFields() error {
+// LoadAllFields of CCMTeamAreaHierarchyRecord object
+func (o *CCMTeamAreaHierarchyRecord) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Parent,
@@ -158,10 +158,10 @@ func (o *TeamAreaHierarchyRecord) LoadAllFields() error {
 	)
 }
 
-// TeamArea (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#teamArea_type_com_ibm_team_proce)
+// CCMTeamArea (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#teamArea_type_com_ibm_team_proce)
 // This element represents a Team Area.
-type TeamArea struct {
-	BaseObject
+type CCMTeamArea struct {
+	CCMBaseObject
 
 	// The human-readable name of the project area (e.g. "My Team")
 	Name string `jazz:"name"`
@@ -171,36 +171,36 @@ type TeamArea struct {
 	QualifiedName string `jazz:"qualifiedName"`
 
 	// A list of members of this team area
-	TeamMembers []*Contributor `jazz:"teamMembers"`
+	TeamMembers []*CCMMultiItemExtensionEntry `jazz:"teamMembers"`
 
 	// The project area containing this team area
-	ProjectArea *ProjectArea `jazz:"projectArea"`
+	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
 
 	// The roles defined in the team area
-	Roles []*Role `jazz:"roles"`
+	Roles []*CCMMultiItemExtensionEntry `jazz:"roles"`
 
 	// The role assignments defined in the team area
-	RoleAssignments []*RoleAssignment `jazz:"roleAssignments"`
+	RoleAssignments []*CCMMultiItemExtensionEntry `jazz:"roleAssignments"`
 
 	// The parent team area
-	ParentTeamArea *TeamArea `jazz:"parentTeamArea"`
+	ParentTeamArea *CCMMultiItemExtensionEntry `jazz:"parentTeamArea"`
 }
 
-// TeamAreaType contains the reflection type of TeamArea
-var goTeamAreaType = reflect.TypeOf(TeamArea{})
+// CCMTeamAreaType contains the reflection type of CCMTeamArea
+var goCCMTeamAreaType = reflect.TypeOf(CCMTeamArea{})
 
-// Spec returns the specification object for TeamArea
-func (o *TeamArea) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMTeamArea
+func (o *CCMTeamArea) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "teamArea",
 		TypeID:     "com.ibm.team.process.TeamArea",
-		Type:       goTeamAreaType,
+		Type:       goCCMTeamAreaType,
 	}
 }
 
-// Load TeamArea object
-func (o *TeamArea) Load() (err error) {
+// Load CCMTeamArea object
+func (o *CCMTeamArea) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -209,8 +209,8 @@ func (o *TeamArea) Load() (err error) {
 	return
 }
 
-// LoadAllFields of TeamArea object
-func (o *TeamArea) LoadAllFields() error {
+// LoadAllFields of CCMTeamArea object
+func (o *CCMTeamArea) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.TeamMembers,
@@ -221,10 +221,10 @@ func (o *TeamArea) LoadAllFields() error {
 	)
 }
 
-// Contributor (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#contributor)
+// CCMContributor (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#contributor)
 // This element represents a Contributor (user).
-type Contributor struct {
-	BaseObject
+type CCMContributor struct {
+	CCMBaseObject
 
 	// The human-readable name of the contributor (e.g. "James Moody")
 	Name string `jazz:"name"`
@@ -236,21 +236,21 @@ type Contributor struct {
 	UserId string `jazz:"userId"`
 }
 
-// ContributorType contains the reflection type of Contributor
-var goContributorType = reflect.TypeOf(Contributor{})
+// CCMContributorType contains the reflection type of CCMContributor
+var goCCMContributorType = reflect.TypeOf(CCMContributor{})
 
-// Spec returns the specification object for Contributor
-func (o *Contributor) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMContributor
+func (o *CCMContributor) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "contributor",
 		TypeID:     "com.ibm.team.repository.Contributor",
-		Type:       goContributorType,
+		Type:       goCCMContributorType,
 	}
 }
 
-// Load Contributor object
-func (o *Contributor) Load() (err error) {
+// Load CCMContributor object
+func (o *CCMContributor) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -259,17 +259,17 @@ func (o *Contributor) Load() (err error) {
 	return
 }
 
-// LoadAllFields of Contributor object
-func (o *Contributor) LoadAllFields() error {
+// LoadAllFields of CCMContributor object
+func (o *CCMContributor) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// Iteration (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#iteration_type_com_ibm_team_proc)
+// CCMIteration (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#iteration_type_com_ibm_team_proc)
 // This element represents a single iteration (milestone, sprint).
-type Iteration struct {
-	BaseObject
+type CCMIteration struct {
+	CCMBaseObject
 
 	// The human-readable name of this iteration (e.g. "M1")
 	Name string `jazz:"name"`
@@ -284,34 +284,34 @@ type Iteration struct {
 	EndDate *time.Time `jazz:"endDate"`
 
 	// The parent iteration of this iteration, if any
-	Parent *Iteration `jazz:"parent"`
+	Parent *CCMMultiItemExtensionEntry `jazz:"parent"`
 
 	// The immediate child iterations of this iteration, if any
-	Children []*Iteration `jazz:"children"`
+	Children []*CCMMultiItemExtensionEntry `jazz:"children"`
 
 	// The development line in which this iteration appears
-	DevelopmentLine *DevelopmentLine `jazz:"developmentLine"`
+	DevelopmentLine *CCMMultiItemExtensionEntry `jazz:"developmentLine"`
 
 	// Whether or not this iteration is marked as having deliverables associated
 	// with it
 	HasDeliverable bool `jazz:"hasDeliverable"`
 }
 
-// IterationType contains the reflection type of Iteration
-var goIterationType = reflect.TypeOf(Iteration{})
+// CCMIterationType contains the reflection type of CCMIteration
+var goCCMIterationType = reflect.TypeOf(CCMIteration{})
 
-// Spec returns the specification object for Iteration
-func (o *Iteration) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMIteration
+func (o *CCMIteration) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "iteration",
 		TypeID:     "com.ibm.team.process.Iteration",
-		Type:       goIterationType,
+		Type:       goCCMIterationType,
 	}
 }
 
-// Load Iteration object
-func (o *Iteration) Load() (err error) {
+// Load CCMIteration object
+func (o *CCMIteration) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -320,8 +320,8 @@ func (o *Iteration) Load() (err error) {
 	return
 }
 
-// LoadAllFields of Iteration object
-func (o *Iteration) LoadAllFields() error {
+// LoadAllFields of CCMIteration object
+func (o *CCMIteration) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Parent,
@@ -330,10 +330,10 @@ func (o *Iteration) LoadAllFields() error {
 	)
 }
 
-// DevelopmentLine (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#developmentLine_type_com_ibm_tea)
+// CCMDevelopmentLine (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#developmentLine_type_com_ibm_tea)
 // This element represents a development line.
-type DevelopmentLine struct {
-	BaseObject
+type CCMDevelopmentLine struct {
+	CCMBaseObject
 
 	// The human-readable name of this development line (e.g. "Maintenance
 	// Development")
@@ -346,30 +346,30 @@ type DevelopmentLine struct {
 	EndDate *time.Time `jazz:"endDate"`
 
 	// The child iterations of this development line
-	Iterations []*Iteration `jazz:"iterations"`
+	Iterations []*CCMMultiItemExtensionEntry `jazz:"iterations"`
 
 	// The project area containing this development line
-	ProjectArea *ProjectArea `jazz:"projectArea"`
+	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
 
 	// The iteration marked as current in this development line
-	CurrentIteration *Iteration `jazz:"currentIteration"`
+	CurrentIteration *CCMMultiItemExtensionEntry `jazz:"currentIteration"`
 }
 
-// DevelopmentLineType contains the reflection type of DevelopmentLine
-var goDevelopmentLineType = reflect.TypeOf(DevelopmentLine{})
+// CCMDevelopmentLineType contains the reflection type of CCMDevelopmentLine
+var goCCMDevelopmentLineType = reflect.TypeOf(CCMDevelopmentLine{})
 
-// Spec returns the specification object for DevelopmentLine
-func (o *DevelopmentLine) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMDevelopmentLine
+func (o *CCMDevelopmentLine) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "developmentLine",
 		TypeID:     "com.ibm.team.process.DevelopmentLine",
-		Type:       goDevelopmentLineType,
+		Type:       goCCMDevelopmentLineType,
 	}
 }
 
-// Load DevelopmentLine object
-func (o *DevelopmentLine) Load() (err error) {
+// Load CCMDevelopmentLine object
+func (o *CCMDevelopmentLine) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -378,8 +378,8 @@ func (o *DevelopmentLine) Load() (err error) {
 	return
 }
 
-// LoadAllFields of DevelopmentLine object
-func (o *DevelopmentLine) LoadAllFields() error {
+// LoadAllFields of CCMDevelopmentLine object
+func (o *CCMDevelopmentLine) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Iterations,
@@ -388,41 +388,41 @@ func (o *DevelopmentLine) LoadAllFields() error {
 	)
 }
 
-// AuditableLink (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#auditableLink)
+// CCMAuditableLink (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#auditableLink)
 // This element represents a link from one artifact to another. These links
 // may be either within the same repository, or between one artifact in this
 // repository and one external artifact. References (source and target) may be
 // made either by uri (for any artifact) or by referencedItem (in the case of
 // local artifacts).
-type AuditableLink struct {
-	BaseObject
+type CCMAuditableLink struct {
+	CCMBaseObject
 
 	// The id of this link type (e.g. "com.ibm.team.workitem.parentChild"). This
 	// describes the relationship represented by this link.
 	Name string `jazz:"name"`
 
 	// The source of the link
-	SourceRef *Reference `jazz:"sourceRef"`
+	SourceRef *CCMMultiItemExtensionEntry `jazz:"sourceRef"`
 
 	// The target of the link
-	TargetRef *Reference `jazz:"targetRef"`
+	TargetRef *CCMMultiItemExtensionEntry `jazz:"targetRef"`
 }
 
-// AuditableLinkType contains the reflection type of AuditableLink
-var goAuditableLinkType = reflect.TypeOf(AuditableLink{})
+// CCMAuditableLinkType contains the reflection type of CCMAuditableLink
+var goCCMAuditableLinkType = reflect.TypeOf(CCMAuditableLink{})
 
-// Spec returns the specification object for AuditableLink
-func (o *AuditableLink) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMAuditableLink
+func (o *CCMAuditableLink) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "auditableLink",
 		TypeID:     "",
-		Type:       goAuditableLinkType,
+		Type:       goCCMAuditableLinkType,
 	}
 }
 
-// Load AuditableLink object
-func (o *AuditableLink) Load() (err error) {
+// Load CCMAuditableLink object
+func (o *CCMAuditableLink) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -431,8 +431,8 @@ func (o *AuditableLink) Load() (err error) {
 	return
 }
 
-// LoadAllFields of AuditableLink object
-func (o *AuditableLink) LoadAllFields() error {
+// LoadAllFields of CCMAuditableLink object
+func (o *CCMAuditableLink) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.SourceRef,
@@ -440,13 +440,13 @@ func (o *AuditableLink) LoadAllFields() error {
 	)
 }
 
-// Reference (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_links_Reference)
+// CCMReference (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_links_Reference)
 // This element is always contained in an auditableLink, and represents either
 // the source or target reference of a link. The reference may be either by
 // uri (for any artifact) or by referencedItem (in the case of local
 // artifacts). Which one can be determined by the referenceType field.
-type Reference struct {
-	BaseObject
+type CCMReference struct {
+	CCMBaseObject
 
 	// A human-readable comment about the reference. In some cases the comment may
 	// suffice rather than fetching the content on the other end of the link. For
@@ -455,7 +455,7 @@ type Reference struct {
 	Comment string `jazz:"comment"`
 
 	// This element indicates whether the reference is by uri or by itemId.
-	ReferenceType *ReferenceType `jazz:"referenceType"`
+	ReferenceType *CCMMultiItemExtensionEntry `jazz:"referenceType"`
 
 	// The URI of the element referenced. This is only valid if this Reference is
 	// a URI reference.
@@ -463,7 +463,7 @@ type Reference struct {
 
 	// The referenced item. This is only valid if this Reference is an Item
 	// reference.
-	ReferencedItem *Item `jazz:"referencedItem"`
+	ReferencedItem *CCMMultiItemExtensionEntry `jazz:"referencedItem"`
 
 	// Get the extra information associated with the reference. May be null.
 	ExtraInfo string `jazz:"extraInfo"`
@@ -472,21 +472,21 @@ type Reference struct {
 	ContentType string `jazz:"contentType"`
 }
 
-// ReferenceType contains the reflection type of Reference
-var goReferenceType = reflect.TypeOf(Reference{})
+// CCMReferenceType contains the reflection type of CCMReference
+var goCCMReferenceType = reflect.TypeOf(CCMReference{})
 
-// Spec returns the specification object for Reference
-func (o *Reference) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMReference
+func (o *CCMReference) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.links.Reference",
-		Type:       goReferenceType,
+		Type:       goCCMReferenceType,
 	}
 }
 
-// LoadAllFields of Reference object
-func (o *Reference) LoadAllFields() error {
+// LoadAllFields of CCMReference object
+func (o *CCMReference) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.ReferenceType,
@@ -494,11 +494,11 @@ func (o *Reference) LoadAllFields() error {
 	)
 }
 
-// ReferenceType (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_links_ReferenceType)
+// CCMReferenceType (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_links_ReferenceType)
 // This element represents a reference type, indicating whether a reference is
 // by URI or itemID.
-type ReferenceType struct {
-	BaseObject
+type CCMReferenceType struct {
+	CCMBaseObject
 
 	// Either "ITEM_REFERENCE" or "URI_REFERENCE"
 	Literal string `jazz:"literal"`
@@ -508,31 +508,31 @@ type ReferenceType struct {
 	Value int `jazz:"value"`
 }
 
-// ReferenceTypeType contains the reflection type of ReferenceType
-var goReferenceTypeType = reflect.TypeOf(ReferenceType{})
+// CCMReferenceTypeType contains the reflection type of CCMReferenceType
+var goCCMReferenceTypeType = reflect.TypeOf(CCMReferenceType{})
 
-// Spec returns the specification object for ReferenceType
-func (o *ReferenceType) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMReferenceType
+func (o *CCMReferenceType) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.links.ReferenceType",
-		Type:       goReferenceTypeType,
+		Type:       goCCMReferenceTypeType,
 	}
 }
 
-// LoadAllFields of ReferenceType object
-func (o *ReferenceType) LoadAllFields() error {
+// LoadAllFields of CCMReferenceType object
+func (o *CCMReferenceType) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// ReadAccess (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#readAccess)
+// CCMReadAccess (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#readAccess)
 // The readAccess element represents a mapping of contributors to project
 // areas that each contributor has permissions to read.
-type ReadAccess struct {
-	BaseObject
+type CCMReadAccess struct {
+	CCMBaseObject
 
 	// The itemId of the Contributor
 	ContributorItemId string `jazz:"contributorItemId"`
@@ -542,21 +542,21 @@ type ReadAccess struct {
 	ContributorContextId string `jazz:"contributorContextId"`
 }
 
-// ReadAccessType contains the reflection type of ReadAccess
-var goReadAccessType = reflect.TypeOf(ReadAccess{})
+// CCMReadAccessType contains the reflection type of CCMReadAccess
+var goCCMReadAccessType = reflect.TypeOf(CCMReadAccess{})
 
-// Spec returns the specification object for ReadAccess
-func (o *ReadAccess) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMReadAccess
+func (o *CCMReadAccess) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "readAccess",
 		TypeID:     "",
-		Type:       goReadAccessType,
+		Type:       goCCMReadAccessType,
 	}
 }
 
-// Load ReadAccess object
-func (o *ReadAccess) Load() (err error) {
+// Load CCMReadAccess object
+func (o *CCMReadAccess) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -565,16 +565,16 @@ func (o *ReadAccess) Load() (err error) {
 	return
 }
 
-// LoadAllFields of ReadAccess object
-func (o *ReadAccess) LoadAllFields() error {
+// LoadAllFields of CCMReadAccess object
+func (o *CCMReadAccess) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// Role (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_Role)
-type Role struct {
-	BaseObject
+// CCMRole (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_Role)
+type CCMRole struct {
+	CCMBaseObject
 
 	// The role Id
 	Id string `jazz:"id"`
@@ -586,52 +586,52 @@ type Role struct {
 	Description string `jazz:"description"`
 }
 
-// RoleType contains the reflection type of Role
-var goRoleType = reflect.TypeOf(Role{})
+// CCMRoleType contains the reflection type of CCMRole
+var goCCMRoleType = reflect.TypeOf(CCMRole{})
 
-// Spec returns the specification object for Role
-func (o *Role) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMRole
+func (o *CCMRole) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.process.Role",
-		Type:       goRoleType,
+		Type:       goCCMRoleType,
 	}
 }
 
-// LoadAllFields of Role object
-func (o *Role) LoadAllFields() error {
+// LoadAllFields of CCMRole object
+func (o *CCMRole) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// RoleAssignment (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_RoleAssignm)
-type RoleAssignment struct {
-	BaseObject
+// CCMRoleAssignment (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_process_RoleAssignm)
+type CCMRoleAssignment struct {
+	CCMBaseObject
 
 	// The contributor with assigned roles
-	Contributor *Contributor `jazz:"contributor"`
+	Contributor *CCMMultiItemExtensionEntry `jazz:"contributor"`
 
 	// The roles assigned to the contributor
-	ContributorRoles []*Role `jazz:"contributorRoles"`
+	ContributorRoles []*CCMMultiItemExtensionEntry `jazz:"contributorRoles"`
 }
 
-// RoleAssignmentType contains the reflection type of RoleAssignment
-var goRoleAssignmentType = reflect.TypeOf(RoleAssignment{})
+// CCMRoleAssignmentType contains the reflection type of CCMRoleAssignment
+var goCCMRoleAssignmentType = reflect.TypeOf(CCMRoleAssignment{})
 
-// Spec returns the specification object for RoleAssignment
-func (o *RoleAssignment) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMRoleAssignment
+func (o *CCMRoleAssignment) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.process.RoleAssignment",
-		Type:       goRoleAssignmentType,
+		Type:       goCCMRoleAssignmentType,
 	}
 }
 
-// LoadAllFields of RoleAssignment object
-func (o *RoleAssignment) LoadAllFields() error {
+// LoadAllFields of CCMRoleAssignment object
+func (o *CCMRoleAssignment) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Contributor,
@@ -639,10 +639,10 @@ func (o *RoleAssignment) LoadAllFields() error {
 	)
 }
 
-// Workspace (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#workspace_type_com_ibm_team_scm)
+// CCMWorkspace (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#workspace_type_com_ibm_team_scm)
 // This element represents an SCM Workspace or Stream
-type Workspace struct {
-	BaseObject
+type CCMWorkspace struct {
+	CCMBaseObject
 
 	// The name of the workspace or stream
 	Name string `jazz:"name"`
@@ -658,27 +658,27 @@ type Workspace struct {
 
 	// A collection of key/value properties associated with the workspace or
 	// stream
-	Properties []*Property `jazz:"properties"`
+	Properties []*CCMMultiItemExtensionEntry `jazz:"properties"`
 
 	// The owner of the workspace or stream
-	Contributor *Contributor `jazz:"contributor"`
+	Contributor *CCMMultiItemExtensionEntry `jazz:"contributor"`
 }
 
-// WorkspaceType contains the reflection type of Workspace
-var goWorkspaceType = reflect.TypeOf(Workspace{})
+// CCMWorkspaceType contains the reflection type of CCMWorkspace
+var goCCMWorkspaceType = reflect.TypeOf(CCMWorkspace{})
 
-// Spec returns the specification object for Workspace
-func (o *Workspace) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMWorkspace
+func (o *CCMWorkspace) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "scm",
 		ElementID:  "workspace",
 		TypeID:     "com.ibm.team.scm.Workspace",
-		Type:       goWorkspaceType,
+		Type:       goCCMWorkspaceType,
 	}
 }
 
-// Load Workspace object
-func (o *Workspace) Load() (err error) {
+// Load CCMWorkspace object
+func (o *CCMWorkspace) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -687,8 +687,8 @@ func (o *Workspace) Load() (err error) {
 	return
 }
 
-// LoadAllFields of Workspace object
-func (o *Workspace) LoadAllFields() error {
+// LoadAllFields of CCMWorkspace object
+func (o *CCMWorkspace) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Properties,
@@ -696,60 +696,60 @@ func (o *Workspace) LoadAllFields() error {
 	)
 }
 
-// Property (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_scm_Property)
+// CCMProperty (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_scm_Property)
 // This element only occurs in a workspace, and represents a property of a
 // Workspace or Stream
-type Property struct {
-	BaseObject
+type CCMProperty struct {
+	CCMBaseObject
 
 	// The property key
 	Key string `jazz:"key"`
 }
 
-// PropertyType contains the reflection type of Property
-var goPropertyType = reflect.TypeOf(Property{})
+// CCMPropertyType contains the reflection type of CCMProperty
+var goCCMPropertyType = reflect.TypeOf(CCMProperty{})
 
-// Spec returns the specification object for Property
-func (o *Property) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMProperty
+func (o *CCMProperty) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "scm",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.scm.Property",
-		Type:       goPropertyType,
+		Type:       goCCMPropertyType,
 	}
 }
 
-// LoadAllFields of Property object
-func (o *Property) LoadAllFields() error {
+// LoadAllFields of CCMProperty object
+func (o *CCMProperty) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// Component (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#component_type_com_ibm_team_scm)
+// CCMComponent (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#component_type_com_ibm_team_scm)
 // This element represents an SCM Component
-type Component struct {
-	BaseObject
+type CCMComponent struct {
+	CCMBaseObject
 
 	// The name of the component
 	Name string `jazz:"name"`
 }
 
-// ComponentType contains the reflection type of Component
-var goComponentType = reflect.TypeOf(Component{})
+// CCMComponentType contains the reflection type of CCMComponent
+var goCCMComponentType = reflect.TypeOf(CCMComponent{})
 
-// Spec returns the specification object for Component
-func (o *Component) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMComponent
+func (o *CCMComponent) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "scm",
 		ElementID:  "component",
 		TypeID:     "com.ibm.team.scm.Component",
-		Type:       goComponentType,
+		Type:       goCCMComponentType,
 	}
 }
 
-// Load Component object
-func (o *Component) Load() (err error) {
+// Load CCMComponent object
+func (o *CCMComponent) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -758,40 +758,40 @@ func (o *Component) Load() (err error) {
 	return
 }
 
-// LoadAllFields of Component object
-func (o *Component) LoadAllFields() error {
+// LoadAllFields of CCMComponent object
+func (o *CCMComponent) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// ChangeSet (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#changeSet_type_com_ibm_team_scm)
+// CCMChangeSet (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#changeSet_type_com_ibm_team_scm)
 // This element represents an SCM Change Set
-type ChangeSet struct {
-	BaseObject
+type CCMChangeSet struct {
+	CCMBaseObject
 
 	// The comment on the change set
 	Comment string `jazz:"comment"`
 
 	// The owner of the change set
-	Owner *Contributor `jazz:"owner"`
+	Owner *CCMMultiItemExtensionEntry `jazz:"owner"`
 }
 
-// ChangeSetType contains the reflection type of ChangeSet
-var goChangeSetType = reflect.TypeOf(ChangeSet{})
+// CCMChangeSetType contains the reflection type of CCMChangeSet
+var goCCMChangeSetType = reflect.TypeOf(CCMChangeSet{})
 
-// Spec returns the specification object for ChangeSet
-func (o *ChangeSet) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMChangeSet
+func (o *CCMChangeSet) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "scm",
 		ElementID:  "changeSet",
 		TypeID:     "com.ibm.team.scm.ChangeSet",
-		Type:       goChangeSetType,
+		Type:       goCCMChangeSetType,
 	}
 }
 
-// Load ChangeSet object
-func (o *ChangeSet) Load() (err error) {
+// Load CCMChangeSet object
+func (o *CCMChangeSet) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -800,18 +800,18 @@ func (o *ChangeSet) Load() (err error) {
 	return
 }
 
-// LoadAllFields of ChangeSet object
-func (o *ChangeSet) LoadAllFields() error {
+// LoadAllFields of CCMChangeSet object
+func (o *CCMChangeSet) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Owner,
 	)
 }
 
-// BuildDefinition (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildDefinition_type_com_ibm_tea)
+// CCMBuildDefinition (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildDefinition_type_com_ibm_tea)
 // This element represents a Build Definition.
-type BuildDefinition struct {
-	BaseObject
+type CCMBuildDefinition struct {
+	CCMBaseObject
 
 	// The id of the build definition
 	Id string `jazz:"id"`
@@ -820,27 +820,27 @@ type BuildDefinition struct {
 	Description string `jazz:"description"`
 
 	// The project area containing the build definition
-	ProjectArea *ProjectArea `jazz:"projectArea"`
+	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
 
 	// The team area containing the build definition
-	TeamArea *TeamArea `jazz:"teamArea"`
+	TeamArea *CCMMultiItemExtensionEntry `jazz:"teamArea"`
 }
 
-// BuildDefinitionType contains the reflection type of BuildDefinition
-var goBuildDefinitionType = reflect.TypeOf(BuildDefinition{})
+// CCMBuildDefinitionType contains the reflection type of CCMBuildDefinition
+var goCCMBuildDefinitionType = reflect.TypeOf(CCMBuildDefinition{})
 
-// Spec returns the specification object for BuildDefinition
-func (o *BuildDefinition) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMBuildDefinition
+func (o *CCMBuildDefinition) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "build",
 		ElementID:  "buildDefinition",
 		TypeID:     "com.ibm.team.build.BuildDefinition",
-		Type:       goBuildDefinitionType,
+		Type:       goCCMBuildDefinitionType,
 	}
 }
 
-// Load BuildDefinition object
-func (o *BuildDefinition) Load() (err error) {
+// Load CCMBuildDefinition object
+func (o *CCMBuildDefinition) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -849,8 +849,8 @@ func (o *BuildDefinition) Load() (err error) {
 	return
 }
 
-// LoadAllFields of BuildDefinition object
-func (o *BuildDefinition) LoadAllFields() error {
+// LoadAllFields of CCMBuildDefinition object
+func (o *CCMBuildDefinition) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.ProjectArea,
@@ -858,10 +858,10 @@ func (o *BuildDefinition) LoadAllFields() error {
 	)
 }
 
-// BuildResult (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildResult_type_com_ibm_team_bu)
+// CCMBuildResult (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildResult_type_com_ibm_team_bu)
 // This element represents a Build Result.
-type BuildResult struct {
-	BaseObject
+type CCMBuildResult struct {
+	CCMBaseObject
 
 	// James: To Do
 	BuildStatus string `jazz:"buildStatus"`
@@ -885,39 +885,39 @@ type BuildResult struct {
 	TimeWaiting int64 `jazz:"timeWaiting"`
 
 	// Which build definition this build was for
-	BuildDefinition *BuildDefinition `jazz:"buildDefinition"`
+	BuildDefinition *CCMMultiItemExtensionEntry `jazz:"buildDefinition"`
 
 	// The contributor who requested the build
-	Creator *Contributor `jazz:"creator"`
+	Creator *CCMMultiItemExtensionEntry `jazz:"creator"`
 
 	// The engine the build ran on
-	BuildEngine *BuildEngine `jazz:"buildEngine"`
+	BuildEngine *CCMMultiItemExtensionEntry `jazz:"buildEngine"`
 
 	// Code compilation results
-	CompilationResults []*CompilationResult `jazz:"compilationResults"`
+	CompilationResults []*CCMMultiItemExtensionEntry `jazz:"compilationResults"`
 
 	// Unit test results
-	UnitTestResults []*UnitTestResult `jazz:"unitTestResults"`
+	UnitTestResults []*CCMMultiItemExtensionEntry `jazz:"unitTestResults"`
 
 	// Unit test changes from the previous build
-	UnitTestEvents []*UnitTestEvent `jazz:"unitTestEvents"`
+	UnitTestEvents []*CCMMultiItemExtensionEntry `jazz:"unitTestEvents"`
 }
 
-// BuildResultType contains the reflection type of BuildResult
-var goBuildResultType = reflect.TypeOf(BuildResult{})
+// CCMBuildResultType contains the reflection type of CCMBuildResult
+var goCCMBuildResultType = reflect.TypeOf(CCMBuildResult{})
 
-// Spec returns the specification object for BuildResult
-func (o *BuildResult) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMBuildResult
+func (o *CCMBuildResult) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "build",
 		ElementID:  "buildResult",
 		TypeID:     "com.ibm.team.build.BuildResult",
-		Type:       goBuildResultType,
+		Type:       goCCMBuildResultType,
 	}
 }
 
-// Load BuildResult object
-func (o *BuildResult) Load() (err error) {
+// Load CCMBuildResult object
+func (o *CCMBuildResult) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -926,8 +926,8 @@ func (o *BuildResult) Load() (err error) {
 	return
 }
 
-// LoadAllFields of BuildResult object
-func (o *BuildResult) LoadAllFields() error {
+// LoadAllFields of CCMBuildResult object
+func (o *CCMBuildResult) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.BuildDefinition,
@@ -939,11 +939,11 @@ func (o *BuildResult) LoadAllFields() error {
 	)
 }
 
-// CompilationResult (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_build_CompilationRe)
+// CCMCompilationResult (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_build_CompilationRe)
 // This element only occurs in a buildResult. The number of errors and
 // warnings for a particular component in the containing build result
-type CompilationResult struct {
-	BaseObject
+type CCMCompilationResult struct {
+	CCMBaseObject
 
 	// The component for which the errors and warnings are being reported
 	Component string `jazz:"component"`
@@ -957,32 +957,32 @@ type CompilationResult struct {
 	Warnings int64 `jazz:"warnings"`
 }
 
-// CompilationResultType contains the reflection type of CompilationResult
-var goCompilationResultType = reflect.TypeOf(CompilationResult{})
+// CCMCompilationResultType contains the reflection type of CCMCompilationResult
+var goCCMCompilationResultType = reflect.TypeOf(CCMCompilationResult{})
 
-// Spec returns the specification object for CompilationResult
-func (o *CompilationResult) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMCompilationResult
+func (o *CCMCompilationResult) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "build",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.build.CompilationResult",
-		Type:       goCompilationResultType,
+		Type:       goCCMCompilationResultType,
 	}
 }
 
-// LoadAllFields of CompilationResult object
-func (o *CompilationResult) LoadAllFields() error {
+// LoadAllFields of CCMCompilationResult object
+func (o *CCMCompilationResult) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// UnitTestResult (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_build_UnitTestResul)
+// CCMUnitTestResult (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_build_UnitTestResul)
 // This element only occurs in a buildResult. The number of unit tests run,
 // along with number of failures and errors, for a particular component in the
 // containing build result
-type UnitTestResult struct {
-	BaseObject
+type CCMUnitTestResult struct {
+	CCMBaseObject
 
 	// The component for which the tests, errors and failures are being reported
 	Component string `jazz:"component"`
@@ -1000,31 +1000,31 @@ type UnitTestResult struct {
 	Errors int64 `jazz:"errors"`
 }
 
-// UnitTestResultType contains the reflection type of UnitTestResult
-var goUnitTestResultType = reflect.TypeOf(UnitTestResult{})
+// CCMUnitTestResultType contains the reflection type of CCMUnitTestResult
+var goCCMUnitTestResultType = reflect.TypeOf(CCMUnitTestResult{})
 
-// Spec returns the specification object for UnitTestResult
-func (o *UnitTestResult) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMUnitTestResult
+func (o *CCMUnitTestResult) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "build",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.build.UnitTestResult",
-		Type:       goUnitTestResultType,
+		Type:       goCCMUnitTestResultType,
 	}
 }
 
-// LoadAllFields of UnitTestResult object
-func (o *UnitTestResult) LoadAllFields() error {
+// LoadAllFields of CCMUnitTestResult object
+func (o *CCMUnitTestResult) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// UnitTestEvent (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_build_UnitTestEvent)
+// CCMUnitTestEvent (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_build_UnitTestEvent)
 // This element only occurs in a buildResult. It represents a single unit test
 // execution, along with a pass, fail or regression label
-type UnitTestEvent struct {
-	BaseObject
+type CCMUnitTestEvent struct {
+	CCMBaseObject
 
 	// The component for which the test and event is being reported
 	Component string `jazz:"component"`
@@ -1037,50 +1037,50 @@ type UnitTestEvent struct {
 	Event string `jazz:"event"`
 }
 
-// UnitTestEventType contains the reflection type of UnitTestEvent
-var goUnitTestEventType = reflect.TypeOf(UnitTestEvent{})
+// CCMUnitTestEventType contains the reflection type of CCMUnitTestEvent
+var goCCMUnitTestEventType = reflect.TypeOf(CCMUnitTestEvent{})
 
-// Spec returns the specification object for UnitTestEvent
-func (o *UnitTestEvent) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMUnitTestEvent
+func (o *CCMUnitTestEvent) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "build",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.build.UnitTestEvent",
-		Type:       goUnitTestEventType,
+		Type:       goCCMUnitTestEventType,
 	}
 }
 
-// LoadAllFields of UnitTestEvent object
-func (o *UnitTestEvent) LoadAllFields() error {
+// LoadAllFields of CCMUnitTestEvent object
+func (o *CCMUnitTestEvent) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// BuildEngine (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildEngine_type_com_ibm_team_bu)
+// CCMBuildEngine (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#buildEngine_type_com_ibm_team_bu)
 // This element represents a build engine.
-type BuildEngine struct {
-	BaseObject
+type CCMBuildEngine struct {
+	CCMBaseObject
 
 	// The id of this build engine
 	Id string `jazz:"id"`
 }
 
-// BuildEngineType contains the reflection type of BuildEngine
-var goBuildEngineType = reflect.TypeOf(BuildEngine{})
+// CCMBuildEngineType contains the reflection type of CCMBuildEngine
+var goCCMBuildEngineType = reflect.TypeOf(CCMBuildEngine{})
 
-// Spec returns the specification object for BuildEngine
-func (o *BuildEngine) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMBuildEngine
+func (o *CCMBuildEngine) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "build",
 		ElementID:  "buildEngine",
 		TypeID:     "com.ibm.team.build.BuildEngine",
-		Type:       goBuildEngineType,
+		Type:       goCCMBuildEngineType,
 	}
 }
 
-// Load BuildEngine object
-func (o *BuildEngine) Load() (err error) {
+// Load CCMBuildEngine object
+func (o *CCMBuildEngine) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -1089,17 +1089,17 @@ func (o *BuildEngine) Load() (err error) {
 	return
 }
 
-// LoadAllFields of BuildEngine object
-func (o *BuildEngine) LoadAllFields() error {
+// LoadAllFields of CCMBuildEngine object
+func (o *CCMBuildEngine) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// WorkItem (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#workItem_type_com_ibm_team_worki)
+// CCMWorkItem (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#workItem_type_com_ibm_team_worki)
 // This element represents a Work Item.
-type WorkItem struct {
-	BaseObject
+type CCMWorkItem struct {
+	CCMBaseObject
 
 	// The system-generated id number for the work item (e.g. "123")
 	Id int `jazz:"id"`
@@ -1144,134 +1144,134 @@ type WorkItem struct {
 	DayModified *time.Time `jazz:"dayModified"`
 
 	// The contributor who created the work item
-	Creator *Contributor `jazz:"creator"`
+	Creator *CCMMultiItemExtensionEntry `jazz:"creator"`
 
 	// The contributor who owns the work item
-	Owner *Contributor `jazz:"owner"`
+	Owner *CCMMultiItemExtensionEntry `jazz:"owner"`
 
 	// The category to which the work item is assigned. In the UI, this is called
 	// "Filed Against".
-	Category *Category `jazz:"category"`
+	Category *CCMMultiItemExtensionEntry `jazz:"category"`
 
 	// A collection of zero or more comments appended to the work item
-	Comments []*Comment `jazz:"comments"`
+	Comments []*CCMMultiItemExtensionEntry `jazz:"comments"`
 
 	// A collection of zero or more "custom attributes" attached to the work item.
 	// These are user-defined attributes (as opposed to the built-in attributes
 	// elsewhere in this list).
-	CustomAttributes []*Attribute `jazz:"customAttributes"`
+	CustomAttributes []*CCMMultiItemExtensionEntry `jazz:"customAttributes"`
 
 	// A collection of zero or more Contributors who are subscribed to the work
 	// item
-	Subscriptions []*Contributor `jazz:"subscriptions"`
+	Subscriptions []*CCMMultiItemExtensionEntry `jazz:"subscriptions"`
 
 	// The project area to which the work item belongs
-	ProjectArea *ProjectArea `jazz:"projectArea"`
+	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
 
 	// The Contributor who resolved the work item, or null if the work item has
 	// not been resolved
-	Resolver *Contributor `jazz:"resolver"`
+	Resolver *CCMMultiItemExtensionEntry `jazz:"resolver"`
 
 	// A collection of zero or more Approvals attached to the work item
-	Approvals []*Approval `jazz:"approvals"`
+	Approvals []*CCMMultiItemExtensionEntry `jazz:"approvals"`
 
 	// A collection of zero or more Approval Descriptors attached to the work item
-	ApprovalDescriptors []*ApprovalDescriptor `jazz:"approvalDescriptors"`
+	ApprovalDescriptors []*CCMMultiItemExtensionEntry `jazz:"approvalDescriptors"`
 
 	// The iteration that the work item is "Planned For"
-	Target *Iteration `jazz:"target"`
+	Target *CCMMultiItemExtensionEntry `jazz:"target"`
 
 	// The deliverable that the work item is "Found In"
-	FoundIn *Deliverable `jazz:"foundIn"`
+	FoundIn *CCMMultiItemExtensionEntry `jazz:"foundIn"`
 
 	// A collection of zero or more WorkItem elements, representing the entire
 	// history of the work item. Each state the work item has ever been in is
 	// reflected in this history list.
-	ItemHistory []*WorkItem `jazz:"itemHistory"`
+	ItemHistory []*CCMMultiItemExtensionEntry `jazz:"itemHistory"`
 
 	// The team area to which the work item belongs
-	TeamArea *TeamArea `jazz:"teamArea"`
+	TeamArea *CCMMultiItemExtensionEntry `jazz:"teamArea"`
 
 	// The state of the work item (e.g. "Resolved", "In Progress", "New"). The
 	// states are user-defined as part of the project area process.
-	State *State `jazz:"state"`
+	State *CCMMultiItemExtensionEntry `jazz:"state"`
 
 	// The resolution of the work item (e.g. "Duplicate", "Invalid", "Fixed"). The
 	// resolutions are user-defined as part of the project area process.
-	Resolution *Resolution `jazz:"resolution"`
+	Resolution *CCMMultiItemExtensionEntry `jazz:"resolution"`
 
 	// The type of the work item (e.g. "Defect", "Task", "Story"). The work item
 	// types are user-defined as part of the project area process.
-	Type *WorkItemType `jazz:"type"`
+	Type *CCMMultiItemExtensionEntry `jazz:"type"`
 
 	// The severity of the work item (e.g. "Critical", "Normal", "Blocker"). The
 	// work item severities are user-defined as part of the project area process.
-	Severity *Literal `jazz:"severity"`
+	Severity *CCMMultiItemExtensionEntry `jazz:"severity"`
 
 	// The priority of the work item (e.g. "High", "Medium", "Low"). The work item
 	// priorities are user-defined as part of the project area process.
-	Priority *Literal `jazz:"priority"`
+	Priority *CCMMultiItemExtensionEntry `jazz:"priority"`
 
 	// The parent work item of this work item, if one exists
-	Parent *WorkItem `jazz:"parent"`
+	Parent *CCMMultiItemExtensionEntry `jazz:"parent"`
 
 	// A collection of zero or more child work items
-	Children []*WorkItem `jazz:"children"`
+	Children []*CCMMultiItemExtensionEntry `jazz:"children"`
 
 	// A collection of zero or more work items which this work item blocks
-	Blocks []*WorkItem `jazz:"blocks"`
+	Blocks []*CCMMultiItemExtensionEntry `jazz:"blocks"`
 
 	// A collection of zero or more work items which block this work item
-	DependsOn []*WorkItem `jazz:"dependsOn"`
+	DependsOn []*CCMMultiItemExtensionEntry `jazz:"dependsOn"`
 
 	// A collection of zero or more work items which are closed as duplicates of
 	// this work item
-	DuplicatedBy []*WorkItem `jazz:"duplicatedBy"`
+	DuplicatedBy []*CCMMultiItemExtensionEntry `jazz:"duplicatedBy"`
 
 	// A collection of zero or more work items which this work item is a duplicate
 	// of
-	DuplicateOf []*WorkItem `jazz:"duplicateOf"`
+	DuplicateOf []*CCMMultiItemExtensionEntry `jazz:"duplicateOf"`
 
 	// A collection of zero of more work items which this work item is related to
-	Related []*WorkItem `jazz:"related"`
+	Related []*CCMMultiItemExtensionEntry `jazz:"related"`
 
 	// A collection of zero or more items linked to the work item as custom
 	// attributes
-	ItemExtensions []*ItemExtensionEntry `jazz:"itemExtensions"`
+	ItemExtensions []*CCMMultiItemExtensionEntry `jazz:"itemExtensions"`
 
 	// A collection of zero or more lists of items linked to the work item as
 	// custom attributes
-	MultiItemExtensions []*MultiItemExtensionEntry `jazz:"multiItemExtensions"`
+	MultiItemExtensions []*CCMMultiItemExtensionEntry `jazz:"multiItemExtensions"`
 
 	// A collection of zero or more custom attributes of type medium string
-	MediumStringExtensions []*MediumStringExtensionEntry `jazz:"mediumStringExtensions"`
+	MediumStringExtensions []*CCMMultiItemExtensionEntry `jazz:"mediumStringExtensions"`
 
 	// A collection of zero or more custom attributes of type boolean
-	BooleanExtensions []*BooleanExtensionEntry `jazz:"booleanExtensions"`
+	BooleanExtensions []*CCMMultiItemExtensionEntry `jazz:"booleanExtensions"`
 
 	// A collection of zero or more custom attributes of type timestamp
-	TimestampExtensions []*TimestampExtensionEntry `jazz:"timestampExtensions"`
+	TimestampExtensions []*CCMMultiItemExtensionEntry `jazz:"timestampExtensions"`
 
 	// A collection of zero or more custom attributes of type long
-	LongExtensions []*LongExtensionEntry `jazz:"longExtensions"`
+	LongExtensions []*CCMMultiItemExtensionEntry `jazz:"longExtensions"`
 
 	// A collection of zero or more custom attributes of type integer
-	IntExtensions []*IntExtensionEntry `jazz:"intExtensions"`
+	IntExtensions []*CCMMultiItemExtensionEntry `jazz:"intExtensions"`
 
 	// A collection of zero or more custom attributes of type big decimal
-	BigDecimalExtensions []*BigDecimalExtensionEntry `jazz:"bigDecimalExtensions"`
+	BigDecimalExtensions []*CCMMultiItemExtensionEntry `jazz:"bigDecimalExtensions"`
 
 	// A collection of zero or more custom attributes of type large string
-	LargeStringExtensions []*LargeStringExtensionEntry `jazz:"largeStringExtensions"`
+	LargeStringExtensions []*CCMMultiItemExtensionEntry `jazz:"largeStringExtensions"`
 
 	// A collection of zero or more custom attributes of type string
-	StringExtensions []*StringExtensionEntry `jazz:"stringExtensions"`
+	StringExtensions []*CCMMultiItemExtensionEntry `jazz:"stringExtensions"`
 
 	// A collection of zero or more custom attributes of all types
-	AllExtensions []*ExtensionEntry `jazz:"allExtensions"`
+	AllExtensions []*CCMMultiItemExtensionEntry `jazz:"allExtensions"`
 
 	// A collection of zero or more timesheet entries linked to the work item
-	TimeSheetEntries []*TimeSheetEntry `jazz:"timeSheetEntries"`
+	TimeSheetEntries []*CCMMultiItemExtensionEntry `jazz:"timeSheetEntries"`
 
 	// The work item's planned start date as specified in the plan.
 	PlannedStartDate *time.Time `jazz:"plannedStartDate"`
@@ -1280,21 +1280,21 @@ type WorkItem struct {
 	PlannedEndDate *time.Time `jazz:"plannedEndDate"`
 }
 
-// WorkItemType contains the reflection type of WorkItem
-var goWorkItemType = reflect.TypeOf(WorkItem{})
+// CCMWorkItemType contains the reflection type of CCMWorkItem
+var goCCMWorkItemType = reflect.TypeOf(CCMWorkItem{})
 
-// Spec returns the specification object for WorkItem
-func (o *WorkItem) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMWorkItem
+func (o *CCMWorkItem) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "workItem",
 		TypeID:     "com.ibm.team.workitem.WorkItem",
-		Type:       goWorkItemType,
+		Type:       goCCMWorkItemType,
 	}
 }
 
-// Load WorkItem object
-func (o *WorkItem) Load() (err error) {
+// Load CCMWorkItem object
+func (o *CCMWorkItem) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -1303,8 +1303,8 @@ func (o *WorkItem) Load() (err error) {
 	return
 }
 
-// LoadAllFields of WorkItem object
-func (o *WorkItem) LoadAllFields() error {
+// LoadAllFields of CCMWorkItem object
+func (o *CCMWorkItem) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Creator,
@@ -1348,10 +1348,10 @@ func (o *WorkItem) LoadAllFields() error {
 	)
 }
 
-// Comment (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Comment)
+// CCMComment (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Comment)
 // This element represents a single work item comment.
-type Comment struct {
-	BaseObject
+type CCMComment struct {
+	CCMBaseObject
 
 	// The date/time that the comment was saved in the work item
 	CreationDate *time.Time `jazz:"creationDate"`
@@ -1363,35 +1363,35 @@ type Comment struct {
 	Edited bool `jazz:"edited"`
 
 	// The contributor who created the comment
-	Creator *Contributor `jazz:"creator"`
+	Creator *CCMMultiItemExtensionEntry `jazz:"creator"`
 }
 
-// CommentType contains the reflection type of Comment
-var goCommentType = reflect.TypeOf(Comment{})
+// CCMCommentType contains the reflection type of CCMComment
+var goCCMCommentType = reflect.TypeOf(CCMComment{})
 
-// Spec returns the specification object for Comment
-func (o *Comment) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMComment
+func (o *CCMComment) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.workitem.Comment",
-		Type:       goCommentType,
+		Type:       goCCMCommentType,
 	}
 }
 
-// LoadAllFields of Comment object
-func (o *Comment) LoadAllFields() error {
+// LoadAllFields of CCMComment object
+func (o *CCMComment) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Creator,
 	)
 }
 
-// Attribute (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Attribute)
+// CCMAttribute (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Attribute)
 // This element represents information about a custom attribute declaration.
 // Custom attribute declarations are process-specific.
-type Attribute struct {
-	BaseObject
+type CCMAttribute struct {
+	CCMBaseObject
 
 	// An identifier for the custom attribute, unique within a project area
 	Identifier string `jazz:"identifier"`
@@ -1403,35 +1403,35 @@ type Attribute struct {
 	BuiltIn bool `jazz:"builtIn"`
 
 	// The project in which the attribute is defined
-	ProjectArea *ProjectArea `jazz:"projectArea"`
+	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
 }
 
-// AttributeType contains the reflection type of Attribute
-var goAttributeType = reflect.TypeOf(Attribute{})
+// CCMAttributeType contains the reflection type of CCMAttribute
+var goCCMAttributeType = reflect.TypeOf(CCMAttribute{})
 
-// Spec returns the specification object for Attribute
-func (o *Attribute) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMAttribute
+func (o *CCMAttribute) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.workitem.Attribute",
-		Type:       goAttributeType,
+		Type:       goCCMAttributeType,
 	}
 }
 
-// LoadAllFields of Attribute object
-func (o *Attribute) LoadAllFields() error {
+// LoadAllFields of CCMAttribute object
+func (o *CCMAttribute) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.ProjectArea,
 	)
 }
 
-// Approval (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Approval)
+// CCMApproval (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Approval)
 // This element represents an approval from a single contributor with a
 // particular state.
-type Approval struct {
-	BaseObject
+type CCMApproval struct {
+	CCMBaseObject
 
 	// The state of the approval
 	StateIdentifier string `jazz:"stateIdentifier"`
@@ -1443,35 +1443,35 @@ type Approval struct {
 	StateName string `jazz:"stateName"`
 
 	// The contributor who is asked for approval
-	Approver *Contributor `jazz:"approver"`
+	Approver *CCMMultiItemExtensionEntry `jazz:"approver"`
 }
 
-// ApprovalType contains the reflection type of Approval
-var goApprovalType = reflect.TypeOf(Approval{})
+// CCMApprovalType contains the reflection type of CCMApproval
+var goCCMApprovalType = reflect.TypeOf(CCMApproval{})
 
-// Spec returns the specification object for Approval
-func (o *Approval) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMApproval
+func (o *CCMApproval) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.workitem.Approval",
-		Type:       goApprovalType,
+		Type:       goCCMApprovalType,
 	}
 }
 
-// LoadAllFields of Approval object
-func (o *Approval) LoadAllFields() error {
+// LoadAllFields of CCMApproval object
+func (o *CCMApproval) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Approver,
 	)
 }
 
-// ApprovalDescriptor (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_ApprovalDe)
+// CCMApprovalDescriptor (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_ApprovalDe)
 // This element represents an approval descriptor aggregates approvals from
 // contributors.
-type ApprovalDescriptor struct {
-	BaseObject
+type CCMApprovalDescriptor struct {
+	CCMBaseObject
 
 	// An identifier for this approval
 	Id int `jazz:"id"`
@@ -1497,35 +1497,35 @@ type ApprovalDescriptor struct {
 
 	// A collection of zero of more approvals aggregated by the approval
 	// descriptor
-	Approvals []*Approval `jazz:"approvals"`
+	Approvals []*CCMMultiItemExtensionEntry `jazz:"approvals"`
 }
 
-// ApprovalDescriptorType contains the reflection type of ApprovalDescriptor
-var goApprovalDescriptorType = reflect.TypeOf(ApprovalDescriptor{})
+// CCMApprovalDescriptorType contains the reflection type of CCMApprovalDescriptor
+var goCCMApprovalDescriptorType = reflect.TypeOf(CCMApprovalDescriptor{})
 
-// Spec returns the specification object for ApprovalDescriptor
-func (o *ApprovalDescriptor) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMApprovalDescriptor
+func (o *CCMApprovalDescriptor) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.workitem.ApprovalDescriptor",
-		Type:       goApprovalDescriptorType,
+		Type:       goCCMApprovalDescriptorType,
 	}
 }
 
-// LoadAllFields of ApprovalDescriptor object
-func (o *ApprovalDescriptor) LoadAllFields() error {
+// LoadAllFields of CCMApprovalDescriptor object
+func (o *CCMApprovalDescriptor) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Approvals,
 	)
 }
 
-// State (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_State)
+// CCMState (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_State)
 // This element represents the state of a work item. States are defined by the
 // user in the process specification for a project area.
-type State struct {
-	BaseObject
+type CCMState struct {
+	CCMBaseObject
 
 	// The id of the state (e.g. "com.ibm.team.workitem.defect.inProgress"),
 	// unique in a repository.
@@ -1543,32 +1543,32 @@ type State struct {
 	Group string `jazz:"group"`
 }
 
-// StateType contains the reflection type of State
-var goStateType = reflect.TypeOf(State{})
+// CCMStateType contains the reflection type of CCMState
+var goCCMStateType = reflect.TypeOf(CCMState{})
 
-// Spec returns the specification object for State
-func (o *State) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMState
+func (o *CCMState) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.workitem.State",
-		Type:       goStateType,
+		Type:       goCCMStateType,
 	}
 }
 
-// LoadAllFields of State object
-func (o *State) LoadAllFields() error {
+// LoadAllFields of CCMState object
+func (o *CCMState) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// Resolution (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Resolution)
+// CCMResolution (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Resolution)
 // This element represents the resolution of a work item. This indicates how
 // or why a work item was resolved; for example, "Fixed", "Invalid", "Won't
 // Fix". Resolutions are process-dependent.
-type Resolution struct {
-	BaseObject
+type CCMResolution struct {
+	CCMBaseObject
 
 	// The id of the resolution (e.g. "com.ibm.team.workitem.defect.fixed"),
 	// unique in a repository.
@@ -1578,31 +1578,31 @@ type Resolution struct {
 	Name string `jazz:"name"`
 }
 
-// ResolutionType contains the reflection type of Resolution
-var goResolutionType = reflect.TypeOf(Resolution{})
+// CCMResolutionType contains the reflection type of CCMResolution
+var goCCMResolutionType = reflect.TypeOf(CCMResolution{})
 
-// Spec returns the specification object for Resolution
-func (o *Resolution) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMResolution
+func (o *CCMResolution) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.workitem.Resolution",
-		Type:       goResolutionType,
+		Type:       goCCMResolutionType,
 	}
 }
 
-// LoadAllFields of Resolution object
-func (o *Resolution) LoadAllFields() error {
+// LoadAllFields of CCMResolution object
+func (o *CCMResolution) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// WorkItemType (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_WorkItemTy)
+// CCMWorkItemType (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_WorkItemTy)
 // This element represents the type of a work item. Work item types are
 // process-dependent.
-type WorkItemType struct {
-	BaseObject
+type CCMWorkItemType struct {
+	CCMBaseObject
 
 	// The id of the type (e.g. "com.ibm.team.workitem.defect"), unique in a
 	// repository.
@@ -1612,32 +1612,32 @@ type WorkItemType struct {
 	Name string `jazz:"name"`
 }
 
-// WorkItemTypeType contains the reflection type of WorkItemType
-var goWorkItemTypeType = reflect.TypeOf(WorkItemType{})
+// CCMWorkItemTypeType contains the reflection type of CCMWorkItemType
+var goCCMWorkItemTypeType = reflect.TypeOf(CCMWorkItemType{})
 
-// Spec returns the specification object for WorkItemType
-func (o *WorkItemType) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMWorkItemType
+func (o *CCMWorkItemType) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.workitem.WorkItemType",
-		Type:       goWorkItemTypeType,
+		Type:       goCCMWorkItemTypeType,
 	}
 }
 
-// LoadAllFields of WorkItemType object
-func (o *WorkItemType) LoadAllFields() error {
+// LoadAllFields of CCMWorkItemType object
+func (o *CCMWorkItemType) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// Literal (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Literal)
+// CCMLiteral (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_workitem_Literal)
 // This element represents a user-defined literal value, used for priority and
 // severity in a work item. Work item severities and priorities are
 // process-dependent.
-type Literal struct {
-	BaseObject
+type CCMLiteral struct {
+	CCMBaseObject
 
 	// The id of the literal (e.g. "com.ibm.team.workitem.blocking"), unique in a
 	// repository.
@@ -1647,31 +1647,31 @@ type Literal struct {
 	Name string `jazz:"name"`
 }
 
-// LiteralType contains the reflection type of Literal
-var goLiteralType = reflect.TypeOf(Literal{})
+// CCMLiteralType contains the reflection type of CCMLiteral
+var goCCMLiteralType = reflect.TypeOf(CCMLiteral{})
 
-// Spec returns the specification object for Literal
-func (o *Literal) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMLiteral
+func (o *CCMLiteral) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.workitem.Literal",
-		Type:       goLiteralType,
+		Type:       goCCMLiteralType,
 	}
 }
 
-// LoadAllFields of Literal object
-func (o *Literal) LoadAllFields() error {
+// LoadAllFields of CCMLiteral object
+func (o *CCMLiteral) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// Category (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#category_type_com_ibm_team_worki)
+// CCMCategory (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#category_type_com_ibm_team_worki)
 // This element represents a work item Category. Work item categories are
 // process-dependent.
-type Category struct {
-	BaseObject
+type CCMCategory struct {
+	CCMBaseObject
 
 	// The id of the category, unique in a repository.
 	Id string `jazz:"id"`
@@ -1687,21 +1687,21 @@ type Category struct {
 	QualifiedName string `jazz:"qualifiedName"`
 }
 
-// CategoryType contains the reflection type of Category
-var goCategoryType = reflect.TypeOf(Category{})
+// CCMCategoryType contains the reflection type of CCMCategory
+var goCCMCategoryType = reflect.TypeOf(CCMCategory{})
 
-// Spec returns the specification object for Category
-func (o *Category) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMCategory
+func (o *CCMCategory) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "category",
 		TypeID:     "com.ibm.team.workitem.Category",
-		Type:       goCategoryType,
+		Type:       goCCMCategoryType,
 	}
 }
 
-// Load Category object
-func (o *Category) Load() (err error) {
+// Load CCMCategory object
+func (o *CCMCategory) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -1710,19 +1710,19 @@ func (o *Category) Load() (err error) {
 	return
 }
 
-// LoadAllFields of Category object
-func (o *Category) LoadAllFields() error {
+// LoadAllFields of CCMCategory object
+func (o *CCMCategory) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-// Deliverable (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#deliverable_type_com_ibm_team_wo)
+// CCMDeliverable (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#deliverable_type_com_ibm_team_wo)
 // This element represents a deliverable, often used in Work Items to identify
 // in which deliverable a work item was found ("Found In"). Deliverables are
 // process-dependent.
-type Deliverable struct {
-	BaseObject
+type CCMDeliverable struct {
+	CCMBaseObject
 
 	// The name of the deliverable (e.g. "RTC 3.0")
 	Name string `jazz:"name"`
@@ -1734,28 +1734,28 @@ type Deliverable struct {
 	CreationDate *time.Time `jazz:"creationDate"`
 
 	// The project area associated with the deliverable
-	ProjectArea *ProjectArea `jazz:"projectArea"`
+	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
 
 	// An optional link to a repository item associated with the deliverable. This
 	// field should be treated as internal.
-	Artifact *Item `jazz:"artifact"`
+	Artifact *CCMMultiItemExtensionEntry `jazz:"artifact"`
 }
 
-// DeliverableType contains the reflection type of Deliverable
-var goDeliverableType = reflect.TypeOf(Deliverable{})
+// CCMDeliverableType contains the reflection type of CCMDeliverable
+var goCCMDeliverableType = reflect.TypeOf(CCMDeliverable{})
 
-// Spec returns the specification object for Deliverable
-func (o *Deliverable) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMDeliverable
+func (o *CCMDeliverable) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "deliverable",
 		TypeID:     "com.ibm.team.workitem.Deliverable",
-		Type:       goDeliverableType,
+		Type:       goCCMDeliverableType,
 	}
 }
 
-// Load Deliverable object
-func (o *Deliverable) Load() (err error) {
+// Load CCMDeliverable object
+func (o *CCMDeliverable) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -1764,8 +1764,8 @@ func (o *Deliverable) Load() (err error) {
 	return
 }
 
-// LoadAllFields of Deliverable object
-func (o *Deliverable) LoadAllFields() error {
+// LoadAllFields of CCMDeliverable object
+func (o *CCMDeliverable) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.ProjectArea,
@@ -1773,10 +1773,10 @@ func (o *Deliverable) LoadAllFields() error {
 	)
 }
 
-// ExtensionEntry (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#allExtensions_type_com_ibm_team)
+// CCMExtensionEntry (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#allExtensions_type_com_ibm_team)
 // This element represents the value of a custom attribute.
-type ExtensionEntry struct {
-	BaseObject
+type CCMExtensionEntry struct {
+	CCMBaseObject
 
 	// The name of the custom attribute
 	Key string `jazz:"key"`
@@ -1820,28 +1820,28 @@ type ExtensionEntry struct {
 
 	// The information of the Item assigned as the value of the custom attribute
 	// if the type is itemValue, else null
-	ItemValue *Item `jazz:"itemValue"`
+	ItemValue *CCMMultiItemExtensionEntry `jazz:"itemValue"`
 
 	// A collection of zero of more items assigned as the value of the custom
 	// attribute if the type is itemList, else null
-	ItemList []*Item `jazz:"itemList"`
+	ItemList []*CCMMultiItemExtensionEntry `jazz:"itemList"`
 }
 
-// ExtensionEntryType contains the reflection type of ExtensionEntry
-var goExtensionEntryType = reflect.TypeOf(ExtensionEntry{})
+// CCMExtensionEntryType contains the reflection type of CCMExtensionEntry
+var goCCMExtensionEntryType = reflect.TypeOf(CCMExtensionEntry{})
 
-// Spec returns the specification object for ExtensionEntry
-func (o *ExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMExtensionEntry
+func (o *CCMExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.workitem.ExtensionEntry",
-		Type:       goExtensionEntryType,
+		Type:       goCCMExtensionEntryType,
 	}
 }
 
-// LoadAllFields of ExtensionEntry object
-func (o *ExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMExtensionEntry object
+func (o *CCMExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.ItemValue,
@@ -1849,11 +1849,11 @@ func (o *ExtensionEntry) LoadAllFields() error {
 	)
 }
 
-// TimeSheetEntry (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#time_SheetEntry_type_com_ibm_tea)
+// CCMTimeSheetEntry (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#time_SheetEntry_type_com_ibm_tea)
 // This element represents a time sheet entry, each of the cells seen in the
 // Time Tracking tab of a work item.
-type TimeSheetEntry struct {
-	BaseObject
+type CCMTimeSheetEntry struct {
+	CCMBaseObject
 
 	// The date for which the time sheet entry was entered
 	StartDate *time.Time `jazz:"startDate"`
@@ -1871,24 +1871,24 @@ type TimeSheetEntry struct {
 	TimeCodeId string `jazz:"timeCodeId"`
 
 	// Work item to which the time sheet entry is related to.
-	WorkItem *WorkItem `jazz:"workItem"`
+	WorkItem *CCMMultiItemExtensionEntry `jazz:"workItem"`
 }
 
-// TimeSheetEntryType contains the reflection type of TimeSheetEntry
-var goTimeSheetEntryType = reflect.TypeOf(TimeSheetEntry{})
+// CCMTimeSheetEntryType contains the reflection type of CCMTimeSheetEntry
+var goCCMTimeSheetEntryType = reflect.TypeOf(CCMTimeSheetEntry{})
 
-// Spec returns the specification object for TimeSheetEntry
-func (o *TimeSheetEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMTimeSheetEntry
+func (o *CCMTimeSheetEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "timeSheetEntry",
 		TypeID:     "com.ibm.team.workitem.TimeSheetEntry",
-		Type:       goTimeSheetEntryType,
+		Type:       goCCMTimeSheetEntryType,
 	}
 }
 
-// Load TimeSheetEntry object
-func (o *TimeSheetEntry) Load() (err error) {
+// Load CCMTimeSheetEntry object
+func (o *CCMTimeSheetEntry) Load() (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
 			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
@@ -1897,23 +1897,23 @@ func (o *TimeSheetEntry) Load() (err error) {
 	return
 }
 
-// LoadAllFields of TimeSheetEntry object
-func (o *TimeSheetEntry) LoadAllFields() error {
+// LoadAllFields of CCMTimeSheetEntry object
+func (o *CCMTimeSheetEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.WorkItem,
 	)
 }
 
-// Item (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_repository_Item)
+// CCMItem (see https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#com_ibm_team_repository_Item)
 // Item The only time you're likely to see a raw Item is when using the referencedItem
 // field of a Reference. Most of the time you'll want to fetch whichever concrete item
 // type is represented by this artifact (e.g. a Work Item). The only standard field here
 // likely to be useful is itemId, which can be used to look up the concrete element.
 // This element is always contained in a com.ibm.team.links.Reference, and represents
 // whether the reference is by uri or by itemId.
-type Item struct {
-	BaseObject
+type CCMItem struct {
+	CCMBaseObject
 
 	// Type of item
 	ItemType string `jazz:"itemType"`
@@ -1922,28 +1922,28 @@ type Item struct {
 	ItemId string `jazz:"itemId"`
 }
 
-// ItemType contains the reflection type of Item
-var goItemType = reflect.TypeOf(Item{})
+// CCMItemType contains the reflection type of CCMItem
+var goCCMItemType = reflect.TypeOf(CCMItem{})
 
-// Spec returns the specification object for Item
-func (o *Item) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMItem
+func (o *CCMItem) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "foundation",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.repository.Item",
-		Type:       goItemType,
+		Type:       goCCMItemType,
 	}
 }
 
-// LoadAllFields of Item object
-func (o *Item) LoadAllFields() error {
+// LoadAllFields of CCMItem object
+func (o *CCMItem) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-type BooleanExtensionEntry struct {
-	BaseObject
+type CCMBooleanExtensionEntry struct {
+	CCMBaseObject
 
 	// Key of the custom attribute
 	Key string `jazz:"key"`
@@ -1952,28 +1952,28 @@ type BooleanExtensionEntry struct {
 	Value bool `jazz:"value"`
 }
 
-// BooleanExtensionEntryType contains the reflection type of BooleanExtensionEntry
-var goBooleanExtensionEntryType = reflect.TypeOf(BooleanExtensionEntry{})
+// CCMBooleanExtensionEntryType contains the reflection type of CCMBooleanExtensionEntry
+var goCCMBooleanExtensionEntryType = reflect.TypeOf(CCMBooleanExtensionEntry{})
 
-// Spec returns the specification object for BooleanExtensionEntry
-func (o *BooleanExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMBooleanExtensionEntry
+func (o *CCMBooleanExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.repository.BooleanExtensionEntry",
-		Type:       goBooleanExtensionEntryType,
+		Type:       goCCMBooleanExtensionEntryType,
 	}
 }
 
-// LoadAllFields of BooleanExtensionEntry object
-func (o *BooleanExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMBooleanExtensionEntry object
+func (o *CCMBooleanExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-type IntExtensionEntry struct {
-	BaseObject
+type CCMIntExtensionEntry struct {
+	CCMBaseObject
 
 	// Key of the custom attribute
 	Key string `jazz:"key"`
@@ -1982,28 +1982,28 @@ type IntExtensionEntry struct {
 	Value int `jazz:"value"`
 }
 
-// IntExtensionEntryType contains the reflection type of IntExtensionEntry
-var goIntExtensionEntryType = reflect.TypeOf(IntExtensionEntry{})
+// CCMIntExtensionEntryType contains the reflection type of CCMIntExtensionEntry
+var goCCMIntExtensionEntryType = reflect.TypeOf(CCMIntExtensionEntry{})
 
-// Spec returns the specification object for IntExtensionEntry
-func (o *IntExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMIntExtensionEntry
+func (o *CCMIntExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.repository.IntExtensionEntry",
-		Type:       goIntExtensionEntryType,
+		Type:       goCCMIntExtensionEntryType,
 	}
 }
 
-// LoadAllFields of IntExtensionEntry object
-func (o *IntExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMIntExtensionEntry object
+func (o *CCMIntExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-type LongExtensionEntry struct {
-	BaseObject
+type CCMLongExtensionEntry struct {
+	CCMBaseObject
 
 	// Key of the custom attribute
 	Key string `jazz:"key"`
@@ -2012,28 +2012,28 @@ type LongExtensionEntry struct {
 	Value int64 `jazz:"value"`
 }
 
-// LongExtensionEntryType contains the reflection type of LongExtensionEntry
-var goLongExtensionEntryType = reflect.TypeOf(LongExtensionEntry{})
+// CCMLongExtensionEntryType contains the reflection type of CCMLongExtensionEntry
+var goCCMLongExtensionEntryType = reflect.TypeOf(CCMLongExtensionEntry{})
 
-// Spec returns the specification object for LongExtensionEntry
-func (o *LongExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMLongExtensionEntry
+func (o *CCMLongExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.repository.LongExtensionEntry",
-		Type:       goLongExtensionEntryType,
+		Type:       goCCMLongExtensionEntryType,
 	}
 }
 
-// LoadAllFields of LongExtensionEntry object
-func (o *LongExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMLongExtensionEntry object
+func (o *CCMLongExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-type StringExtensionEntry struct {
-	BaseObject
+type CCMStringExtensionEntry struct {
+	CCMBaseObject
 
 	// Key of the custom attribute
 	Key string `jazz:"key"`
@@ -2042,28 +2042,28 @@ type StringExtensionEntry struct {
 	Value string `jazz:"value"`
 }
 
-// StringExtensionEntryType contains the reflection type of StringExtensionEntry
-var goStringExtensionEntryType = reflect.TypeOf(StringExtensionEntry{})
+// CCMStringExtensionEntryType contains the reflection type of CCMStringExtensionEntry
+var goCCMStringExtensionEntryType = reflect.TypeOf(CCMStringExtensionEntry{})
 
-// Spec returns the specification object for StringExtensionEntry
-func (o *StringExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMStringExtensionEntry
+func (o *CCMStringExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.repository.StringExtensionEntry",
-		Type:       goStringExtensionEntryType,
+		Type:       goCCMStringExtensionEntryType,
 	}
 }
 
-// LoadAllFields of StringExtensionEntry object
-func (o *StringExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMStringExtensionEntry object
+func (o *CCMStringExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-type MediumStringExtensionEntry struct {
-	BaseObject
+type CCMMediumStringExtensionEntry struct {
+	CCMBaseObject
 
 	// Key of the custom attribute
 	Key string `jazz:"key"`
@@ -2072,28 +2072,28 @@ type MediumStringExtensionEntry struct {
 	Value string `jazz:"value"`
 }
 
-// MediumStringExtensionEntryType contains the reflection type of MediumStringExtensionEntry
-var goMediumStringExtensionEntryType = reflect.TypeOf(MediumStringExtensionEntry{})
+// CCMMediumStringExtensionEntryType contains the reflection type of CCMMediumStringExtensionEntry
+var goCCMMediumStringExtensionEntryType = reflect.TypeOf(CCMMediumStringExtensionEntry{})
 
-// Spec returns the specification object for MediumStringExtensionEntry
-func (o *MediumStringExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMMediumStringExtensionEntry
+func (o *CCMMediumStringExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.repository.MediumStringExtensionEntry",
-		Type:       goMediumStringExtensionEntryType,
+		Type:       goCCMMediumStringExtensionEntryType,
 	}
 }
 
-// LoadAllFields of MediumStringExtensionEntry object
-func (o *MediumStringExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMMediumStringExtensionEntry object
+func (o *CCMMediumStringExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-type LargeStringExtensionEntry struct {
-	BaseObject
+type CCMLargeStringExtensionEntry struct {
+	CCMBaseObject
 
 	// Key of the custom attribute
 	Key string `jazz:"key"`
@@ -2102,28 +2102,28 @@ type LargeStringExtensionEntry struct {
 	Value string `jazz:"value"`
 }
 
-// LargeStringExtensionEntryType contains the reflection type of LargeStringExtensionEntry
-var goLargeStringExtensionEntryType = reflect.TypeOf(LargeStringExtensionEntry{})
+// CCMLargeStringExtensionEntryType contains the reflection type of CCMLargeStringExtensionEntry
+var goCCMLargeStringExtensionEntryType = reflect.TypeOf(CCMLargeStringExtensionEntry{})
 
-// Spec returns the specification object for LargeStringExtensionEntry
-func (o *LargeStringExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMLargeStringExtensionEntry
+func (o *CCMLargeStringExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.repository.LargeStringExtensionEntry",
-		Type:       goLargeStringExtensionEntryType,
+		Type:       goCCMLargeStringExtensionEntryType,
 	}
 }
 
-// LoadAllFields of LargeStringExtensionEntry object
-func (o *LargeStringExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMLargeStringExtensionEntry object
+func (o *CCMLargeStringExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-type TimestampExtensionEntry struct {
-	BaseObject
+type CCMTimestampExtensionEntry struct {
+	CCMBaseObject
 
 	// Key of the custom attribute
 	Key string `jazz:"key"`
@@ -2132,28 +2132,28 @@ type TimestampExtensionEntry struct {
 	Value *time.Time `jazz:"value"`
 }
 
-// TimestampExtensionEntryType contains the reflection type of TimestampExtensionEntry
-var goTimestampExtensionEntryType = reflect.TypeOf(TimestampExtensionEntry{})
+// CCMTimestampExtensionEntryType contains the reflection type of CCMTimestampExtensionEntry
+var goCCMTimestampExtensionEntryType = reflect.TypeOf(CCMTimestampExtensionEntry{})
 
-// Spec returns the specification object for TimestampExtensionEntry
-func (o *TimestampExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMTimestampExtensionEntry
+func (o *CCMTimestampExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.repository.TimestampExtensionEntry",
-		Type:       goTimestampExtensionEntryType,
+		Type:       goCCMTimestampExtensionEntryType,
 	}
 }
 
-// LoadAllFields of TimestampExtensionEntry object
-func (o *TimestampExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMTimestampExtensionEntry object
+func (o *CCMTimestampExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-type BigDecimalExtensionEntry struct {
-	BaseObject
+type CCMBigDecimalExtensionEntry struct {
+	CCMBaseObject
 
 	// Key of the custom attribute
 	Key string `jazz:"key"`
@@ -2162,82 +2162,82 @@ type BigDecimalExtensionEntry struct {
 	Value float64 `jazz:"value"`
 }
 
-// BigDecimalExtensionEntryType contains the reflection type of BigDecimalExtensionEntry
-var goBigDecimalExtensionEntryType = reflect.TypeOf(BigDecimalExtensionEntry{})
+// CCMBigDecimalExtensionEntryType contains the reflection type of CCMBigDecimalExtensionEntry
+var goCCMBigDecimalExtensionEntryType = reflect.TypeOf(CCMBigDecimalExtensionEntry{})
 
-// Spec returns the specification object for BigDecimalExtensionEntry
-func (o *BigDecimalExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMBigDecimalExtensionEntry
+func (o *CCMBigDecimalExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
 		TypeID:     "com.ibm.team.repository.BigDecimalExtensionEntry",
-		Type:       goBigDecimalExtensionEntryType,
+		Type:       goCCMBigDecimalExtensionEntryType,
 	}
 }
 
-// LoadAllFields of BigDecimalExtensionEntry object
-func (o *BigDecimalExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMBigDecimalExtensionEntry object
+func (o *CCMBigDecimalExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 	)
 }
 
-type ItemExtensionEntry struct {
-	BaseObject
+type CCMItemExtensionEntry struct {
+	CCMBaseObject
 
 	// Key of the custom attribute
 	Key string `jazz:"key"`
 
 	// Value of the custom attribute
-	Value *Item `jazz:"value"`
+	Value *CCMMultiItemExtensionEntry `jazz:"value"`
 }
 
-// ItemExtensionEntryType contains the reflection type of ItemExtensionEntry
-var goItemExtensionEntryType = reflect.TypeOf(ItemExtensionEntry{})
+// CCMItemExtensionEntryType contains the reflection type of CCMItemExtensionEntry
+var goCCMItemExtensionEntryType = reflect.TypeOf(CCMItemExtensionEntry{})
 
-// Spec returns the specification object for ItemExtensionEntry
-func (o *ItemExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMItemExtensionEntry
+func (o *CCMItemExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
-		TypeID:     "com.ibm.team.repository.ItemExtensionEntry",
-		Type:       goItemExtensionEntryType,
+		TypeID:     "com.ibm.team.workitem.ItemExtensionEntry",
+		Type:       goCCMItemExtensionEntryType,
 	}
 }
 
-// LoadAllFields of ItemExtensionEntry object
-func (o *ItemExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMItemExtensionEntry object
+func (o *CCMItemExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Value,
 	)
 }
 
-type MultiItemExtensionEntry struct {
-	BaseObject
+type CCMMultiItemExtensionEntry struct {
+	CCMBaseObject
 
 	// Key of the custom attribute
 	Key string `jazz:"key"`
 
 	// Value of the custom attribute
-	Value []*Item `jazz:"value"`
+	Value []*CCMMultiItemExtensionEntry `jazz:"value"`
 }
 
-// MultiItemExtensionEntryType contains the reflection type of MultiItemExtensionEntry
-var goMultiItemExtensionEntryType = reflect.TypeOf(MultiItemExtensionEntry{})
+// CCMMultiItemExtensionEntryType contains the reflection type of CCMMultiItemExtensionEntry
+var goCCMMultiItemExtensionEntryType = reflect.TypeOf(CCMMultiItemExtensionEntry{})
 
-// Spec returns the specification object for MultiItemExtensionEntry
-func (o *MultiItemExtensionEntry) Spec() *ObjectSpec {
-	return &ObjectSpec{
+// Spec returns the specification object for CCMMultiItemExtensionEntry
+func (o *CCMMultiItemExtensionEntry) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "workitem",
 		ElementID:  "",
-		TypeID:     "com.ibm.team.repository.MultiItemExtensionEntry",
-		Type:       goMultiItemExtensionEntryType,
+		TypeID:     "com.ibm.team.workitem.MultiItemExtensionEntry",
+		Type:       goCCMMultiItemExtensionEntryType,
 	}
 }
 
-// LoadAllFields of MultiItemExtensionEntry object
-func (o *MultiItemExtensionEntry) LoadAllFields() error {
+// LoadAllFields of CCMMultiItemExtensionEntry object
+func (o *CCMMultiItemExtensionEntry) LoadAllFields() error {
 	return o.loadFields(
 		o.ModifiedBy,
 		o.Value,

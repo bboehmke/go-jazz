@@ -21,7 +21,7 @@ func init() {
 // {{.}}
 {{- end}}
 type {{ .Name }} struct {
-	BaseObject
+	CCMBaseObject
 {{- range .Fields}}
 {{ range .Description}}
 	// {{.}}
@@ -34,8 +34,8 @@ type {{ .Name }} struct {
 var go{{ .Name }}Type = reflect.TypeOf({{ .Name }}{})
 
 // Spec returns the specification object for {{ .Name }}
-func (o *{{ .Name }}) Spec() *ObjectSpec {
-	return &ObjectSpec{
+func (o *{{ .Name }}) Spec() *CCMObjectSpec {
+	return &CCMObjectSpec{
 		ResourceID: "{{ .ResourceID }}",
 		ElementID:  "{{ .ElementID }}",
 		TypeID:     "{{ .TypeID }}",

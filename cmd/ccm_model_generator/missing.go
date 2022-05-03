@@ -157,7 +157,7 @@ var missingObjects = []Model{
 	},
 	{
 		ResourceID: "workitem",
-		TypeID:     "com.ibm.team.repository.ItemExtensionEntry",
+		TypeID:     "com.ibm.team.workitem.ItemExtensionEntry",
 		Fields: []Field{
 			{
 				Name:        "key",
@@ -173,7 +173,7 @@ var missingObjects = []Model{
 	},
 	{
 		ResourceID: "workitem",
-		TypeID:     "com.ibm.team.repository.MultiItemExtensionEntry",
+		TypeID:     "com.ibm.team.workitem.MultiItemExtensionEntry",
 		Fields: []Field{
 			{
 				Name:        "key",

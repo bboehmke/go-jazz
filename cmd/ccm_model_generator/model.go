@@ -26,10 +26,10 @@ type Model struct {
 // Name of Go object
 func (m Model) Name() string {
 	if m.ElementID != "" {
-		return strings.Title(m.ElementID)
+		return "CCM" + strings.Title(m.ElementID)
 	}
 
-	return m.TypeID[strings.LastIndex(m.TypeID, ".")+1:]
+	return "CCM" + m.TypeID[strings.LastIndex(m.TypeID, ".")+1:]
 }
 
 func (m Model) String() string {

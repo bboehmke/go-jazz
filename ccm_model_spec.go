@@ -11,8 +11,11 @@ import (
 	"github.com/spf13/cast"
 )
 
+// CCMFilter is used to filter results in CCM list queries
+type CCMFilter map[string][]interface{}
+
 // ccmObjectSpecs contains specifications of all supported object types
-var ccmObjectSpecs = make(map[string]*ObjectSpec)
+var ccmObjectSpecs = make(map[string]*CCMObjectSpec)
 
 // ccmRegisterType is used to add an object type to ccmObjectSpecs (called in init())
 func ccmRegisterType(obj CCMObject) {
@@ -20,7 +23,7 @@ func ccmRegisterType(obj CCMObject) {
 	ccmObjectSpecs[spec.Type.String()] = spec
 }
 
-type ObjectSpec struct {
+type CCMObjectSpec struct {
 	// Resource identifier of object.
 	// # https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#Resources_provided_by_RTC
 	//
@@ -42,11 +45,8 @@ type ObjectSpec struct {
 	Type reflect.Type
 }
 
-// CCMFilter is used to filter results in CCM list queries
-type CCMFilter map[string][]interface{}
-
 // buildFilterQuery for the given CCMFilter
-func (o *ObjectSpec) buildFilterQuery(filter CCMFilter) (string, error) {
+func (o *CCMObjectSpec) buildFilterQuery(filter CCMFilter) (string, error) {
 	if len(filter) == 0 {
 		return "", nil
 	}
@@ -66,7 +66,7 @@ func (o *ObjectSpec) buildFilterQuery(filter CCMFilter) (string, error) {
 		}
 
 		// special handling for jazz fields
-		_, err := LoadObjectSpec(field.Type)
+		_, err := CCMLoadObjectSpec(field.Type)
 		if err == nil {
 			fieldName = fieldName + "/itemId"
 		}
@@ -85,14 +85,14 @@ func (o *ObjectSpec) buildFilterQuery(filter CCMFilter) (string, error) {
 	return fmt.Sprintf("[%s]", strings.Join(filterList, " and ")), nil
 }
 
-// LoadObjectSpec from given type
-func LoadObjectSpec(t reflect.Type) (*ObjectSpec, error) {
+// CCMLoadObjectSpec from given type
+func CCMLoadObjectSpec(t reflect.Type) (*CCMObjectSpec, error) {
 	// get inner type of pointer or lists
 	if t.Kind() == reflect.Ptr ||
 		t.Kind() == reflect.Array ||
 		t.Kind() == reflect.Slice ||
 		t.Kind() == reflect.Chan {
-		return LoadObjectSpec(t.Elem())
+		return CCMLoadObjectSpec(t.Elem())
 	}
 
 	// only structs can be CCM objects
@@ -110,7 +110,7 @@ func LoadObjectSpec(t reflect.Type) (*ObjectSpec, error) {
 
 // ListURL returns the URL to get a list of objects
 // https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#Examples
-func (o *ObjectSpec) ListURL(filter CCMFilter) (string, error) {
+func (o *CCMObjectSpec) ListURL(filter CCMFilter) (string, error) {
 	filterQuery, err := o.buildFilterQuery(filter)
 	if err != nil {
 		return "", fmt.Errorf("failed to build filter: %w", err)
@@ -123,7 +123,7 @@ func (o *ObjectSpec) ListURL(filter CCMFilter) (string, error) {
 
 // GetURL returns the URL to get an object
 // https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#Examples
-func (o *ObjectSpec) GetURL(id string) string {
+func (o *CCMObjectSpec) GetURL(id string) string {
 	return fmt.Sprintf(
 		"ccm/rpt/repository/%s?fields=%s/%s[itemId=%s]/(%s)",
 		o.ResourceID, o.ElementID, o.ElementID,
@@ -132,14 +132,14 @@ func (o *ObjectSpec) GetURL(id string) string {
 }
 
 // getLoadFields for the given CCM object type
-func (o *ObjectSpec) getLoadFields(t reflect.Type) []string {
+func (o *CCMObjectSpec) getLoadFields(t reflect.Type) []string {
 	fields := make([]string, 0)
 	simpleFields := false
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
 
 		// skip base object
-		if field.Type == BaseObjectType {
+		if field.Type == CCMBaseObjectType {
 			if o.ElementID != "" {
 				fields = append(fields, o.getLoadFields(field.Type)...)
 			}
@@ -153,7 +153,7 @@ func (o *ObjectSpec) getLoadFields(t reflect.Type) []string {
 		}
 
 		// skip non jazz elements
-		spec, err := LoadObjectSpec(field.Type)
+		spec, err := CCMLoadObjectSpec(field.Type)
 		if err != nil {
 			simpleFields = true
 			continue
@@ -194,7 +194,7 @@ func (o *ObjectSpec) getLoadFields(t reflect.Type) []string {
 }
 
 // Load object from XML element
-func (o *ObjectSpec) Load(ccm *CCMApplication, value reflect.Value, element *etree.Element) error {
+func (o *CCMObjectSpec) Load(ccm *CCMApplication, value reflect.Value, element *etree.Element) error {
 	switch value.Kind() {
 	case reflect.Ptr:
 		if value.IsNil() {
@@ -234,16 +234,16 @@ func (o *ObjectSpec) Load(ccm *CCMApplication, value reflect.Value, element *etr
 }
 
 // loadFields of object from XML element
-func (o *ObjectSpec) loadFields(ccm *CCMApplication, obj reflect.Value, element *etree.Element) error {
+func (o *CCMObjectSpec) loadFields(ccm *CCMApplication, obj reflect.Value, element *etree.Element) error {
 	t := obj.Type()
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
 		value := obj.FieldByName(field.Name)
 
 		var err error
-		if field.Type == BaseObjectType {
+		if field.Type == CCMBaseObjectType {
 			// add ccm instance to CCM objects
-			if initObj, ok := value.Addr().Interface().(*BaseObject); ok {
+			if initObj, ok := value.Addr().Interface().(*CCMBaseObject); ok {
 				initObj.setCCM(ccm)
 			}
 			err = o.loadFields(ccm, value, element)
@@ -276,7 +276,7 @@ func (o *ObjectSpec) loadFields(ccm *CCMApplication, obj reflect.Value, element 
 }
 
 // loadListValue from XML element
-func (o *ObjectSpec) loadListValue(ccm *CCMApplication, value reflect.Value, valueType reflect.Type, element []*etree.Element) error {
+func (o *CCMObjectSpec) loadListValue(ccm *CCMApplication, value reflect.Value, valueType reflect.Type, element []*etree.Element) error {
 	objList := reflect.MakeSlice(reflect.SliceOf(valueType.Elem()), 0, len(element))
 
 	for _, e := range element {
@@ -294,7 +294,7 @@ func (o *ObjectSpec) loadListValue(ccm *CCMApplication, value reflect.Value, val
 }
 
 // loadValue from XML element
-func (o *ObjectSpec) loadValue(ccm *CCMApplication, value reflect.Value, valueType reflect.Type, element *etree.Element) error {
+func (o *CCMObjectSpec) loadValue(ccm *CCMApplication, value reflect.Value, valueType reflect.Type, element *etree.Element) error {
 	switch valueType.Kind() {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		value.SetInt(cast.ToInt64(element.Text()))
@@ -326,8 +326,8 @@ func (o *ObjectSpec) loadValue(ccm *CCMApplication, value reflect.Value, valueTy
 			value.Set(reflect.ValueOf(parsedTime))
 			return nil
 
-		} else if _, ok := valueType.FieldByName("BaseObject"); ok {
-			spec, err := LoadObjectSpec(valueType)
+		} else if _, ok := valueType.FieldByName("CCMBaseObject"); ok {
+			spec, err := CCMLoadObjectSpec(valueType)
 			if err != nil {
 				return err
 			}

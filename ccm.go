@@ -3,7 +3,6 @@ package jazz
 import (
 	"errors"
 	"reflect"
-	"sync"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -30,23 +29,9 @@ func (a *CCMApplication) Client() *Client {
 
 // CCMList object of the given type
 func CCMList[T CCMObject](ccm *CCMApplication, filter CCMFilter) ([]T, error) {
-	results := make(chan T)
-	objects := make([]T, 0)
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		for obj := range results {
-			objects = append(objects, obj)
-		}
-		wg.Done()
-	}()
-
-	err := CCMListChan[T](ccm, filter, results)
-	close(results)
-
-	// wait for all results to be handled
-	wg.Wait()
-	return objects, err
+	return Chan2List[T](func(ch chan T) error {
+		return CCMListChan[T](ccm, filter, ch)
+	})
 }
 
 // CCMListChan object of the given type returned via a channel
@@ -124,7 +109,7 @@ func CCMGet[T CCMObject](ccm *CCMApplication, id string) (T, error) {
 	return value, spec.Load(ccm, reflect.ValueOf(&value), root.FindElement(spec.ElementID))
 }
 
-func (a *CCMApplication) get(spec *ObjectSpec, value reflect.Value, id string) error {
+func (a *CCMApplication) get(spec *CCMObjectSpec, value reflect.Value, id string) error {
 	resp, root, err := a.client.SimpleGet(spec.GetURL(id),
 		"application/xml",
 		"failed get element "+id, 0)

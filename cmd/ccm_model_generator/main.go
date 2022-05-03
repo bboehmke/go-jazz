@@ -148,10 +148,6 @@ func main() {
 						Fields:     parseFields(s, typeId),
 					}
 
-					if model.TypeID != "" {
-						modelTypeRef[model.TypeID] = &model
-					}
-
 					models = append(models, model)
 
 				} else if description == "" { // first paragraph = description
@@ -163,6 +159,13 @@ func main() {
 
 	// add objects missing in documentation
 	models = append(models, missingObjects...)
+
+	// add model to reference list
+	for _, model := range models {
+		if model.TypeID != "" {
+			modelTypeRef[model.TypeID] = &model
+		}
+	}
 
 	// use template to generate model definition
 	tpl, err := template.New("").Parse(tplStr)

@@ -39,9 +39,6 @@ func (f Field) IsCCMType() bool {
 	if _, ok := modelTypeRef[t]; ok {
 		return true
 	}
-	if _, ok := preDefinedTypes[t]; ok {
-		return true
-	}
 	return false
 }
 
@@ -64,9 +61,6 @@ func (f Field) GoType() string {
 	// check if the type is an object
 	if model, ok := modelTypeRef[t]; ok {
 		return prefix + "*" + model.Name()
-	}
-	if name, ok := preDefinedTypes[t]; ok {
-		return prefix + "*" + name
 	}
 
 	// handle basic type

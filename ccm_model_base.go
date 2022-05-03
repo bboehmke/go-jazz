@@ -6,11 +6,11 @@ import (
 	"time"
 )
 
-var BaseObjectType = reflect.TypeOf(BaseObject{})
+var CCMBaseObjectType = reflect.TypeOf(CCMBaseObject{})
 
 // CCMObject describes a CCM object implementation
 type CCMObject interface {
-	Spec() *ObjectSpec
+	Spec() *CCMObjectSpec
 }
 
 // CCMLoadableObject is only implemented by objects that are loadable
@@ -19,7 +19,7 @@ type CCMLoadableObject interface {
 	Load() error
 }
 
-type BaseObject struct {
+type CCMBaseObject struct {
 	// Common fields of every object
 	// https://jazz.net/wiki/bin/view/Main/ReportsRESTAPI#Common_properties
 
@@ -46,7 +46,7 @@ type BaseObject struct {
 
 	ReportableUrl string `jazz:"reportableUrl"`
 
-	ModifiedBy *Contributor `jazz:"modifiedBy"`
+	ModifiedBy *CCMContributor `jazz:"modifiedBy"`
 
 	// init ensures elements are only loaded once
 	init sync.Once
@@ -56,17 +56,17 @@ type BaseObject struct {
 }
 
 // String returns the ItemId of this object (used for filter)
-func (o *BaseObject) String() string {
+func (o *CCMBaseObject) String() string {
 	return o.ItemId
 }
 
 // setCCM application used for read and write actions
-func (o *BaseObject) setCCM(ccm *CCMApplication) {
+func (o *CCMBaseObject) setCCM(ccm *CCMApplication) {
 	o.ccm = ccm
 }
 
 // loadFields of the given object
-func (o *BaseObject) loadFields(fields ...interface{}) error {
+func (o *CCMBaseObject) loadFields(fields ...interface{}) error {
 	for _, field := range fields {
 		if fields, ok := field.([]CCMLoadableObject); ok {
 			for _, f := range fields {
