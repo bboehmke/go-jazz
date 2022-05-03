@@ -27,6 +27,7 @@ type Client struct {
 
 	GC  *GCApplication
 	CCM *CCMApplication
+	QM  *QMApplication
 }
 
 func NewClient(baseUrl, user, password string) (*Client, error) {
@@ -55,6 +56,7 @@ func NewClient(baseUrl, user, password string) (*Client, error) {
 
 	client.GC = &GCApplication{client: client}
 	client.CCM = &CCMApplication{client: client}
+	client.QM = &QMApplication{client: client}
 
 	return client, nil
 }
