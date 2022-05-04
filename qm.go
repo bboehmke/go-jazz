@@ -2,7 +2,6 @@ package jazz
 
 import (
 	"fmt"
-	"net/http"
 )
 
 // QMApplication interface
@@ -31,7 +30,7 @@ func (a *QMApplication) Projects() ([]*QMProject, error) {
 	entries, err := Chan2List[feedEntry](func(ch chan feedEntry) error {
 		return a.client.requestFeed(
 			"qm/service/com.ibm.rqm.integration.service.IIntegrationService/projects",
-			ch)
+			ch, true)
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to get projects: %w", err)
@@ -46,11 +45,4 @@ func (a *QMApplication) Projects() ([]*QMProject, error) {
 		}
 	}
 	return projects, nil
-}
-
-func (a *QMApplication) requestService(path string) (*http.Response, error) {
-	// https://jazz.net/wiki/bin/view/Main/RqmApi#integrationUrl
-	return a.client.Get(
-		"qm/service/com.ibm.rqm.integration.service.IIntegrationService/"+path,
-		"application/json")
 }

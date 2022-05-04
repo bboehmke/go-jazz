@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -15,12 +14,6 @@ type QMProject struct {
 	Alias string
 
 	qm *QMApplication
-}
-
-func (p *QMProject) requestResource(resource string) (*http.Response, error) {
-	// https://jazz.net/wiki/bin/view/Main/RqmApi#single_ProjectFeedUrl
-	// https://jazz.net/wiki/bin/view/Main/RqmApi#Resource_Objects_and_their_Relat
-	return p.qm.requestService("resources/" + p.Alias + "/" + resource)
 }
 
 // QMList object of the given type
@@ -57,7 +50,7 @@ func QMListChan[T QMObject](proj *QMProject, filter QMFilter, results chan T) er
 	}
 
 	// request object list
-	err = proj.qm.client.requestFeed(url, requestChan)
+	err = proj.qm.client.requestFeed(url, requestChan, false)
 	if err != nil {
 		return err
 	}
@@ -108,7 +101,7 @@ func QMGet[T QMObject](proj *QMProject, id string) (T, error) {
 	var value T
 	spec := value.Spec()
 
-	response, err := proj.qm.client.Get(spec.GetURL(proj, id), "application/json")
+	response, err := proj.qm.client.Get(spec.GetURL(proj, id), "application/json", false)
 	if err != nil {
 		return value, err
 	}

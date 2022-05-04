@@ -1,9 +1,8 @@
 package jazz
 
 import (
-	"strings"
-
-	"go.uber.org/zap"
+	"fmt"
+	"net/url"
 )
 
 type GCApplication struct {
@@ -22,11 +21,13 @@ func (a *GCApplication) Client() *Client {
 	return a.Client()
 }
 
+// GlobalConfiguration of Jazz application
 type GlobalConfiguration struct {
 	Title string
 	URL   string
 }
 
+// GlobalConfigs available on server
 func (a *GCApplication) GlobalConfigs() ([]*GlobalConfiguration, error) {
 	_, xml, err := a.client.SimpleGet(
 		"gc/configuration",
@@ -44,24 +45,28 @@ func (a *GCApplication) GlobalConfigs() ([]*GlobalConfiguration, error) {
 			URL:   e.SelectAttr("rdf:about").Value,
 		})
 	}
-	zap.S().Debugf("Found %d global configurations", len(configs))
 	return configs, nil
 }
 
+// GetGlobalConfig by title
 func (a *GCApplication) GetGlobalConfig(title string) (*GlobalConfiguration, error) {
-	configs, err := a.GlobalConfigs()
+	// https://jazz.net/sandbox02-gc/doc/scenario?id=QueryConfigurations
+	_, xml, err := a.client.SimpleGet(
+		"gc/oslc-query/configurations?oslc.where="+url.QueryEscape(fmt.Sprintf("dcterms:title=\"%s\"", title)),
+		"application/rdf+xml",
+		"failed to get global configuration",
+		200)
 	if err != nil {
 		return nil, err
 	}
 
-	title = strings.ToLower(strings.TrimSpace(title))
-
-	for _, config := range configs {
-		if strings.ToLower(strings.TrimSpace(config.Title)) == title {
-			return config, nil
-		}
+	element := xml.FindElement("//rdf:Description[dcterms:title]")
+	if element == nil {
+		return nil, fmt.Errorf("failed to find global configuration \"%s\"", title)
 	}
 
-	zap.S().Debugf("Global configuration %s not found", title)
-	return nil, nil
+	return &GlobalConfiguration{
+		Title: element.SelectElement("dcterms:title").Text(),
+		URL:   element.SelectAttr("rdf:about").Value,
+	}, nil
 }

@@ -68,10 +68,10 @@ type rawFeed struct {
 	Feed subFeed `json:"feed"`
 }
 
-func (c *Client) requestFeed(url string, entries chan feedEntry) error {
+func (c *Client) requestFeed(url string, entries chan feedEntry, noGc bool) error {
 	// request list until last page reached
 	for url != "" {
-		response, err := c.Get(url, "application/json")
+		response, err := c.Get(url, "application/json", noGc)
 		if err != nil {
 			return err
 		}

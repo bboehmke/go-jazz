@@ -28,6 +28,8 @@ type Client struct {
 	GC  *GCApplication
 	CCM *CCMApplication
 	QM  *QMApplication
+
+	ConfigContext *GlobalConfiguration
 }
 
 func NewClient(baseUrl, user, password string) (*Client, error) {
@@ -69,7 +71,7 @@ func (c *Client) buildUrl(url string) string {
 }
 
 func (c *Client) SimpleGet(url, contentType, errorMessage string, statusCode int) (*http.Response, *etree.Element, error) {
-	response, err := c.Get(url, contentType)
+	response, err := c.Get(url, contentType, false)
 	if err != nil {
 		return nil, nil, fmt.Errorf("%s: %w", errorMessage, err)
 	}
@@ -91,19 +93,19 @@ func (c *Client) SimpleGet(url, contentType, errorMessage string, statusCode int
 	return response, doc.Root(), nil
 }
 
-func (c *Client) Get(url, contentType string) (*http.Response, error) {
+func (c *Client) Get(url, contentType string, noGc bool) (*http.Response, error) {
 	request, err := http.NewRequest("GET", c.buildUrl(url), nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create get request: %w", err)
 	}
 	request.Header.Set("Content-type", contentType)
 
-	return c.sendRequest(request)
+	return c.sendRequest(request, noGc)
 }
 
-func (c *Client) sendRequest(request *http.Request) (*http.Response, error) {
+func (c *Client) sendRequest(request *http.Request, noGc bool) (*http.Response, error) {
 	// send request
-	response, err := c.sendRawRequest(request, true)
+	response, err := c.sendRawRequest(request, true, noGc)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +135,7 @@ func (c *Client) sendRequest(request *http.Request) (*http.Response, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to create JTS request: %w", err)
 		}
-		response, err = c.sendRawRequest(jtsRequest, false)
+		response, err = c.sendRawRequest(jtsRequest, false, noGc)
 		// close response as it is not used
 		_ = response.Body.Close()
 
@@ -144,7 +146,7 @@ func (c *Client) sendRequest(request *http.Request) (*http.Response, error) {
 		}
 
 		// resend original request
-		return c.sendRawRequest(request, true)
+		return c.sendRawRequest(request, true, noGc)
 	}
 
 	// > basic auth
@@ -156,7 +158,7 @@ func (c *Client) sendRequest(request *http.Request) (*http.Response, error) {
 		c.basicAuth = true
 
 		// resend original request
-		response, err = c.sendRawRequest(request, true)
+		response, err = c.sendRawRequest(request, true, noGc)
 		if err != nil {
 			return nil, err
 		}
@@ -176,7 +178,7 @@ func (c *Client) sendRequest(request *http.Request) (*http.Response, error) {
 	return response, nil
 }
 
-func (c *Client) sendRawRequest(request *http.Request, log bool) (*http.Response, error) {
+func (c *Client) sendRawRequest(request *http.Request, log, noGc bool) (*http.Response, error) {
 	if log {
 		zap.S().Debugf("Send get request to %s", request.URL)
 	}
@@ -188,7 +190,10 @@ func (c *Client) sendRawRequest(request *http.Request, log bool) (*http.Response
 	// normally only required for OSLC request but has no effect for others
 	request.Header.Set("OSLC-Core-Version", "2.0")
 
-	// TODO global config
+	// set configuration context if enabled and set
+	if !noGc && c.ConfigContext != nil {
+		request.Header.Set("Configuration-Context", c.ConfigContext.URL)
+	}
 
 	// only add basic auth data if it was enabled
 	if c.basicAuth {
