@@ -36,6 +36,7 @@ type Field struct {
 
 // GoName returns the name for the Go struct field
 func (f Field) GoName() string {
+	//goland:noinspection GoDeprecation
 	return strings.Title(f.Name)
 }
 

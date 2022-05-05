@@ -40,6 +40,7 @@ type Model struct {
 // Name of Go object
 func (m Model) Name() string {
 	if m.ElementID != "" {
+		//goland:noinspection GoDeprecation
 		return "CCM" + strings.Title(m.ElementID)
 	}
 
