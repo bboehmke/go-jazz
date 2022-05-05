@@ -1,10 +1,13 @@
 package jazz
 
 import (
+	"bytes"
 	"fmt"
 	"net/url"
+	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // QMFilter is used to filter results in QM list queries
@@ -45,7 +48,9 @@ func (o *QMObjectSpec) buildFilterQuery(filter QMFilter) (string, error) {
 //  https://jazz.net/wiki/bin/view/Main/RqmApi#single_ProjectFeedUrl
 //  https://jazz.net/wiki/bin/view/Main/RqmApi#Resource_Objects_and_their_Relat
 func (o *QMObjectSpec) GetURL(proj *QMProject, id string) string {
-	if strings.HasPrefix(id, "http://") || strings.HasPrefix(id, "https://") {
+	if strings.HasPrefix(id, "http://") ||
+		strings.HasPrefix(id, "https://") ||
+		strings.HasPrefix(id, "qm/service/") {
 		return id
 	}
 
@@ -56,4 +61,75 @@ func (o *QMObjectSpec) GetURL(proj *QMProject, id string) string {
 	return fmt.Sprintf(
 		"qm/service/com.ibm.rqm.integration.service.IIntegrationService/resources/%s/%s/%s",
 		proj.Alias, o.ResourceID, id)
+}
+
+// DumpXml for update or creation of objects
+func (o *QMObjectSpec) DumpXml(obj QMObject) []byte {
+	buffer := bytes.NewBuffer(nil)
+
+	// build xml namespace attributes
+	ns := map[string]string{
+		"qm":       "http://jazz.net/xmlns/alm/qm/v0.1/",
+		"alm":      "http://jazz.net/xmlns/alm/v0.1/",
+		"qmresult": "http://jazz.net/xmlns/alm/qm/v0.1/executionresult/v0.1",
+	}
+	var xmlns []string
+	for key, value := range ns {
+		xmlns = append(xmlns, fmt.Sprintf("xmlns:%s=\"%s\"", key, value))
+	}
+
+	_, _ = fmt.Fprintf(buffer, "<qm:%s %s>\n",
+		o.ResourceID, strings.Join(xmlns, " "))
+
+	val := reflect.ValueOf(obj).Elem()
+	t := val.Type()
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		fieldValue := val.Field(i)
+
+		// only handle jazz fields
+		fieldName := field.Tag.Get("jazz")
+		if fieldName == "" {
+			continue
+		}
+
+		// add value to dump
+		switch v := fieldValue.Interface().(type) {
+		case QMRef:
+			if v.Href != "" {
+				_, _ = fmt.Fprintf(buffer, " <%s href=\"%s\"/>\n", fieldName, v.Href)
+			}
+		case QMRefList:
+			for _, ref := range v {
+				if ref.Href != "" {
+					_, _ = fmt.Fprintf(buffer, " <%s href=\"%s\"/>\n", fieldName, ref.Href)
+				}
+			}
+		case string:
+			if len(v) > 0 {
+				_, _ = fmt.Fprintf(buffer, " <%s>%s</%s>\n", fieldName, v, fieldName)
+			}
+		case time.Time:
+			if !v.IsZero() {
+				_, _ = fmt.Fprintf(buffer, " <%s>%s</%s>\n", fieldName, v.Format(time.RFC3339), fieldName)
+			}
+
+		case fmt.Stringer:
+			str := v.String()
+			if len(str) > 0 {
+				_, _ = fmt.Fprintf(buffer, " <%s>%s</%s>\n", fieldName, str, fieldName)
+			}
+
+		case int:
+			if v != 0 {
+				_, _ = fmt.Fprintf(buffer, " <%s>%d</%s>\n", fieldName, v, fieldName)
+			}
+
+		default:
+			panic("unknown type")
+		}
+	}
+	_, _ = fmt.Fprintf(buffer, "</qm:%s>\n", o.ResourceID)
+
+	return buffer.Bytes()
 }

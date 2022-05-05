@@ -1,6 +1,7 @@
 package jazz
 
 import (
+	"bytes"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -103,6 +104,16 @@ func (c *Client) Get(url, contentType string, noGc bool) (*http.Response, error)
 	return c.sendRequest(request, noGc)
 }
 
+func (c *Client) Put(url, contentType string, content []byte) (*http.Response, error) {
+	request, err := http.NewRequest("PUT", c.buildUrl(url), bytes.NewBuffer(content))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create put request: %w", err)
+	}
+	request.Header.Set("Content-type", contentType)
+
+	return c.sendRequest(request, false)
+}
+
 func (c *Client) sendRequest(request *http.Request, noGc bool) (*http.Response, error) {
 	// send request
 	response, err := c.sendRawRequest(request, true, noGc)
@@ -180,7 +191,7 @@ func (c *Client) sendRequest(request *http.Request, noGc bool) (*http.Response, 
 
 func (c *Client) sendRawRequest(request *http.Request, log, noGc bool) (*http.Response, error) {
 	if log {
-		zap.S().Debugf("Send get request to %s", request.URL)
+		zap.S().Debugf("Send %s request to %s", request.Method, request.URL)
 	}
 
 	if request.Header.Get("Accept") == "" {

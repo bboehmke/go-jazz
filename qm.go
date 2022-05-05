@@ -2,6 +2,7 @@ package jazz
 
 import (
 	"fmt"
+	"io"
 )
 
 // QMApplication interface
@@ -45,4 +46,22 @@ func (a *QMApplication) Projects() ([]*QMProject, error) {
 		}
 	}
 	return projects, nil
+}
+
+// NewUUID returns a new UUID generated on the server
+func (a *QMApplication) NewUUID() (string, error) {
+	response, err := a.client.Get(
+		"qm/service/com.ibm.rqm.integration.service.IIntegrationService/UUID/new",
+		"application/json",
+		true)
+	if err != nil {
+		return "", fmt.Errorf("failed to get UUID: %w", err)
+	}
+	defer response.Body.Close()
+
+	data, err := io.ReadAll(response.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to get UUID: %w", err)
+	}
+	return string(data), nil
 }

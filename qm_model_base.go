@@ -1,7 +1,9 @@
 package jazz
 
 import (
+	"reflect"
 	"strings"
+	"time"
 )
 
 const (
@@ -19,19 +21,20 @@ const (
 	QMResultStateBlocked      = "com.ibm.rqm.execution.common.state.blocked"
 )
 
+var qmObjectType = reflect.TypeOf(new(QMObject)).Elem()
+
 // QMObject describes a QM object implementation
 type QMObject interface {
 	Spec() *QMObjectSpec
 	SetProj(proj *QMProject)
+	Ref() QMRef
+	SetRef(url string)
 }
 
 // QMBaseObject for RQM resources
 type QMBaseObject struct {
 	// ResourceUrl of object (used as "identifier")
 	ResourceUrl string `json:"identifier"`
-
-	// Title of object
-	Title string `json:"title"`
 
 	// QMProject instance used for interactions with the server
 	proj *QMProject
@@ -40,6 +43,18 @@ type QMBaseObject struct {
 // SetProj of object
 func (o *QMBaseObject) SetProj(proj *QMProject) {
 	o.proj = proj
+}
+
+// Ref returns QMRef of object
+func (o QMBaseObject) Ref() QMRef {
+	return QMRef{
+		Href: o.ResourceUrl,
+	}
+}
+
+// SetRef URL of object
+func (o *QMBaseObject) SetRef(url string) {
+	o.ResourceUrl = url
 }
 
 // QMString handles json marshalling of broken values
@@ -106,4 +121,16 @@ func (l *QMCategoryList) UnmarshalJSON(b []byte) error {
 		*l = entries
 	}
 	return err
+}
+
+// QMDuration used in QM objects (stored as milliseconds)
+type QMDuration time.Duration
+
+func (d *QMDuration) UnmarshalJSON(b []byte) error {
+	duration, err := time.ParseDuration(string(b) + "ms")
+	if err != nil {
+		return err
+	}
+	*d = QMDuration(duration)
+	return nil
 }

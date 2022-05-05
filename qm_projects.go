@@ -101,9 +101,10 @@ func QMGet[T QMObject](proj *QMProject, id string) (T, error) {
 	var value T
 	spec := value.Spec()
 
-	response, err := proj.qm.client.Get(spec.GetURL(proj, id), "application/json", false)
+	response, err := proj.qm.client.Get(spec.GetURL(proj, id),
+		"application/json", false)
 	if err != nil {
-		return value, err
+		return value, fmt.Errorf("failed to get %s: %w", spec.ResourceID, err)
 	}
 	defer response.Body.Close()
 	if response.StatusCode != 200 {
@@ -121,4 +122,34 @@ func QMGet[T QMObject](proj *QMProject, id string) (T, error) {
 
 	tmpData[spec.ResourceID].SetProj(proj)
 	return tmpData[spec.ResourceID], nil
+}
+
+// QMSave object of the given type
+func QMSave[T QMObject](proj *QMProject, obj T) (T, error) {
+	// create a new resource URL if not already set
+	if obj.Ref().Href == "" {
+		uuid, err := proj.qm.NewUUID()
+		if err != nil {
+			return obj, fmt.Errorf("failed to save object: %w", err)
+		}
+
+		obj.SetRef(obj.Spec().GetURL(proj, "go_"+uuid))
+	}
+
+	// encode object
+	data := obj.Spec().DumpXml(obj)
+
+	// send request to server
+	response, err := proj.qm.client.Put(obj.Ref().Href, "application/xml", data)
+	if err != nil {
+		return obj, fmt.Errorf("failed to save object: %w", err)
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 300 {
+		return obj, fmt.Errorf("failed to save object: %s", response.Status)
+	}
+
+	// load created object from server
+	return QMGet[T](proj, obj.Ref().Href)
 }

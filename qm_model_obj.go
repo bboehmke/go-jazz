@@ -1,6 +1,8 @@
 package jazz
 
-import "time"
+import (
+	"time"
+)
 
 // resources: https://jazz.net/wiki/bin/view/Main/RqmApi#Resources_and_their_Supported_Op
 // fields: https://jazz.net/wiki/bin/view/Main/RqmApi#fields
@@ -8,6 +10,9 @@ import "time"
 // QMAttachment implements the RQM "attachment" resource
 type QMAttachment struct {
 	QMBaseObject
+
+	// Title of object
+	Title string `json:"title"`
 
 	// Numeric identifier shown in webinterface
 	WebId int `json:"webId,string"`
@@ -43,6 +48,9 @@ func (o *QMTestEnvironment) Spec() *QMObjectSpec {
 type QMTestCase struct {
 	QMBaseObject
 
+	// Title of object
+	Title string `json:"title"`
+
 	// Numeric identifier shown in webinterface
 	WebId int `json:"webId,string"`
 
@@ -61,7 +69,7 @@ type QMTestCase struct {
 	Updated time.Time `json:"updated"`
 
 	// estimated execution time
-	Estimate int `json:"estimate,string"` // TODO millisec -> 123000
+	Estimate QMDuration `json:"estimate,string"`
 
 	// Categories of test case
 	Categories QMCategoryList `json:"category"`
@@ -71,6 +79,13 @@ type QMTestCase struct {
 
 	// ManualTestScriptRefs contains list of resource URLs for QMManualTestScript
 	ManualTestScriptRefs QMRefList `json:"testscript"`
+}
+
+// Spec returns the specification object for QMTestEnvironment
+func (o *QMTestCase) Spec() *QMObjectSpec {
+	return &QMObjectSpec{
+		ResourceID: "testcase",
+	}
 }
 
 // AutomaticTestScripts that are part of this QMTestCase
@@ -83,16 +98,12 @@ func (o *QMTestCase) ManualTestScripts() ([]*QMManualTestScript, error) {
 	return qmGetList[*QMManualTestScript](o.proj, o.ManualTestScriptRefs.IDList())
 }
 
-// Spec returns the specification object for QMTestEnvironment
-func (o *QMTestCase) Spec() *QMObjectSpec {
-	return &QMObjectSpec{
-		ResourceID: "testcase",
-	}
-}
-
 // QMManualTestScript implements the RQM "testscript" resource
 type QMManualTestScript struct {
 	QMBaseObject
+
+	// Title of object
+	Title string `json:"title"`
 
 	// Numeric identifier shown in webinterface
 	WebId int `json:"webId,string"`
@@ -102,10 +113,10 @@ type QMManualTestScript struct {
 
 	// TODO state
 
-	// Owner of test case
+	// Owner of test script
 	Owner QMUser `json:"owner"`
 
-	// Creator of test case
+	// Creator of test script
 	Creator QMUser `json:"creator"`
 
 	// Updated contains last update time
@@ -122,6 +133,9 @@ func (o *QMManualTestScript) Spec() *QMObjectSpec {
 // QMAutomaticTestScript implements the RQM "remotescript" resource
 type QMAutomaticTestScript struct {
 	QMBaseObject
+
+	// Title of object
+	Title string `json:"title"`
 
 	// Numeric identifier shown in webinterface
 	WebId int `json:"webId,string"`
@@ -158,6 +172,9 @@ func (o *QMAutomaticTestScript) Spec() *QMObjectSpec {
 type QMTestExecutionRecord struct {
 	QMBaseObject
 
+	// Title of object
+	Title string `json:"title"`
+
 	// Numeric identifier shown in webinterface
 	WebId int `json:"webId,string"`
 
@@ -167,7 +184,7 @@ type QMTestExecutionRecord struct {
 	// TODO state
 
 	// estimated execution time
-	Estimate int `json:"estimate,string"` // TODO millisec -> 123000
+	Estimate QMDuration `json:"estimate,string"`
 
 	// Owner of test case
 	Owner QMUser `json:"owner"`
@@ -212,11 +229,14 @@ func (o *QMTestExecutionRecord) TestEnvironment() (*QMTestEnvironment, error) {
 type QMTestExecutionResult struct {
 	QMBaseObject
 
+	// Title of object
+	Title string `json:"title"`
+
 	// Numeric identifier shown in webinterface
-	WebId int `json:"webId,string"`
+	WebId int `json:"webId,string" jazz:"qm:webId"`
 
 	// State of test execution
-	State string `json:"state"`
+	State string `json:"state" jazz:"alm:state"`
 
 	// Creator of entry
 	Creator QMUser `json:"creator"`
@@ -225,24 +245,24 @@ type QMTestExecutionResult struct {
 	Updated time.Time `json:"updated"`
 
 	// Machine of where test was executed
-	Machine string `json:"machine"`
+	Machine string `json:"machine" jazz:"qmresult:machine"`
 
 	// StartTime of test execution
-	StartTime time.Time `json:"starttime"`
+	StartTime time.Time `json:"starttime" jazz:"qmresult:starttime"`
 
 	// EndTime of test execution
-	EndTime time.Time `json:"endtime"`
+	EndTime time.Time `json:"endtime" jazz:"qmresult:endtime"`
 
 	// TODO variables
 
 	// TestCaseRef contains reference to last execution QMTestCase
-	TestCaseRef QMRef `json:"testcase"`
+	TestCaseRef QMRef `json:"testcase" jazz:"qm:testcase"`
 
 	// TestEnvironmentRef contains reference to last execution QMTestEnvironment
-	TestEnvironmentRef QMRef `json:"configuration"`
+	TestEnvironmentRef QMRef `json:"configuration" jazz:"qm:configuration"`
 
 	// TestExecutionRecordRef contains reference to last execution QMTestExecutionRecord
-	TestExecutionRecordRef QMRef `json:"executionworkitem"`
+	TestExecutionRecordRef QMRef `json:"executionworkitem" jazz:"qm:executionworkitem"`
 }
 
 // Spec returns the specification object for QMManualTestScript
@@ -270,6 +290,9 @@ func (o *QMTestExecutionResult) TestExecutionRecord() (*QMTestExecutionRecord, e
 // QMTestPlan implements the RQM "testplan" resource
 type QMTestPlan struct {
 	QMBaseObject
+
+	// Title of object
+	Title string `json:"title"`
 
 	// Alias of object (used in resource URL)
 	Alias string `json:"alias"`
@@ -302,6 +325,13 @@ func (o *QMTestPlan) TestEnvironments() ([]*QMTestEnvironment, error) {
 // TestExecutionRecords that are part of this QMTestPlan
 func (o *QMTestPlan) TestExecutionRecords() ([]*QMTestExecutionRecord, error) {
 	return QMList[*QMTestExecutionRecord](o.proj, map[string]string{
+		"testplan/@href": o.ResourceUrl,
+	})
+}
+
+// TestExecutionResults that are part of this QMTestPlan
+func (o *QMTestPlan) TestExecutionResults() ([]*QMTestExecutionResult, error) {
+	return QMList[*QMTestExecutionResult](o.proj, map[string]string{
 		"testplan/@href": o.ResourceUrl,
 	})
 }
