@@ -62,6 +62,21 @@ func (a *QMApplication) Projects() ([]*QMProject, error) {
 	return projects, nil
 }
 
+// GetProject with the given title
+func (a *QMApplication) GetProject(title string) (*QMProject, error) {
+	projects, err := a.Projects()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, project := range projects {
+		if project.Title == title {
+			return project, nil
+		}
+	}
+	return nil, fmt.Errorf("failed to find project \"%s\"", title)
+}
+
 // NewUUID returns a new UUID generated on the server
 func (a *QMApplication) NewUUID() (string, error) {
 	response, err := a.client.Get(
