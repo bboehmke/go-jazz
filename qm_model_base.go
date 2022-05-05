@@ -4,6 +4,21 @@ import (
 	"strings"
 )
 
+const (
+	QMResultStatePaused       = "com.ibm.rqm.execution.common.state.paused"
+	QMResultStateInProgress   = "com.ibm.rqm.execution.common.state.inprogress"
+	QMResultStateNotRun       = "com.ibm.rqm.execution.common.state.notrun"
+	QMResultStatePassed       = "com.ibm.rqm.execution.common.state.passed"
+	QMResultStatePermFailed   = "com.ibm.rqm.execution.common.state.perm_failed"
+	QMResultStateIncomplete   = "com.ibm.rqm.execution.common.state.incomplete"
+	QMResultStateInconclusive = "com.ibm.rqm.execution.common.state.inconclusive"
+	QMResultStatePartBlocked  = "com.ibm.rqm.execution.common.state.part_blocked"
+	QMResultStateDeferred     = "com.ibm.rqm.execution.common.state.deferred"
+	QMResultStateFailed       = "com.ibm.rqm.execution.common.state.failed"
+	QMResultStateError        = "com.ibm.rqm.execution.common.state.error"
+	QMResultStateBlocked      = "com.ibm.rqm.execution.common.state.blocked"
+)
+
 // QMObject describes a QM object implementation
 type QMObject interface {
 	Spec() *QMObjectSpec

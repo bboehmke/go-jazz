@@ -75,12 +75,12 @@ type QMTestCase struct {
 
 // AutomaticTestScripts that are part of this QMTestCase
 func (o *QMTestCase) AutomaticTestScripts() ([]*QMAutomaticTestScript, error) {
-	return QMGetList[*QMAutomaticTestScript](o.proj, o.AutomaticTestScriptRefs.IDList())
+	return qmGetList[*QMAutomaticTestScript](o.proj, o.AutomaticTestScriptRefs.IDList())
 }
 
 // ManualTestScripts that are part of this QMTestCase
 func (o *QMTestCase) ManualTestScripts() ([]*QMManualTestScript, error) {
-	return QMGetList[*QMManualTestScript](o.proj, o.ManualTestScriptRefs.IDList())
+	return qmGetList[*QMManualTestScript](o.proj, o.ManualTestScriptRefs.IDList())
 }
 
 // Spec returns the specification object for QMTestEnvironment
@@ -215,7 +215,8 @@ type QMTestExecutionResult struct {
 	// Numeric identifier shown in webinterface
 	WebId int `json:"webId,string"`
 
-	// TODO state
+	// State of test execution
+	State string `json:"state"`
 
 	// Creator of entry
 	Creator QMUser `json:"creator"`
@@ -295,5 +296,12 @@ func (o *QMTestPlan) Spec() *QMObjectSpec {
 
 // TestEnvironments that are part of this QMTestPlan
 func (o *QMTestPlan) TestEnvironments() ([]*QMTestEnvironment, error) {
-	return QMGetList[*QMTestEnvironment](o.proj, o.TestEnvironmentRefs.IDList())
+	return qmGetList[*QMTestEnvironment](o.proj, o.TestEnvironmentRefs.IDList())
+}
+
+// TestExecutionRecords that are part of this QMTestPlan
+func (o *QMTestPlan) TestExecutionRecords() ([]*QMTestExecutionRecord, error) {
+	return QMList[*QMTestExecutionRecord](o.proj, map[string]string{
+		"testplan/@href": o.ResourceUrl,
+	})
 }

@@ -61,15 +61,15 @@ func QMListChan[T QMObject](proj *QMProject, filter QMFilter, results chan T) er
 	return err
 }
 
-// QMGetList object of the given type
-func QMGetList[T QMObject](proj *QMProject, ids []string) ([]T, error) {
+// qmGetList object of the given type
+func qmGetList[T QMObject](proj *QMProject, ids []string) ([]T, error) {
 	return Chan2List[T](func(ch chan T) error {
-		return QMGetListChan[T](proj, ids, ch)
+		return qmGetListChan[T](proj, ids, ch)
 	})
 }
 
-// QMGetListChan object of the given type returned via a channel
-func QMGetListChan[T QMObject](proj *QMProject, ids []string, results chan T) error {
+// qmGetListChan object of the given type returned via a channel
+func qmGetListChan[T QMObject](proj *QMProject, ids []string, results chan T) error {
 	// load object returned by list
 	idChan := make(chan string, proj.qm.client.Worker*2)
 	g := new(errgroup.Group)
