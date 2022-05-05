@@ -119,6 +119,14 @@ func (o *QMObjectSpec) DumpXml(obj QMObject) []byte {
 					_, _ = fmt.Fprintf(buffer, " <%s href=\"%s\"/>\n", fieldName, ref.Href)
 				}
 			}
+		case QMVariableMap:
+			_, _ = fmt.Fprintf(buffer, " <%s>\n", fieldName)
+			for key, value := range v {
+				_, _ = fmt.Fprintf(buffer,
+					"  <qm:variable><qm:name>%s</qm:name><qm:value>%s</qm:value></qm:variable>\n",
+					key, value)
+			}
+			_, _ = fmt.Fprintf(buffer, " </%s>\n", fieldName)
 		case string:
 			if len(v) > 0 {
 				_, _ = fmt.Fprintf(buffer, " <%s>%s</%s>\n", fieldName, v, fieldName)

@@ -15,7 +15,7 @@
 package jazz
 
 import (
-	"reflect"
+	"encoding/json"
 	"strings"
 	"time"
 )
@@ -34,8 +34,6 @@ const (
 	QMResultStateError        = "com.ibm.rqm.execution.common.state.error"
 	QMResultStateBlocked      = "com.ibm.rqm.execution.common.state.blocked"
 )
-
-var qmObjectType = reflect.TypeOf(new(QMObject)).Elem()
 
 // QMObject describes a QM object implementation
 type QMObject interface {
@@ -147,4 +145,24 @@ func (d *QMDuration) UnmarshalJSON(b []byte) error {
 	}
 	*d = QMDuration(duration)
 	return nil
+}
+
+// QMVariableMap contains list of variables
+type QMVariableMap map[string]string
+
+func (d *QMVariableMap) UnmarshalJSON(b []byte) error {
+	var buffer struct {
+		Variables []struct {
+			Name  string `json:"name"`
+			Value string `json:"value"`
+		} `json:"variable"`
+	}
+	err := json.Unmarshal(b, &buffer)
+	if err == nil {
+		*d = make(map[string]string, len(buffer.Variables))
+		for _, v := range buffer.Variables {
+			(*d)[v.Name] = v.Value
+		}
+	}
+	return err
 }

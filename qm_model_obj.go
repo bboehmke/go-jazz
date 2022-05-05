@@ -267,7 +267,8 @@ type QMTestExecutionResult struct {
 	// EndTime of test execution
 	EndTime time.Time `json:"endtime" jazz:"qmresult:endtime"`
 
-	// TODO variables
+	// Variables of test execution result
+	Variables QMVariableMap `json:"variables" jazz:"qm:variables"`
 
 	// TestCaseRef contains reference to last execution QMTestCase
 	TestCaseRef QMRef `json:"testcase" jazz:"qm:testcase"`
@@ -277,6 +278,12 @@ type QMTestExecutionResult struct {
 
 	// TestExecutionRecordRef contains reference to last execution QMTestExecutionRecord
 	TestExecutionRecordRef QMRef `json:"executionworkitem" jazz:"qm:executionworkitem"`
+
+	// AutomaticTestScriptRef contains reference to last execution QMAutomaticTestScript
+	AutomaticTestScriptRef QMRef `json:"remotescript" jazz:"qm:remotescript"`
+
+	// ManualTestScriptRef contains reference to last execution QMManualTestScript
+	ManualTestScriptRef QMRef `json:"testscript" jazz:"qm:testscript"`
 }
 
 // Spec returns the specification object for QMManualTestScript
@@ -298,7 +305,17 @@ func (o *QMTestExecutionResult) TestEnvironment() (*QMTestEnvironment, error) {
 
 // TestExecutionRecord of this QMTestExecutionResult
 func (o *QMTestExecutionResult) TestExecutionRecord() (*QMTestExecutionRecord, error) {
-	return QMGet[*QMTestExecutionRecord](o.proj, o.TestEnvironmentRef.Href)
+	return QMGet[*QMTestExecutionRecord](o.proj, o.TestExecutionRecordRef.Href)
+}
+
+// AutomaticTestScript of this QMTestExecutionResult
+func (o *QMTestExecutionResult) AutomaticTestScript() (*QMAutomaticTestScript, error) {
+	return QMGet[*QMAutomaticTestScript](o.proj, o.AutomaticTestScriptRef.Href)
+}
+
+// ManualTestScript of this QMTestExecutionResult
+func (o *QMTestExecutionResult) ManualTestScript() (*QMManualTestScript, error) {
+	return QMGet[*QMManualTestScript](o.proj, o.ManualTestScriptRef.Href)
 }
 
 // QMTestPlan implements the RQM "testplan" resource
