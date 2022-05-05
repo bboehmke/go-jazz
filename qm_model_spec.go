@@ -2,6 +2,7 @@ package jazz
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -34,9 +35,9 @@ func (o *QMObjectSpec) buildFilterQuery(filter QMFilter) (string, error) {
 
 	var filterList []string
 	for key, value := range filter {
-		filterList = append(filterList, fmt.Sprintf("%s='%s'", key, value))
+		filterList = append(filterList, fmt.Sprintf("%s='%s'", key, url.QueryEscape(value)))
 	}
-	return fmt.Sprintf("[%s]", strings.Join(filterList, " and ")), nil
+	return fmt.Sprintf("?fields=feed/entry/content/%s[%s]", o.ResourceID, strings.Join(filterList, " and ")), nil
 }
 
 // GetURL returns the URL to get an object
