@@ -49,6 +49,22 @@ func (e *rawEntry) entry() feedEntry {
 	}
 }
 
+type link struct {
+	Name string `json:"rel"`
+	Href string `json:"href"`
+}
+
+type linkList []link
+
+func (l *linkList) get(name string) string {
+	for _, link := range *l {
+		if link.Name == name {
+			return link.Href
+		}
+	}
+	return ""
+}
+
 type subFeed struct {
 	Entries []rawEntry
 	NextURL string
@@ -57,23 +73,23 @@ type subFeed struct {
 func (s *subFeed) UnmarshalJSON(p []byte) error {
 	feed := struct {
 		Entries []rawEntry `json:"Entry"`
-		NextURL string     `json:"next_url,omitempty"`
+		Links   linkList   `json:"link"`
 	}{}
 	err := json.Unmarshal(p, &feed)
 
 	if _, ok := err.(*json.UnmarshalTypeError); ok {
 		feed2 := struct {
-			Entry   rawEntry `json:"Entry"`
-			NextURL string   `json:"next_url,omitempty"`
+			Entry rawEntry `json:"Entry"`
+			Links linkList `json:"link"`
 		}{}
 		err = json.Unmarshal(p, &feed2)
 		if err == nil {
 			s.Entries = []rawEntry{feed2.Entry}
-			s.NextURL = feed2.NextURL
+			s.NextURL = feed2.Links.get("next")
 		}
 	} else {
 		s.Entries = feed.Entries
-		s.NextURL = feed.NextURL
+		s.NextURL = feed.Links.get("next")
 	}
 	return err
 }
