@@ -68,7 +68,7 @@ func NewClient(baseUrl, user, password string) (*Client, error) {
 		user:    user,
 		// hide password in debugger
 		password: base64.StdEncoding.EncodeToString([]byte(password)),
-		Worker:   4,
+		Worker:   20,
 	}
 
 	client.GC = &GCApplication{client: client}
