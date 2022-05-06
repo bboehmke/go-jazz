@@ -138,6 +138,23 @@ func QMGet[T QMObject](proj *QMProject, id string) (T, error) {
 	return tmpData[spec.ResourceID], nil
 }
 
+// QMGetFilter object of the given filter
+func QMGetFilter[T QMObject](proj *QMProject, filter QMFilter) (T, error) {
+	var nul T
+	entries, err := QMList[T](proj, filter)
+	if err != nil {
+		return nul, err
+	}
+	if len(entries) == 0 {
+		return nul, fmt.Errorf("no object matching filter found")
+	}
+	if len(entries) > 1 {
+		return nul, fmt.Errorf("more then one object (%d) found", len(entries))
+	}
+
+	return entries[0], nil
+}
+
 // QMSave object of the given type
 func QMSave[T QMObject](proj *QMProject, obj T) (T, error) {
 	// create a new resource URL if not already set
