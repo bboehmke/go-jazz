@@ -30,6 +30,24 @@ type QMProject struct {
 	qm *QMApplication
 }
 
+// NewUUID returns a new UUID generated on the server
+func (p *QMProject) NewUUID() (string, error) {
+	response, err := p.qm.client.Get(
+		"qm/service/com.ibm.rqm.integration.service.IIntegrationService/UUID/new",
+		"application/json",
+		true)
+	if err != nil {
+		return "", fmt.Errorf("failed to get UUID: %w", err)
+	}
+	defer response.Body.Close()
+
+	data, err := io.ReadAll(response.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to get UUID: %w", err)
+	}
+	return string(data), nil
+}
+
 // QMList object of the given type
 func QMList[T QMObject](proj *QMProject, filter QMFilter) ([]T, error) {
 	return Chan2List[T](func(ch chan T) error {
@@ -159,7 +177,7 @@ func QMGetFilter[T QMObject](proj *QMProject, filter QMFilter) (T, error) {
 func QMSave[T QMObject](proj *QMProject, obj T) (T, error) {
 	// create a new resource URL if not already set
 	if obj.Ref().Href == "" {
-		uuid, err := proj.qm.NewUUID()
+		uuid, err := proj.NewUUID()
 		if err != nil {
 			return obj, fmt.Errorf("failed to save object: %w", err)
 		}
