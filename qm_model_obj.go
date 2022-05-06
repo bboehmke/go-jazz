@@ -47,6 +47,9 @@ func (o *QMAttachment) Spec() *QMObjectSpec {
 type QMTestEnvironment struct {
 	QMBaseObject
 
+	// Title of object
+	Title string `json:"title"`
+
 	// Summary of configuration
 	Summary string `json:"summary"`
 }
