@@ -31,7 +31,7 @@ import (
 )
 
 type Client struct {
-	client *http.Client
+	HttpClient *http.Client
 
 	baseUrl   string
 	user      string
@@ -56,12 +56,9 @@ func NewClient(baseUrl, user, password string) (*Client, error) {
 
 	// ensure base url ends with /
 	baseUrl = strings.TrimSpace(baseUrl)
-	/*if !strings.HasSuffix(baseUrl, "/") {
-		baseUrl += "/"
-	}*/
 
 	client := &Client{
-		client: &http.Client{
+		HttpClient: &http.Client{
 			Jar: jar,
 		},
 		baseUrl: baseUrl,
@@ -226,5 +223,5 @@ func (c *Client) sendRawRequest(request *http.Request, log, noGc bool) (*http.Re
 		request.SetBasicAuth(c.user, string(pass))
 	}
 
-	return c.client.Do(request)
+	return c.HttpClient.Do(request)
 }
