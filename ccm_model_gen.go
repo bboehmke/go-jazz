@@ -80,25 +80,25 @@ type CCMProjectArea struct {
 	Name string `jazz:"name"`
 
 	// A list of members of this project
-	TeamMembers []*CCMMultiItemExtensionEntry `jazz:"teamMembers"`
+	TeamMembers []*CCMContributor `jazz:"teamMembers"`
 
 	// A list of records reflecting the team area hierarchy for this project area
-	TeamAreaHierarchy []*CCMMultiItemExtensionEntry `jazz:"teamAreaHierarchy"`
+	TeamAreaHierarchy []*CCMTeamAreaHierarchyRecord `jazz:"teamAreaHierarchy"`
 
 	// A list of development lines for this project area
-	DevelopmentLines []*CCMMultiItemExtensionEntry `jazz:"developmentLines"`
+	DevelopmentLines []*CCMDevelopmentLine `jazz:"developmentLines"`
 
 	// The main development line for this project area
-	ProjectDevelopmentLine *CCMMultiItemExtensionEntry `jazz:"projectDevelopmentLine"`
+	ProjectDevelopmentLine *CCMDevelopmentLine `jazz:"projectDevelopmentLine"`
 
 	// The roles defined in the project area
-	Roles []*CCMMultiItemExtensionEntry `jazz:"roles"`
+	Roles []*CCMRole `jazz:"roles"`
 
 	// The role assignments defined in the project area
-	RoleAssignments []*CCMMultiItemExtensionEntry `jazz:"roleAssignments"`
+	RoleAssignments []*CCMRoleAssignment `jazz:"roleAssignments"`
 
 	// All the team areas contained in the project area
-	AllTeamAreas []*CCMMultiItemExtensionEntry `jazz:"allTeamAreas"`
+	AllTeamAreas []*CCMTeamArea `jazz:"allTeamAreas"`
 }
 
 // CCMProjectAreaType contains the reflection type of CCMProjectArea
@@ -145,10 +145,10 @@ type CCMTeamAreaHierarchyRecord struct {
 	CCMBaseObject
 
 	// The parent team area
-	Parent *CCMMultiItemExtensionEntry `jazz:"parent"`
+	Parent *CCMTeamArea `jazz:"parent"`
 
 	// The children team areas of the parent team area
-	Children []*CCMMultiItemExtensionEntry `jazz:"children"`
+	Children []*CCMTeamArea `jazz:"children"`
 }
 
 // CCMTeamAreaHierarchyRecordType contains the reflection type of CCMTeamAreaHierarchyRecord
@@ -186,19 +186,19 @@ type CCMTeamArea struct {
 	QualifiedName string `jazz:"qualifiedName"`
 
 	// A list of members of this team area
-	TeamMembers []*CCMMultiItemExtensionEntry `jazz:"teamMembers"`
+	TeamMembers []*CCMContributor `jazz:"teamMembers"`
 
 	// The project area containing this team area
-	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
+	ProjectArea *CCMProjectArea `jazz:"projectArea"`
 
 	// The roles defined in the team area
-	Roles []*CCMMultiItemExtensionEntry `jazz:"roles"`
+	Roles []*CCMRole `jazz:"roles"`
 
 	// The role assignments defined in the team area
-	RoleAssignments []*CCMMultiItemExtensionEntry `jazz:"roleAssignments"`
+	RoleAssignments []*CCMRoleAssignment `jazz:"roleAssignments"`
 
 	// The parent team area
-	ParentTeamArea *CCMMultiItemExtensionEntry `jazz:"parentTeamArea"`
+	ParentTeamArea *CCMTeamArea `jazz:"parentTeamArea"`
 }
 
 // CCMTeamAreaType contains the reflection type of CCMTeamArea
@@ -299,13 +299,13 @@ type CCMIteration struct {
 	EndDate *time.Time `jazz:"endDate"`
 
 	// The parent iteration of this iteration, if any
-	Parent *CCMMultiItemExtensionEntry `jazz:"parent"`
+	Parent *CCMIteration `jazz:"parent"`
 
 	// The immediate child iterations of this iteration, if any
-	Children []*CCMMultiItemExtensionEntry `jazz:"children"`
+	Children []*CCMIteration `jazz:"children"`
 
 	// The development line in which this iteration appears
-	DevelopmentLine *CCMMultiItemExtensionEntry `jazz:"developmentLine"`
+	DevelopmentLine *CCMDevelopmentLine `jazz:"developmentLine"`
 
 	// Whether or not this iteration is marked as having deliverables associated
 	// with it
@@ -361,13 +361,13 @@ type CCMDevelopmentLine struct {
 	EndDate *time.Time `jazz:"endDate"`
 
 	// The child iterations of this development line
-	Iterations []*CCMMultiItemExtensionEntry `jazz:"iterations"`
+	Iterations []*CCMIteration `jazz:"iterations"`
 
 	// The project area containing this development line
-	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
+	ProjectArea *CCMProjectArea `jazz:"projectArea"`
 
 	// The iteration marked as current in this development line
-	CurrentIteration *CCMMultiItemExtensionEntry `jazz:"currentIteration"`
+	CurrentIteration *CCMIteration `jazz:"currentIteration"`
 }
 
 // CCMDevelopmentLineType contains the reflection type of CCMDevelopmentLine
@@ -417,10 +417,10 @@ type CCMAuditableLink struct {
 	Name string `jazz:"name"`
 
 	// The source of the link
-	SourceRef *CCMMultiItemExtensionEntry `jazz:"sourceRef"`
+	SourceRef *CCMReference `jazz:"sourceRef"`
 
 	// The target of the link
-	TargetRef *CCMMultiItemExtensionEntry `jazz:"targetRef"`
+	TargetRef *CCMReference `jazz:"targetRef"`
 }
 
 // CCMAuditableLinkType contains the reflection type of CCMAuditableLink
@@ -470,7 +470,7 @@ type CCMReference struct {
 	Comment string `jazz:"comment"`
 
 	// This element indicates whether the reference is by uri or by itemId.
-	ReferenceType *CCMMultiItemExtensionEntry `jazz:"referenceType"`
+	ReferenceType *CCMReferenceType `jazz:"referenceType"`
 
 	// The URI of the element referenced. This is only valid if this Reference is
 	// a URI reference.
@@ -478,7 +478,7 @@ type CCMReference struct {
 
 	// The referenced item. This is only valid if this Reference is an Item
 	// reference.
-	ReferencedItem *CCMMultiItemExtensionEntry `jazz:"referencedItem"`
+	ReferencedItem *CCMItem `jazz:"referencedItem"`
 
 	// Get the extra information associated with the reference. May be null.
 	ExtraInfo string `jazz:"extraInfo"`
@@ -626,10 +626,10 @@ type CCMRoleAssignment struct {
 	CCMBaseObject
 
 	// The contributor with assigned roles
-	Contributor *CCMMultiItemExtensionEntry `jazz:"contributor"`
+	Contributor *CCMContributor `jazz:"contributor"`
 
 	// The roles assigned to the contributor
-	ContributorRoles []*CCMMultiItemExtensionEntry `jazz:"contributorRoles"`
+	ContributorRoles []*CCMRole `jazz:"contributorRoles"`
 }
 
 // CCMRoleAssignmentType contains the reflection type of CCMRoleAssignment
@@ -673,10 +673,10 @@ type CCMWorkspace struct {
 
 	// A collection of key/value properties associated with the workspace or
 	// stream
-	Properties []*CCMMultiItemExtensionEntry `jazz:"properties"`
+	Properties []*CCMProperty `jazz:"properties"`
 
 	// The owner of the workspace or stream
-	Contributor *CCMMultiItemExtensionEntry `jazz:"contributor"`
+	Contributor *CCMContributor `jazz:"contributor"`
 }
 
 // CCMWorkspaceType contains the reflection type of CCMWorkspace
@@ -789,7 +789,7 @@ type CCMChangeSet struct {
 	Comment string `jazz:"comment"`
 
 	// The owner of the change set
-	Owner *CCMMultiItemExtensionEntry `jazz:"owner"`
+	Owner *CCMContributor `jazz:"owner"`
 }
 
 // CCMChangeSetType contains the reflection type of CCMChangeSet
@@ -835,10 +835,10 @@ type CCMBuildDefinition struct {
 	Description string `jazz:"description"`
 
 	// The project area containing the build definition
-	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
+	ProjectArea *CCMProjectArea `jazz:"projectArea"`
 
 	// The team area containing the build definition
-	TeamArea *CCMMultiItemExtensionEntry `jazz:"teamArea"`
+	TeamArea *CCMTeamArea `jazz:"teamArea"`
 }
 
 // CCMBuildDefinitionType contains the reflection type of CCMBuildDefinition
@@ -900,22 +900,22 @@ type CCMBuildResult struct {
 	TimeWaiting int64 `jazz:"timeWaiting"`
 
 	// Which build definition this build was for
-	BuildDefinition *CCMMultiItemExtensionEntry `jazz:"buildDefinition"`
+	BuildDefinition *CCMBuildDefinition `jazz:"buildDefinition"`
 
 	// The contributor who requested the build
-	Creator *CCMMultiItemExtensionEntry `jazz:"creator"`
+	Creator *CCMContributor `jazz:"creator"`
 
 	// The engine the build ran on
-	BuildEngine *CCMMultiItemExtensionEntry `jazz:"buildEngine"`
+	BuildEngine *CCMBuildEngine `jazz:"buildEngine"`
 
 	// Code compilation results
-	CompilationResults []*CCMMultiItemExtensionEntry `jazz:"compilationResults"`
+	CompilationResults []*CCMCompilationResult `jazz:"compilationResults"`
 
 	// Unit test results
-	UnitTestResults []*CCMMultiItemExtensionEntry `jazz:"unitTestResults"`
+	UnitTestResults []*CCMUnitTestResult `jazz:"unitTestResults"`
 
 	// Unit test changes from the previous build
-	UnitTestEvents []*CCMMultiItemExtensionEntry `jazz:"unitTestEvents"`
+	UnitTestEvents []*CCMUnitTestEvent `jazz:"unitTestEvents"`
 }
 
 // CCMBuildResultType contains the reflection type of CCMBuildResult
@@ -1159,134 +1159,134 @@ type CCMWorkItem struct {
 	DayModified *time.Time `jazz:"dayModified"`
 
 	// The contributor who created the work item
-	Creator *CCMMultiItemExtensionEntry `jazz:"creator"`
+	Creator *CCMContributor `jazz:"creator"`
 
 	// The contributor who owns the work item
-	Owner *CCMMultiItemExtensionEntry `jazz:"owner"`
+	Owner *CCMContributor `jazz:"owner"`
 
 	// The category to which the work item is assigned. In the UI, this is called
 	// "Filed Against".
-	Category *CCMMultiItemExtensionEntry `jazz:"category"`
+	Category *CCMCategory `jazz:"category"`
 
 	// A collection of zero or more comments appended to the work item
-	Comments []*CCMMultiItemExtensionEntry `jazz:"comments"`
+	Comments []*CCMComment `jazz:"comments"`
 
 	// A collection of zero or more "custom attributes" attached to the work item.
 	// These are user-defined attributes (as opposed to the built-in attributes
 	// elsewhere in this list).
-	CustomAttributes []*CCMMultiItemExtensionEntry `jazz:"customAttributes"`
+	CustomAttributes []*CCMAttribute `jazz:"customAttributes"`
 
 	// A collection of zero or more Contributors who are subscribed to the work
 	// item
-	Subscriptions []*CCMMultiItemExtensionEntry `jazz:"subscriptions"`
+	Subscriptions []*CCMContributor `jazz:"subscriptions"`
 
 	// The project area to which the work item belongs
-	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
+	ProjectArea *CCMProjectArea `jazz:"projectArea"`
 
 	// The Contributor who resolved the work item, or null if the work item has
 	// not been resolved
-	Resolver *CCMMultiItemExtensionEntry `jazz:"resolver"`
+	Resolver *CCMContributor `jazz:"resolver"`
 
 	// A collection of zero or more Approvals attached to the work item
-	Approvals []*CCMMultiItemExtensionEntry `jazz:"approvals"`
+	Approvals []*CCMApproval `jazz:"approvals"`
 
 	// A collection of zero or more Approval Descriptors attached to the work item
-	ApprovalDescriptors []*CCMMultiItemExtensionEntry `jazz:"approvalDescriptors"`
+	ApprovalDescriptors []*CCMApprovalDescriptor `jazz:"approvalDescriptors"`
 
 	// The iteration that the work item is "Planned For"
-	Target *CCMMultiItemExtensionEntry `jazz:"target"`
+	Target *CCMIteration `jazz:"target"`
 
 	// The deliverable that the work item is "Found In"
-	FoundIn *CCMMultiItemExtensionEntry `jazz:"foundIn"`
+	FoundIn *CCMDeliverable `jazz:"foundIn"`
 
 	// A collection of zero or more WorkItem elements, representing the entire
 	// history of the work item. Each state the work item has ever been in is
 	// reflected in this history list.
-	ItemHistory []*CCMMultiItemExtensionEntry `jazz:"itemHistory"`
+	ItemHistory []*CCMWorkItem `jazz:"itemHistory"`
 
 	// The team area to which the work item belongs
-	TeamArea *CCMMultiItemExtensionEntry `jazz:"teamArea"`
+	TeamArea *CCMTeamArea `jazz:"teamArea"`
 
 	// The state of the work item (e.g. "Resolved", "In Progress", "New"). The
 	// states are user-defined as part of the project area process.
-	State *CCMMultiItemExtensionEntry `jazz:"state"`
+	State *CCMState `jazz:"state"`
 
 	// The resolution of the work item (e.g. "Duplicate", "Invalid", "Fixed"). The
 	// resolutions are user-defined as part of the project area process.
-	Resolution *CCMMultiItemExtensionEntry `jazz:"resolution"`
+	Resolution *CCMResolution `jazz:"resolution"`
 
 	// The type of the work item (e.g. "Defect", "Task", "Story"). The work item
 	// types are user-defined as part of the project area process.
-	Type *CCMMultiItemExtensionEntry `jazz:"type"`
+	Type *CCMWorkItemType `jazz:"type"`
 
 	// The severity of the work item (e.g. "Critical", "Normal", "Blocker"). The
 	// work item severities are user-defined as part of the project area process.
-	Severity *CCMMultiItemExtensionEntry `jazz:"severity"`
+	Severity *CCMLiteral `jazz:"severity"`
 
 	// The priority of the work item (e.g. "High", "Medium", "Low"). The work item
 	// priorities are user-defined as part of the project area process.
-	Priority *CCMMultiItemExtensionEntry `jazz:"priority"`
+	Priority *CCMLiteral `jazz:"priority"`
 
 	// The parent work item of this work item, if one exists
-	Parent *CCMMultiItemExtensionEntry `jazz:"parent"`
+	Parent *CCMWorkItem `jazz:"parent"`
 
 	// A collection of zero or more child work items
-	Children []*CCMMultiItemExtensionEntry `jazz:"children"`
+	Children []*CCMWorkItem `jazz:"children"`
 
 	// A collection of zero or more work items which this work item blocks
-	Blocks []*CCMMultiItemExtensionEntry `jazz:"blocks"`
+	Blocks []*CCMWorkItem `jazz:"blocks"`
 
 	// A collection of zero or more work items which block this work item
-	DependsOn []*CCMMultiItemExtensionEntry `jazz:"dependsOn"`
+	DependsOn []*CCMWorkItem `jazz:"dependsOn"`
 
 	// A collection of zero or more work items which are closed as duplicates of
 	// this work item
-	DuplicatedBy []*CCMMultiItemExtensionEntry `jazz:"duplicatedBy"`
+	DuplicatedBy []*CCMWorkItem `jazz:"duplicatedBy"`
 
 	// A collection of zero or more work items which this work item is a duplicate
 	// of
-	DuplicateOf []*CCMMultiItemExtensionEntry `jazz:"duplicateOf"`
+	DuplicateOf []*CCMWorkItem `jazz:"duplicateOf"`
 
 	// A collection of zero of more work items which this work item is related to
-	Related []*CCMMultiItemExtensionEntry `jazz:"related"`
+	Related []*CCMWorkItem `jazz:"related"`
 
 	// A collection of zero or more items linked to the work item as custom
 	// attributes
-	ItemExtensions []*CCMMultiItemExtensionEntry `jazz:"itemExtensions"`
+	ItemExtensions []*CCMItemExtensionEntry `jazz:"itemExtensions"`
 
 	// A collection of zero or more lists of items linked to the work item as
 	// custom attributes
 	MultiItemExtensions []*CCMMultiItemExtensionEntry `jazz:"multiItemExtensions"`
 
 	// A collection of zero or more custom attributes of type medium string
-	MediumStringExtensions []*CCMMultiItemExtensionEntry `jazz:"mediumStringExtensions"`
+	MediumStringExtensions []*CCMMediumStringExtensionEntry `jazz:"mediumStringExtensions"`
 
 	// A collection of zero or more custom attributes of type boolean
-	BooleanExtensions []*CCMMultiItemExtensionEntry `jazz:"booleanExtensions"`
+	BooleanExtensions []*CCMBooleanExtensionEntry `jazz:"booleanExtensions"`
 
 	// A collection of zero or more custom attributes of type timestamp
-	TimestampExtensions []*CCMMultiItemExtensionEntry `jazz:"timestampExtensions"`
+	TimestampExtensions []*CCMTimestampExtensionEntry `jazz:"timestampExtensions"`
 
 	// A collection of zero or more custom attributes of type long
-	LongExtensions []*CCMMultiItemExtensionEntry `jazz:"longExtensions"`
+	LongExtensions []*CCMLongExtensionEntry `jazz:"longExtensions"`
 
 	// A collection of zero or more custom attributes of type integer
-	IntExtensions []*CCMMultiItemExtensionEntry `jazz:"intExtensions"`
+	IntExtensions []*CCMIntExtensionEntry `jazz:"intExtensions"`
 
 	// A collection of zero or more custom attributes of type big decimal
-	BigDecimalExtensions []*CCMMultiItemExtensionEntry `jazz:"bigDecimalExtensions"`
+	BigDecimalExtensions []*CCMBigDecimalExtensionEntry `jazz:"bigDecimalExtensions"`
 
 	// A collection of zero or more custom attributes of type large string
-	LargeStringExtensions []*CCMMultiItemExtensionEntry `jazz:"largeStringExtensions"`
+	LargeStringExtensions []*CCMLargeStringExtensionEntry `jazz:"largeStringExtensions"`
 
 	// A collection of zero or more custom attributes of type string
-	StringExtensions []*CCMMultiItemExtensionEntry `jazz:"stringExtensions"`
+	StringExtensions []*CCMStringExtensionEntry `jazz:"stringExtensions"`
 
 	// A collection of zero or more custom attributes of all types
-	AllExtensions []*CCMMultiItemExtensionEntry `jazz:"allExtensions"`
+	AllExtensions []*CCMExtensionEntry `jazz:"allExtensions"`
 
 	// A collection of zero or more timesheet entries linked to the work item
-	TimeSheetEntries []*CCMMultiItemExtensionEntry `jazz:"timeSheetEntries"`
+	TimeSheetEntries []*CCMTimeSheetEntry `jazz:"timeSheetEntries"`
 
 	// The work item's planned start date as specified in the plan.
 	PlannedStartDate *time.Time `jazz:"plannedStartDate"`
@@ -1378,7 +1378,7 @@ type CCMComment struct {
 	Edited bool `jazz:"edited"`
 
 	// The contributor who created the comment
-	Creator *CCMMultiItemExtensionEntry `jazz:"creator"`
+	Creator *CCMContributor `jazz:"creator"`
 }
 
 // CCMCommentType contains the reflection type of CCMComment
@@ -1418,7 +1418,7 @@ type CCMAttribute struct {
 	BuiltIn bool `jazz:"builtIn"`
 
 	// The project in which the attribute is defined
-	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
+	ProjectArea *CCMProjectArea `jazz:"projectArea"`
 }
 
 // CCMAttributeType contains the reflection type of CCMAttribute
@@ -1458,7 +1458,7 @@ type CCMApproval struct {
 	StateName string `jazz:"stateName"`
 
 	// The contributor who is asked for approval
-	Approver *CCMMultiItemExtensionEntry `jazz:"approver"`
+	Approver *CCMContributor `jazz:"approver"`
 }
 
 // CCMApprovalType contains the reflection type of CCMApproval
@@ -1512,7 +1512,7 @@ type CCMApprovalDescriptor struct {
 
 	// A collection of zero of more approvals aggregated by the approval
 	// descriptor
-	Approvals []*CCMMultiItemExtensionEntry `jazz:"approvals"`
+	Approvals []*CCMApproval `jazz:"approvals"`
 }
 
 // CCMApprovalDescriptorType contains the reflection type of CCMApprovalDescriptor
@@ -1749,11 +1749,11 @@ type CCMDeliverable struct {
 	CreationDate *time.Time `jazz:"creationDate"`
 
 	// The project area associated with the deliverable
-	ProjectArea *CCMMultiItemExtensionEntry `jazz:"projectArea"`
+	ProjectArea *CCMProjectArea `jazz:"projectArea"`
 
 	// An optional link to a repository item associated with the deliverable. This
 	// field should be treated as internal.
-	Artifact *CCMMultiItemExtensionEntry `jazz:"artifact"`
+	Artifact *CCMItem `jazz:"artifact"`
 }
 
 // CCMDeliverableType contains the reflection type of CCMDeliverable
@@ -1835,11 +1835,11 @@ type CCMExtensionEntry struct {
 
 	// The information of the Item assigned as the value of the custom attribute
 	// if the type is itemValue, else null
-	ItemValue *CCMMultiItemExtensionEntry `jazz:"itemValue"`
+	ItemValue *CCMItem `jazz:"itemValue"`
 
 	// A collection of zero of more items assigned as the value of the custom
 	// attribute if the type is itemList, else null
-	ItemList []*CCMMultiItemExtensionEntry `jazz:"itemList"`
+	ItemList []*CCMItem `jazz:"itemList"`
 }
 
 // CCMExtensionEntryType contains the reflection type of CCMExtensionEntry
@@ -1886,7 +1886,7 @@ type CCMTimeSheetEntry struct {
 	TimeCodeId string `jazz:"timeCodeId"`
 
 	// Work item to which the time sheet entry is related to.
-	WorkItem *CCMMultiItemExtensionEntry `jazz:"workItem"`
+	WorkItem *CCMWorkItem `jazz:"workItem"`
 }
 
 // CCMTimeSheetEntryType contains the reflection type of CCMTimeSheetEntry
@@ -2204,7 +2204,7 @@ type CCMItemExtensionEntry struct {
 	Key string `jazz:"key"`
 
 	// Value of the custom attribute
-	Value *CCMMultiItemExtensionEntry `jazz:"value"`
+	Value *CCMItem `jazz:"value"`
 }
 
 // CCMItemExtensionEntryType contains the reflection type of CCMItemExtensionEntry
@@ -2235,7 +2235,7 @@ type CCMMultiItemExtensionEntry struct {
 	Key string `jazz:"key"`
 
 	// Value of the custom attribute
-	Value []*CCMMultiItemExtensionEntry `jazz:"value"`
+	Value []*CCMItem `jazz:"value"`
 }
 
 // CCMMultiItemExtensionEntryType contains the reflection type of CCMMultiItemExtensionEntry

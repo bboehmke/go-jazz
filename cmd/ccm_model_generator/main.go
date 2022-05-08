@@ -31,7 +31,7 @@ import (
 var tplStr string
 
 // map of known models based on the type ID
-var modelTypeRef = make(map[string]*Model)
+var modelTypeRef = make(map[string]Model)
 
 // regex to parse field definition
 var fieldRegEx = regexp.MustCompile(`(.+?) \(type: (.+?)\)\.(.+)`)
@@ -177,7 +177,7 @@ func main() {
 	// add model to reference list
 	for _, model := range models {
 		if model.TypeID != "" {
-			modelTypeRef[model.TypeID] = &model
+			modelTypeRef[model.TypeID] = model
 		}
 	}
 
