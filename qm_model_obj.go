@@ -47,7 +47,7 @@ func (o *QMAttachment) Spec() *QMObjectSpec {
 // Download content of attachment
 func (o *QMAttachment) Download(w io.Writer) error {
 	// copy attachment content
-	response, err := o.proj.qm.client.Get(o.ResourceUrl, "application/octet-stream", false)
+	response, err := o.proj.qm.client.get(o.ResourceUrl, "application/octet-stream", false)
 	if err != nil {
 		return fmt.Errorf("failed to get attachment: %w", err)
 	}

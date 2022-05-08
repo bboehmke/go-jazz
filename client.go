@@ -29,23 +29,31 @@ import (
 	"golang.org/x/net/publicsuffix"
 )
 
+// Client to communicate with various application of a jazz server
 type Client struct {
+	// HttpClient used for requests to the jazz server
 	HttpClient *http.Client
+
+	// maximum amount of actions that should run in parallel
+	Worker int
+
+	// GC provides all functionalities to access the "Global Configuration Management" application
+	GC *GCApplication
+	// CCM provides all functionalities to access the "Change and Configuration Management"  application
+	CCM *CCMApplication
+	// QM provides all functionalities to access the "Quality Management"  application
+	QM *QMApplication
+
+	// GlobalConfiguration used for API requests
+	ConfigContext *GlobalConfiguration
 
 	baseUrl   string
 	user      string
 	password  string
 	basicAuth bool
-
-	Worker int
-
-	GC  *GCApplication
-	CCM *CCMApplication
-	QM  *QMApplication
-
-	ConfigContext *GlobalConfiguration
 }
 
+// NewClient creates a new client for the given server
 func NewClient(baseUrl, user, password string) (*Client, error) {
 	// cookie store
 	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
@@ -67,6 +75,7 @@ func NewClient(baseUrl, user, password string) (*Client, error) {
 		Worker:   20,
 	}
 
+	// register applications
 	client.GC = &GCApplication{client: client}
 	client.CCM = &CCMApplication{client: client}
 	client.QM = &QMApplication{client: client}
@@ -74,15 +83,18 @@ func NewClient(baseUrl, user, password string) (*Client, error) {
 	return client, nil
 }
 
-func (c *Client) buildUrl(url string) string {
-	if !strings.HasPrefix(url, "http:") && !strings.HasPrefix(url, "https:") {
-		return c.baseUrl + url
+// buildUrl for the given path.
+// If path is already a complete URL return the value.
+func (c *Client) buildUrl(path string) string {
+	if !strings.HasPrefix(path, "http:") && !strings.HasPrefix(path, "https:") {
+		return c.baseUrl + path
 	}
-	return url
+	return path
 }
 
-func (c *Client) SimpleGet(url, contentType, errorMessage string, statusCode int) (*http.Response, *etree.Element, error) {
-	response, err := c.Get(url, contentType, false)
+// getEtree send a GET HTTP request (same as get) and return content as XML etree
+func (c *Client) getEtree(url, contentType, errorMessage string, statusCode int) (*http.Response, *etree.Element, error) {
+	response, err := c.get(url, contentType, false)
 	if err != nil {
 		return nil, nil, fmt.Errorf("%s: %w", errorMessage, err)
 	}
@@ -101,7 +113,8 @@ func (c *Client) SimpleGet(url, contentType, errorMessage string, statusCode int
 	return response, doc.Root(), nil
 }
 
-func (c *Client) Get(url, contentType string, noGc bool) (*http.Response, error) {
+// get sends GET request to server
+func (c *Client) get(url, contentType string, noGc bool) (*http.Response, error) {
 	request, err := http.NewRequest("GET", c.buildUrl(url), nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create get request: %w", err)
@@ -111,7 +124,8 @@ func (c *Client) Get(url, contentType string, noGc bool) (*http.Response, error)
 	return c.sendRequest(request, noGc)
 }
 
-func (c *Client) Put(url, contentType string, reader io.Reader) (*http.Response, error) {
+// put sends GET request to server
+func (c *Client) put(url, contentType string, reader io.Reader) (*http.Response, error) {
 	request, err := http.NewRequest("PUT", c.buildUrl(url), reader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create put request: %w", err)
@@ -121,6 +135,7 @@ func (c *Client) Put(url, contentType string, reader io.Reader) (*http.Response,
 	return c.sendRequest(request, false)
 }
 
+// sendRequest to server and handle auth if required
 func (c *Client) sendRequest(request *http.Request, noGc bool) (*http.Response, error) {
 	// send request
 	response, err := c.sendRawRequest(request, true, noGc)
@@ -196,6 +211,7 @@ func (c *Client) sendRequest(request *http.Request, noGc bool) (*http.Response, 
 	return response, nil
 }
 
+// sendRawRequest to server
 func (c *Client) sendRawRequest(request *http.Request, log, noGc bool) (*http.Response, error) {
 	if log {
 		zap.S().Debugf("Send %s request to %s", request.Method, request.URL)

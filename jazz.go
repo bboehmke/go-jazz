@@ -30,5 +30,3 @@ func (a *App) RootServices() *RootService {
 		base:   a.ID(),
 	}
 }
-
-// TODO GC -> https://jazz.net/sandbox02-gc/doc/scenarios

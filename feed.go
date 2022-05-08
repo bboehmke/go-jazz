@@ -99,7 +99,7 @@ type rawFeed struct {
 func (c *Client) requestFeed(url string, entries chan feedEntry, noGc bool) error {
 	// request list until last page reached
 	for url != "" {
-		response, err := c.Get(url, "application/json", noGc)
+		response, err := c.get(url, "application/json", noGc)
 		if err != nil {
 			return err
 		}

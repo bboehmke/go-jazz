@@ -19,6 +19,8 @@ import (
 	"net/url"
 )
 
+// https://jazz.net/sandbox02-gc/doc/scenarios
+
 type GCApplication struct {
 	client *Client
 }
@@ -43,7 +45,7 @@ type GlobalConfiguration struct {
 
 // GlobalConfigs available on server
 func (a *GCApplication) GlobalConfigs() ([]*GlobalConfiguration, error) {
-	_, xml, err := a.client.SimpleGet(
+	_, xml, err := a.client.getEtree(
 		"gc/configuration",
 		"application/rdf+xml",
 		"failed to get global configurations",
@@ -65,7 +67,7 @@ func (a *GCApplication) GlobalConfigs() ([]*GlobalConfiguration, error) {
 // GetGlobalConfig by title
 func (a *GCApplication) GetGlobalConfig(title string) (*GlobalConfiguration, error) {
 	// https://jazz.net/sandbox02-gc/doc/scenario?id=QueryConfigurations
-	_, xml, err := a.client.SimpleGet(
+	_, xml, err := a.client.getEtree(
 		"gc/oslc-query/configurations?oslc.where="+url.QueryEscape(fmt.Sprintf("dcterms:title=\"%s\"", title)),
 		"application/rdf+xml",
 		"failed to get global configuration",

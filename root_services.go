@@ -24,7 +24,7 @@ type RootService struct {
 
 func (r *RootService) ServicesXml() (*etree.Element, error) {
 	if r.serviceXml == nil {
-		_, xml, err := r.client.SimpleGet(
+		_, xml, err := r.client.getEtree(
 			r.base+"/rootservices",
 			"application/rdf+xml",
 			"failed to get service XML",

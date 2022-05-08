@@ -77,7 +77,7 @@ func CCMListChan[T CCMObject](ccm *CCMApplication, filter CCMFilter, results cha
 
 	// request list until last page reached
 	for url != "" {
-		resp, root, err := ccm.client.SimpleGet(url, "application/xml", //nolint:bodyclose
+		resp, root, err := ccm.client.getEtree(url, "application/xml", //nolint:bodyclose
 			"failed get element list", 0)
 		if err != nil {
 			return err
@@ -110,7 +110,7 @@ func CCMGet[T CCMObject](ccm *CCMApplication, id string) (T, error) {
 	var value T
 	spec := value.Spec()
 
-	resp, root, err := ccm.client.SimpleGet(spec.GetURL(id),
+	resp, root, err := ccm.client.getEtree(spec.GetURL(id),
 		"application/xml",
 		"failed get element "+id, 0)
 	if err != nil {
@@ -124,7 +124,7 @@ func CCMGet[T CCMObject](ccm *CCMApplication, id string) (T, error) {
 }
 
 func (a *CCMApplication) get(spec *CCMObjectSpec, value reflect.Value, id string) error {
-	resp, root, err := a.client.SimpleGet(spec.GetURL(id),
+	resp, root, err := a.client.getEtree(spec.GetURL(id),
 		"application/xml",
 		"failed get element "+id, 0)
 	if err != nil {

@@ -479,7 +479,7 @@ type CCMReference struct {
 	// reference.
 	ReferencedItem *CCMMultiItemExtensionEntry `jazz:"referencedItem"`
 
-	// Get the extra information associated with the reference. May be null.
+	// get the extra information associated with the reference. May be null.
 	ExtraInfo string `jazz:"extraInfo"`
 
 	// Internal.

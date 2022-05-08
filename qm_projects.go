@@ -33,7 +33,7 @@ type QMProject struct {
 
 // NewUUID returns a new UUID generated on the server
 func (p *QMProject) NewUUID() (string, error) {
-	response, err := p.qm.client.Get(
+	response, err := p.qm.client.get(
 		"qm/service/com.ibm.rqm.integration.service.IIntegrationService/UUID/new",
 		"application/json",
 		true)
@@ -134,7 +134,7 @@ func QMGet[T QMObject](proj *QMProject, id string) (T, error) {
 	var value T
 	spec := value.Spec()
 
-	response, err := proj.qm.client.Get(spec.GetURL(proj, id),
+	response, err := proj.qm.client.get(spec.GetURL(proj, id),
 		"application/xml", false)
 	if err != nil {
 		return value, fmt.Errorf("failed to get %s: %w", spec.ResourceID, err)
@@ -186,7 +186,7 @@ func QMSave[T QMObject](proj *QMProject, obj T) (T, error) {
 	data := obj.Spec().DumpXml(obj)
 
 	// send request to server
-	response, err := proj.qm.client.Put(obj.Ref().Href, "application/xml", bytes.NewBuffer(data))
+	response, err := proj.qm.client.put(obj.Ref().Href, "application/xml", bytes.NewBuffer(data))
 	if err != nil {
 		return obj, fmt.Errorf("failed to save object: %w", err)
 	}
@@ -238,7 +238,7 @@ func (p *QMProject) UploadAttachment(fileName string, fileReader io.Reader) (*QM
 
 	// send response to server
 	url := new(QMAttachment).Spec().GetURL(p, "go_"+uuid)
-	response, err := p.qm.client.Put(url, m.FormDataContentType(), r)
+	response, err := p.qm.client.put(url, m.FormDataContentType(), r)
 	if err != nil {
 		return nil, fmt.Errorf("failed to save object: %w", err)
 	}
