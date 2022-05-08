@@ -15,6 +15,7 @@
 package jazz
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
@@ -96,10 +97,10 @@ type rawFeed struct {
 	Feed subFeed `json:"feed"`
 }
 
-func (c *Client) requestFeed(url string, entries chan feedEntry, noGc bool) error {
+func (c *Client) requestFeed(ctx context.Context, url string, entries chan feedEntry, noGc bool) error {
 	// request list until last page reached
 	for url != "" {
-		response, err := c.get(url, "application/json", noGc)
+		response, err := c.get(ctx, url, "application/json", noGc)
 		if err != nil {
 			return err
 		}

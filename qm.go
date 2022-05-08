@@ -15,6 +15,7 @@
 package jazz
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -39,10 +40,10 @@ func (a *QMApplication) Client() *Client {
 }
 
 // Projects of available (and accessible)
-func (a *QMApplication) Projects() ([]*QMProject, error) {
+func (a *QMApplication) Projects(ctx context.Context) ([]*QMProject, error) {
 	// https://jazz.net/wiki/bin/view/Main/RqmApi#Project_Feed_Service
 	entries, err := Chan2List[feedEntry](func(ch chan feedEntry) error {
-		return a.client.requestFeed(
+		return a.client.requestFeed(ctx,
 			"qm/service/com.ibm.rqm.integration.service.IIntegrationService/projects",
 			ch, true)
 	})
@@ -62,8 +63,8 @@ func (a *QMApplication) Projects() ([]*QMProject, error) {
 }
 
 // GetProject with the given title
-func (a *QMApplication) GetProject(title string) (*QMProject, error) {
-	projects, err := a.Projects()
+func (a *QMApplication) GetProject(ctx context.Context, title string) (*QMProject, error) {
+	projects, err := a.Projects(ctx)
 	if err != nil {
 		return nil, err
 	}

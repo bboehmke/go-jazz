@@ -15,6 +15,7 @@
 package jazz
 
 import (
+	"context"
 	"reflect"
 	"sync"
 	"time"
@@ -30,7 +31,7 @@ type CCMObject interface {
 // CCMLoadableObject is only implemented by objects that are loadable
 type CCMLoadableObject interface {
 	CCMObject
-	Load() error
+	Load(ctx context.Context) error
 }
 
 type CCMBaseObject struct {
@@ -80,11 +81,11 @@ func (o *CCMBaseObject) setCCM(ccm *CCMApplication) {
 }
 
 // loadFields of the given object
-func (o *CCMBaseObject) loadFields(fields ...interface{}) error {
+func (o *CCMBaseObject) loadFields(ctx context.Context, fields ...interface{}) error {
 	for _, field := range fields {
 		if fields, ok := field.([]CCMLoadableObject); ok {
 			for _, f := range fields {
-				if err := f.Load(); err != nil {
+				if err := f.Load(ctx); err != nil {
 					return err
 				}
 			}
@@ -92,7 +93,7 @@ func (o *CCMBaseObject) loadFields(fields ...interface{}) error {
 			if reflect.ValueOf(f).IsNil() {
 				continue
 			}
-			if err := f.Load(); err != nil {
+			if err := f.Load(ctx); err != nil {
 				return err
 			}
 		}

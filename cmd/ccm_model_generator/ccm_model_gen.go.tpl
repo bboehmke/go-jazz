@@ -17,6 +17,7 @@ package jazz
 // Code generated! DO NOT EDIT
 
 import (
+	"context"
 	"reflect"
 	"time"
 )
@@ -58,18 +59,18 @@ func (o *{{ .Name }}) Spec() *CCMObjectSpec {
 }
 {{ if .IsLoadable }}
 // Load {{ .Name }} object
-func (o *{{ .Name }}) Load() (err error) {
+func (o *{{ .Name }}) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 {{ end }}
 // LoadAllFields of {{ .Name }} object
-func (o *{{ .Name }}) LoadAllFields() error {
-	return o.loadFields(
+func (o *{{ .Name }}) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	{{- range .CCMFields}}
 		o.{{ .GoName }},

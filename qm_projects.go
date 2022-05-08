@@ -16,6 +16,7 @@ package jazz
 
 import (
 	"bytes"
+	"context"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -32,8 +33,8 @@ type QMProject struct {
 }
 
 // NewUUID returns a new UUID generated on the server
-func (p *QMProject) NewUUID() (string, error) {
-	response, err := p.qm.client.get(
+func (p *QMProject) NewUUID(ctx context.Context) (string, error) {
+	response, err := p.qm.client.get(ctx,
 		"qm/service/com.ibm.rqm.integration.service.IIntegrationService/UUID/new",
 		"application/json",
 		true)
@@ -50,14 +51,14 @@ func (p *QMProject) NewUUID() (string, error) {
 }
 
 // QMList object of the given type
-func QMList[T QMObject](proj *QMProject, filter QMFilter) ([]T, error) {
+func QMList[T QMObject](ctx context.Context, proj *QMProject, filter QMFilter) ([]T, error) {
 	return Chan2List[T](func(ch chan T) error {
-		return QMListChan[T](proj, filter, ch)
+		return QMListChan[T](ctx, proj, filter, ch)
 	})
 }
 
 // QMListChan object of the given type returned via a channel
-func QMListChan[T QMObject](proj *QMProject, filter QMFilter, results chan T) error {
+func QMListChan[T QMObject](ctx context.Context, proj *QMProject, filter QMFilter, results chan T) error {
 	spec := (*new(T)).Spec()
 
 	// load object returned by list
@@ -66,7 +67,7 @@ func QMListChan[T QMObject](proj *QMProject, filter QMFilter, results chan T) er
 	for i := 0; i < proj.qm.client.Worker; i++ {
 		g.Go(func() error {
 			for entry := range requestChan {
-				obj, err := QMGet[T](proj, entry.Id)
+				obj, err := QMGet[T](ctx, proj, entry.Id)
 				if err != nil {
 					return err
 				}
@@ -83,7 +84,7 @@ func QMListChan[T QMObject](proj *QMProject, filter QMFilter, results chan T) er
 	}
 
 	// request object list
-	err = proj.qm.client.requestFeed(url, requestChan, false)
+	err = proj.qm.client.requestFeed(ctx, url, requestChan, false)
 	if err != nil {
 		return err
 	}
@@ -95,21 +96,21 @@ func QMListChan[T QMObject](proj *QMProject, filter QMFilter, results chan T) er
 }
 
 // qmGetList object of the given type
-func qmGetList[T QMObject](proj *QMProject, ids []string) ([]T, error) {
+func qmGetList[T QMObject](ctx context.Context, proj *QMProject, ids []string) ([]T, error) {
 	return Chan2List[T](func(ch chan T) error {
-		return qmGetListChan[T](proj, ids, ch)
+		return qmGetListChan[T](ctx, proj, ids, ch)
 	})
 }
 
 // qmGetListChan object of the given type returned via a channel
-func qmGetListChan[T QMObject](proj *QMProject, ids []string, results chan T) error {
+func qmGetListChan[T QMObject](ctx context.Context, proj *QMProject, ids []string, results chan T) error {
 	// load object returned by list
 	idChan := make(chan string, proj.qm.client.Worker*2)
 	g := new(errgroup.Group)
 	for i := 0; i < proj.qm.client.Worker; i++ {
 		g.Go(func() error {
 			for id := range idChan {
-				obj, err := QMGet[T](proj, id)
+				obj, err := QMGet[T](ctx, proj, id)
 				if err != nil {
 					return err
 				}
@@ -130,11 +131,12 @@ func qmGetListChan[T QMObject](proj *QMProject, ids []string, results chan T) er
 }
 
 // QMGet object of the given type
-func QMGet[T QMObject](proj *QMProject, id string) (T, error) {
+func QMGet[T QMObject](ctx context.Context, proj *QMProject, id string) (T, error) {
 	var value T
 	spec := value.Spec()
 
-	response, err := proj.qm.client.get(spec.GetURL(proj, id),
+	response, err := proj.qm.client.get(ctx,
+		spec.GetURL(proj, id),
 		"application/xml", false)
 	if err != nil {
 		return value, fmt.Errorf("failed to get %s: %w", spec.ResourceID, err)
@@ -154,9 +156,9 @@ func QMGet[T QMObject](proj *QMProject, id string) (T, error) {
 }
 
 // QMGetFilter object of the given filter
-func QMGetFilter[T QMObject](proj *QMProject, filter QMFilter) (T, error) {
+func QMGetFilter[T QMObject](ctx context.Context, proj *QMProject, filter QMFilter) (T, error) {
 	var nul T
-	entries, err := QMList[T](proj, filter)
+	entries, err := QMList[T](ctx, proj, filter)
 	if err != nil {
 		return nul, err
 	}
@@ -171,10 +173,10 @@ func QMGetFilter[T QMObject](proj *QMProject, filter QMFilter) (T, error) {
 }
 
 // QMSave object of the given type
-func QMSave[T QMObject](proj *QMProject, obj T) (T, error) {
+func QMSave[T QMObject](ctx context.Context, proj *QMProject, obj T) (T, error) {
 	// create a new resource URL if not already set
 	if obj.Ref().Href == "" {
-		uuid, err := proj.NewUUID()
+		uuid, err := proj.NewUUID(ctx)
 		if err != nil {
 			return obj, fmt.Errorf("failed to save object: %w", err)
 		}
@@ -186,7 +188,7 @@ func QMSave[T QMObject](proj *QMProject, obj T) (T, error) {
 	data := obj.Spec().DumpXml(obj)
 
 	// send request to server
-	response, err := proj.qm.client.put(obj.Ref().Href, "application/xml", bytes.NewBuffer(data))
+	response, err := proj.qm.client.put(ctx, obj.Ref().Href, "application/xml", bytes.NewBuffer(data))
 	if err != nil {
 		return obj, fmt.Errorf("failed to save object: %w", err)
 	}
@@ -197,13 +199,13 @@ func QMSave[T QMObject](proj *QMProject, obj T) (T, error) {
 	}
 
 	// load created object from server
-	return QMGet[T](proj, obj.Ref().Href)
+	return QMGet[T](ctx, proj, obj.Ref().Href)
 }
 
 // UploadAttachment with the given file name and content
-func (p *QMProject) UploadAttachment(fileName string, fileReader io.Reader) (*QMAttachment, error) {
+func (p *QMProject) UploadAttachment(ctx context.Context, fileName string, fileReader io.Reader) (*QMAttachment, error) {
 	// get new UUID
-	uuid, err := p.NewUUID()
+	uuid, err := p.NewUUID(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to upload attachment: %w", err)
 	}
@@ -238,7 +240,7 @@ func (p *QMProject) UploadAttachment(fileName string, fileReader io.Reader) (*QM
 
 	// send response to server
 	url := new(QMAttachment).Spec().GetURL(p, "go_"+uuid)
-	response, err := p.qm.client.put(url, m.FormDataContentType(), r)
+	response, err := p.qm.client.put(ctx, url, m.FormDataContentType(), r)
 	if err != nil {
 		return nil, fmt.Errorf("failed to save object: %w", err)
 	}
@@ -249,5 +251,5 @@ func (p *QMProject) UploadAttachment(fileName string, fileReader io.Reader) (*QM
 	}
 
 	// load uploaded attachment
-	return QMGet[*QMAttachment](p, url)
+	return QMGet[*QMAttachment](ctx, p, url)
 }

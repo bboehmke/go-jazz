@@ -15,6 +15,7 @@
 package jazz
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"time"
@@ -45,9 +46,9 @@ func (o *QMAttachment) Spec() *QMObjectSpec {
 }
 
 // Download content of attachment
-func (o *QMAttachment) Download(w io.Writer) error {
+func (o *QMAttachment) Download(ctx context.Context, w io.Writer) error {
 	// copy attachment content
-	response, err := o.proj.qm.client.get(o.ResourceUrl, "application/octet-stream", false)
+	response, err := o.proj.qm.client.get(ctx, o.ResourceUrl, "application/octet-stream", false)
 	if err != nil {
 		return fmt.Errorf("failed to get attachment: %w", err)
 	}
@@ -125,13 +126,13 @@ func (o *QMTestCase) Spec() *QMObjectSpec {
 }
 
 // AutomaticTestScripts that are part of this QMTestCase
-func (o *QMTestCase) AutomaticTestScripts() ([]*QMAutomaticTestScript, error) {
-	return qmGetList[*QMAutomaticTestScript](o.proj, o.AutomaticTestScriptRefs.IDList())
+func (o *QMTestCase) AutomaticTestScripts(ctx context.Context) ([]*QMAutomaticTestScript, error) {
+	return qmGetList[*QMAutomaticTestScript](ctx, o.proj, o.AutomaticTestScriptRefs.IDList())
 }
 
 // ManualTestScripts that are part of this QMTestCase
-func (o *QMTestCase) ManualTestScripts() ([]*QMManualTestScript, error) {
-	return qmGetList[*QMManualTestScript](o.proj, o.ManualTestScriptRefs.IDList())
+func (o *QMTestCase) ManualTestScripts(ctx context.Context) ([]*QMManualTestScript, error) {
+	return qmGetList[*QMManualTestScript](ctx, o.proj, o.ManualTestScriptRefs.IDList())
 }
 
 // QMManualTestScript implements the RQM "testscript" resource
@@ -252,13 +253,13 @@ func (o *QMTestExecutionRecord) Spec() *QMObjectSpec {
 }
 
 // TestCase of this QMTestExecutionRecord
-func (o *QMTestExecutionRecord) TestCase() (*QMTestCase, error) {
-	return QMGet[*QMTestCase](o.proj, o.TestCaseRef.Href)
+func (o *QMTestExecutionRecord) TestCase(ctx context.Context) (*QMTestCase, error) {
+	return QMGet[*QMTestCase](ctx, o.proj, o.TestCaseRef.Href)
 }
 
 // TestEnvironment of this QMTestExecutionRecord
-func (o *QMTestExecutionRecord) TestEnvironment() (*QMTestEnvironment, error) {
-	return QMGet[*QMTestEnvironment](o.proj, o.TestEnvironmentRef.Href)
+func (o *QMTestExecutionRecord) TestEnvironment(ctx context.Context) (*QMTestEnvironment, error) {
+	return QMGet[*QMTestEnvironment](ctx, o.proj, o.TestEnvironmentRef.Href)
 }
 
 // QMTestExecutionResult implements the RQM "executionresult" resource
@@ -316,28 +317,28 @@ func (o *QMTestExecutionResult) Spec() *QMObjectSpec {
 }
 
 // TestCase of this QMTestExecutionResult
-func (o *QMTestExecutionResult) TestCase() (*QMTestCase, error) {
-	return QMGet[*QMTestCase](o.proj, o.TestCaseRef.Href)
+func (o *QMTestExecutionResult) TestCase(ctx context.Context) (*QMTestCase, error) {
+	return QMGet[*QMTestCase](ctx, o.proj, o.TestCaseRef.Href)
 }
 
 // TestEnvironment of this QMTestExecutionResult
-func (o *QMTestExecutionResult) TestEnvironment() (*QMTestEnvironment, error) {
-	return QMGet[*QMTestEnvironment](o.proj, o.TestEnvironmentRef.Href)
+func (o *QMTestExecutionResult) TestEnvironment(ctx context.Context) (*QMTestEnvironment, error) {
+	return QMGet[*QMTestEnvironment](ctx, o.proj, o.TestEnvironmentRef.Href)
 }
 
 // TestExecutionRecord of this QMTestExecutionResult
-func (o *QMTestExecutionResult) TestExecutionRecord() (*QMTestExecutionRecord, error) {
-	return QMGet[*QMTestExecutionRecord](o.proj, o.TestExecutionRecordRef.Href)
+func (o *QMTestExecutionResult) TestExecutionRecord(ctx context.Context) (*QMTestExecutionRecord, error) {
+	return QMGet[*QMTestExecutionRecord](ctx, o.proj, o.TestExecutionRecordRef.Href)
 }
 
 // AutomaticTestScript of this QMTestExecutionResult
-func (o *QMTestExecutionResult) AutomaticTestScript() (*QMAutomaticTestScript, error) {
-	return QMGet[*QMAutomaticTestScript](o.proj, o.AutomaticTestScriptRef.Href)
+func (o *QMTestExecutionResult) AutomaticTestScript(ctx context.Context) (*QMAutomaticTestScript, error) {
+	return QMGet[*QMAutomaticTestScript](ctx, o.proj, o.AutomaticTestScriptRef.Href)
 }
 
 // ManualTestScript of this QMTestExecutionResult
-func (o *QMTestExecutionResult) ManualTestScript() (*QMManualTestScript, error) {
-	return QMGet[*QMManualTestScript](o.proj, o.ManualTestScriptRef.Href)
+func (o *QMTestExecutionResult) ManualTestScript(ctx context.Context) (*QMManualTestScript, error) {
+	return QMGet[*QMManualTestScript](ctx, o.proj, o.ManualTestScriptRef.Href)
 }
 
 // QMTestPlan implements the RQM "testplan" resource
@@ -371,20 +372,20 @@ func (o *QMTestPlan) Spec() *QMObjectSpec {
 }
 
 // TestEnvironments that are part of this QMTestPlan
-func (o *QMTestPlan) TestEnvironments() ([]*QMTestEnvironment, error) {
-	return qmGetList[*QMTestEnvironment](o.proj, o.TestEnvironmentRefs.IDList())
+func (o *QMTestPlan) TestEnvironments(ctx context.Context) ([]*QMTestEnvironment, error) {
+	return qmGetList[*QMTestEnvironment](ctx, o.proj, o.TestEnvironmentRefs.IDList())
 }
 
 // TestExecutionRecords that are part of this QMTestPlan
-func (o *QMTestPlan) TestExecutionRecords() ([]*QMTestExecutionRecord, error) {
-	return QMList[*QMTestExecutionRecord](o.proj, map[string]string{
+func (o *QMTestPlan) TestExecutionRecords(ctx context.Context) ([]*QMTestExecutionRecord, error) {
+	return QMList[*QMTestExecutionRecord](ctx, o.proj, map[string]string{
 		"testplan/@href": o.ResourceUrl,
 	})
 }
 
 // TestExecutionResults that are part of this QMTestPlan
-func (o *QMTestPlan) TestExecutionResults() ([]*QMTestExecutionResult, error) {
-	return QMList[*QMTestExecutionResult](o.proj, map[string]string{
+func (o *QMTestPlan) TestExecutionResults(ctx context.Context) ([]*QMTestExecutionResult, error) {
+	return QMList[*QMTestExecutionResult](ctx, o.proj, map[string]string{
 		"testplan/@href": o.ResourceUrl,
 	})
 }

@@ -15,6 +15,7 @@
 package jazz
 
 import (
+	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -93,8 +94,8 @@ func (c *Client) buildUrl(path string) string {
 }
 
 // getEtree send a GET HTTP request (same as get) and return content as XML etree
-func (c *Client) getEtree(url, contentType, errorMessage string, statusCode int) (*http.Response, *etree.Element, error) {
-	response, err := c.get(url, contentType, false)
+func (c *Client) getEtree(ctx context.Context, url, contentType, errorMessage string, statusCode int) (*http.Response, *etree.Element, error) {
+	response, err := c.get(ctx, url, contentType, false)
 	if err != nil {
 		return nil, nil, fmt.Errorf("%s: %w", errorMessage, err)
 	}
@@ -114,8 +115,8 @@ func (c *Client) getEtree(url, contentType, errorMessage string, statusCode int)
 }
 
 // get sends GET request to server
-func (c *Client) get(url, contentType string, noGc bool) (*http.Response, error) {
-	request, err := http.NewRequest("GET", c.buildUrl(url), nil)
+func (c *Client) get(ctx context.Context, url, contentType string, noGc bool) (*http.Response, error) {
+	request, err := http.NewRequestWithContext(ctx, "GET", c.buildUrl(url), nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create get request: %w", err)
 	}
@@ -125,8 +126,8 @@ func (c *Client) get(url, contentType string, noGc bool) (*http.Response, error)
 }
 
 // put sends GET request to server
-func (c *Client) put(url, contentType string, reader io.Reader) (*http.Response, error) {
-	request, err := http.NewRequest("PUT", c.buildUrl(url), reader)
+func (c *Client) put(ctx context.Context, url, contentType string, reader io.Reader) (*http.Response, error) {
+	request, err := http.NewRequestWithContext(ctx, "PUT", c.buildUrl(url), reader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create put request: %w", err)
 	}
@@ -164,7 +165,7 @@ func (c *Client) sendRequest(request *http.Request, noGc bool) (*http.Response, 
 		pass, _ := base64.StdEncoding.DecodeString(c.password)
 		values.Set("j_password", string(pass))
 
-		jtsRequest, err := http.NewRequest("GET", c.buildUrl("jts/j_security_check?"+values.Encode()), nil)
+		jtsRequest, err := http.NewRequestWithContext(request.Context(), "GET", c.buildUrl("jts/j_security_check?"+values.Encode()), nil)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create JTS request: %w", err)
 		}

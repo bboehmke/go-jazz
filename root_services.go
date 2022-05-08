@@ -14,7 +14,11 @@
 
 package jazz
 
-import "github.com/beevik/etree"
+import (
+	"context"
+
+	"github.com/beevik/etree"
+)
 
 type RootService struct {
 	client     *Client
@@ -22,9 +26,9 @@ type RootService struct {
 	serviceXml *etree.Element
 }
 
-func (r *RootService) ServicesXml() (*etree.Element, error) {
+func (r *RootService) ServicesXml(ctx context.Context) (*etree.Element, error) {
 	if r.serviceXml == nil {
-		_, xml, err := r.client.getEtree(
+		_, xml, err := r.client.getEtree(ctx,
 			r.base+"/rootservices",
 			"application/rdf+xml",
 			"failed to get service XML",

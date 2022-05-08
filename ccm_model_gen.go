@@ -17,6 +17,7 @@ package jazz
 // Code generated! DO NOT EDIT
 
 import (
+	"context"
 	"reflect"
 	"time"
 )
@@ -114,18 +115,18 @@ func (o *CCMProjectArea) Spec() *CCMObjectSpec {
 }
 
 // Load CCMProjectArea object
-func (o *CCMProjectArea) Load() (err error) {
+func (o *CCMProjectArea) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMProjectArea object
-func (o *CCMProjectArea) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMProjectArea) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.TeamMembers,
 		o.TeamAreaHierarchy,
@@ -164,8 +165,8 @@ func (o *CCMTeamAreaHierarchyRecord) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMTeamAreaHierarchyRecord object
-func (o *CCMTeamAreaHierarchyRecord) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMTeamAreaHierarchyRecord) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Parent,
 		o.Children,
@@ -214,18 +215,18 @@ func (o *CCMTeamArea) Spec() *CCMObjectSpec {
 }
 
 // Load CCMTeamArea object
-func (o *CCMTeamArea) Load() (err error) {
+func (o *CCMTeamArea) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMTeamArea object
-func (o *CCMTeamArea) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMTeamArea) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.TeamMembers,
 		o.ProjectArea,
@@ -264,18 +265,18 @@ func (o *CCMContributor) Spec() *CCMObjectSpec {
 }
 
 // Load CCMContributor object
-func (o *CCMContributor) Load() (err error) {
+func (o *CCMContributor) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMContributor object
-func (o *CCMContributor) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMContributor) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -325,18 +326,18 @@ func (o *CCMIteration) Spec() *CCMObjectSpec {
 }
 
 // Load CCMIteration object
-func (o *CCMIteration) Load() (err error) {
+func (o *CCMIteration) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMIteration object
-func (o *CCMIteration) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMIteration) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Parent,
 		o.Children,
@@ -383,18 +384,18 @@ func (o *CCMDevelopmentLine) Spec() *CCMObjectSpec {
 }
 
 // Load CCMDevelopmentLine object
-func (o *CCMDevelopmentLine) Load() (err error) {
+func (o *CCMDevelopmentLine) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMDevelopmentLine object
-func (o *CCMDevelopmentLine) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMDevelopmentLine) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Iterations,
 		o.ProjectArea,
@@ -436,18 +437,18 @@ func (o *CCMAuditableLink) Spec() *CCMObjectSpec {
 }
 
 // Load CCMAuditableLink object
-func (o *CCMAuditableLink) Load() (err error) {
+func (o *CCMAuditableLink) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMAuditableLink object
-func (o *CCMAuditableLink) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMAuditableLink) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.SourceRef,
 		o.TargetRef,
@@ -479,7 +480,7 @@ type CCMReference struct {
 	// reference.
 	ReferencedItem *CCMMultiItemExtensionEntry `jazz:"referencedItem"`
 
-	// get the extra information associated with the reference. May be null.
+	// Get the extra information associated with the reference. May be null.
 	ExtraInfo string `jazz:"extraInfo"`
 
 	// Internal.
@@ -500,8 +501,8 @@ func (o *CCMReference) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMReference object
-func (o *CCMReference) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMReference) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.ReferenceType,
 		o.ReferencedItem,
@@ -536,8 +537,8 @@ func (o *CCMReferenceType) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMReferenceType object
-func (o *CCMReferenceType) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMReferenceType) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -570,18 +571,18 @@ func (o *CCMReadAccess) Spec() *CCMObjectSpec {
 }
 
 // Load CCMReadAccess object
-func (o *CCMReadAccess) Load() (err error) {
+func (o *CCMReadAccess) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMReadAccess object
-func (o *CCMReadAccess) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMReadAccess) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -614,8 +615,8 @@ func (o *CCMRole) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMRole object
-func (o *CCMRole) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMRole) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -645,8 +646,8 @@ func (o *CCMRoleAssignment) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMRoleAssignment object
-func (o *CCMRoleAssignment) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMRoleAssignment) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Contributor,
 		o.ContributorRoles,
@@ -692,18 +693,18 @@ func (o *CCMWorkspace) Spec() *CCMObjectSpec {
 }
 
 // Load CCMWorkspace object
-func (o *CCMWorkspace) Load() (err error) {
+func (o *CCMWorkspace) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMWorkspace object
-func (o *CCMWorkspace) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMWorkspace) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Properties,
 		o.Contributor,
@@ -734,8 +735,8 @@ func (o *CCMProperty) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMProperty object
-func (o *CCMProperty) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMProperty) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -763,18 +764,18 @@ func (o *CCMComponent) Spec() *CCMObjectSpec {
 }
 
 // Load CCMComponent object
-func (o *CCMComponent) Load() (err error) {
+func (o *CCMComponent) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMComponent object
-func (o *CCMComponent) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMComponent) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -805,18 +806,18 @@ func (o *CCMChangeSet) Spec() *CCMObjectSpec {
 }
 
 // Load CCMChangeSet object
-func (o *CCMChangeSet) Load() (err error) {
+func (o *CCMChangeSet) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMChangeSet object
-func (o *CCMChangeSet) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMChangeSet) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Owner,
 	)
@@ -854,18 +855,18 @@ func (o *CCMBuildDefinition) Spec() *CCMObjectSpec {
 }
 
 // Load CCMBuildDefinition object
-func (o *CCMBuildDefinition) Load() (err error) {
+func (o *CCMBuildDefinition) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMBuildDefinition object
-func (o *CCMBuildDefinition) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMBuildDefinition) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.ProjectArea,
 		o.TeamArea,
@@ -931,18 +932,18 @@ func (o *CCMBuildResult) Spec() *CCMObjectSpec {
 }
 
 // Load CCMBuildResult object
-func (o *CCMBuildResult) Load() (err error) {
+func (o *CCMBuildResult) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMBuildResult object
-func (o *CCMBuildResult) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMBuildResult) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.BuildDefinition,
 		o.Creator,
@@ -985,8 +986,8 @@ func (o *CCMCompilationResult) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMCompilationResult object
-func (o *CCMCompilationResult) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMCompilationResult) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -1028,8 +1029,8 @@ func (o *CCMUnitTestResult) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMUnitTestResult object
-func (o *CCMUnitTestResult) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMUnitTestResult) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -1065,8 +1066,8 @@ func (o *CCMUnitTestEvent) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMUnitTestEvent object
-func (o *CCMUnitTestEvent) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMUnitTestEvent) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -1094,18 +1095,18 @@ func (o *CCMBuildEngine) Spec() *CCMObjectSpec {
 }
 
 // Load CCMBuildEngine object
-func (o *CCMBuildEngine) Load() (err error) {
+func (o *CCMBuildEngine) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMBuildEngine object
-func (o *CCMBuildEngine) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMBuildEngine) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -1308,18 +1309,18 @@ func (o *CCMWorkItem) Spec() *CCMObjectSpec {
 }
 
 // Load CCMWorkItem object
-func (o *CCMWorkItem) Load() (err error) {
+func (o *CCMWorkItem) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMWorkItem object
-func (o *CCMWorkItem) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMWorkItem) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Creator,
 		o.Owner,
@@ -1394,8 +1395,8 @@ func (o *CCMComment) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMComment object
-func (o *CCMComment) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMComment) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Creator,
 	)
@@ -1434,8 +1435,8 @@ func (o *CCMAttribute) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMAttribute object
-func (o *CCMAttribute) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMAttribute) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.ProjectArea,
 	)
@@ -1474,8 +1475,8 @@ func (o *CCMApproval) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMApproval object
-func (o *CCMApproval) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMApproval) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Approver,
 	)
@@ -1528,8 +1529,8 @@ func (o *CCMApprovalDescriptor) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMApprovalDescriptor object
-func (o *CCMApprovalDescriptor) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMApprovalDescriptor) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Approvals,
 	)
@@ -1571,8 +1572,8 @@ func (o *CCMState) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMState object
-func (o *CCMState) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMState) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -1606,8 +1607,8 @@ func (o *CCMResolution) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMResolution object
-func (o *CCMResolution) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMResolution) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -1640,8 +1641,8 @@ func (o *CCMWorkItemType) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMWorkItemType object
-func (o *CCMWorkItemType) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMWorkItemType) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -1675,8 +1676,8 @@ func (o *CCMLiteral) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMLiteral object
-func (o *CCMLiteral) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMLiteral) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -1715,18 +1716,18 @@ func (o *CCMCategory) Spec() *CCMObjectSpec {
 }
 
 // Load CCMCategory object
-func (o *CCMCategory) Load() (err error) {
+func (o *CCMCategory) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMCategory object
-func (o *CCMCategory) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMCategory) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -1769,18 +1770,18 @@ func (o *CCMDeliverable) Spec() *CCMObjectSpec {
 }
 
 // Load CCMDeliverable object
-func (o *CCMDeliverable) Load() (err error) {
+func (o *CCMDeliverable) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMDeliverable object
-func (o *CCMDeliverable) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMDeliverable) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.ProjectArea,
 		o.Artifact,
@@ -1855,8 +1856,8 @@ func (o *CCMExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMExtensionEntry object
-func (o *CCMExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.ItemValue,
 		o.ItemList,
@@ -1902,18 +1903,18 @@ func (o *CCMTimeSheetEntry) Spec() *CCMObjectSpec {
 }
 
 // Load CCMTimeSheetEntry object
-func (o *CCMTimeSheetEntry) Load() (err error) {
+func (o *CCMTimeSheetEntry) Load(ctx context.Context) (err error) {
 	o.init.Do(func() {
 		if o.ReportableUrl == "" {
-			err = o.ccm.get(o.Spec(), reflect.ValueOf(o), o.ItemId)
+			err = o.ccm.get(ctx, o.Spec(), reflect.ValueOf(o), o.ItemId)
 		}
 	})
 	return
 }
 
 // LoadAllFields of CCMTimeSheetEntry object
-func (o *CCMTimeSheetEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMTimeSheetEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.WorkItem,
 	)
@@ -1950,8 +1951,8 @@ func (o *CCMItem) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMItem object
-func (o *CCMItem) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMItem) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -1980,8 +1981,8 @@ func (o *CCMBooleanExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMBooleanExtensionEntry object
-func (o *CCMBooleanExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMBooleanExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -2010,8 +2011,8 @@ func (o *CCMIntExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMIntExtensionEntry object
-func (o *CCMIntExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMIntExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -2040,8 +2041,8 @@ func (o *CCMLongExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMLongExtensionEntry object
-func (o *CCMLongExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMLongExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -2070,8 +2071,8 @@ func (o *CCMStringExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMStringExtensionEntry object
-func (o *CCMStringExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMStringExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -2100,8 +2101,8 @@ func (o *CCMMediumStringExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMMediumStringExtensionEntry object
-func (o *CCMMediumStringExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMMediumStringExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -2130,8 +2131,8 @@ func (o *CCMLargeStringExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMLargeStringExtensionEntry object
-func (o *CCMLargeStringExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMLargeStringExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -2160,8 +2161,8 @@ func (o *CCMTimestampExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMTimestampExtensionEntry object
-func (o *CCMTimestampExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMTimestampExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -2190,8 +2191,8 @@ func (o *CCMBigDecimalExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMBigDecimalExtensionEntry object
-func (o *CCMBigDecimalExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMBigDecimalExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 	)
 }
@@ -2220,8 +2221,8 @@ func (o *CCMItemExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMItemExtensionEntry object
-func (o *CCMItemExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMItemExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Value,
 	)
@@ -2251,8 +2252,8 @@ func (o *CCMMultiItemExtensionEntry) Spec() *CCMObjectSpec {
 }
 
 // LoadAllFields of CCMMultiItemExtensionEntry object
-func (o *CCMMultiItemExtensionEntry) LoadAllFields() error {
-	return o.loadFields(
+func (o *CCMMultiItemExtensionEntry) LoadAllFields(ctx context.Context) error {
+	return o.loadFields(ctx,
 		o.ModifiedBy,
 		o.Value,
 	)

@@ -15,6 +15,7 @@
 package jazz
 
 import (
+	"context"
 	"errors"
 	"reflect"
 
@@ -42,14 +43,14 @@ func (a *CCMApplication) Client() *Client {
 }
 
 // CCMList object of the given type
-func CCMList[T CCMObject](ccm *CCMApplication, filter CCMFilter) ([]T, error) {
+func CCMList[T CCMObject](ctx context.Context, ccm *CCMApplication, filter CCMFilter) ([]T, error) {
 	return Chan2List[T](func(ch chan T) error {
-		return CCMListChan[T](ccm, filter, ch)
+		return CCMListChan[T](ctx, ccm, filter, ch)
 	})
 }
 
 // CCMListChan object of the given type returned via a channel
-func CCMListChan[T CCMObject](ccm *CCMApplication, filter CCMFilter, results chan T) error {
+func CCMListChan[T CCMObject](ctx context.Context, ccm *CCMApplication, filter CCMFilter, results chan T) error {
 	spec := (*new(T)).Spec()
 
 	// load object returned by list
@@ -59,7 +60,7 @@ func CCMListChan[T CCMObject](ccm *CCMApplication, filter CCMFilter, results cha
 		g.Go(func() error {
 			for id := range requestChan {
 				var obj T
-				if err := ccm.get(spec, reflect.ValueOf(&obj), id); err != nil {
+				if err := ccm.get(ctx, spec, reflect.ValueOf(&obj), id); err != nil {
 					return err
 				} else {
 					results <- obj
@@ -77,7 +78,7 @@ func CCMListChan[T CCMObject](ccm *CCMApplication, filter CCMFilter, results cha
 
 	// request list until last page reached
 	for url != "" {
-		resp, root, err := ccm.client.getEtree(url, "application/xml", //nolint:bodyclose
+		resp, root, err := ccm.client.getEtree(ctx, url, "application/xml", //nolint:bodyclose
 			"failed get element list", 0)
 		if err != nil {
 			return err
@@ -106,11 +107,12 @@ func CCMListChan[T CCMObject](ccm *CCMApplication, filter CCMFilter, results cha
 }
 
 // CCMGet object of the given type
-func CCMGet[T CCMObject](ccm *CCMApplication, id string) (T, error) {
+func CCMGet[T CCMObject](ctx context.Context, ccm *CCMApplication, id string) (T, error) {
 	var value T
 	spec := value.Spec()
 
-	resp, root, err := ccm.client.getEtree(spec.GetURL(id),
+	resp, root, err := ccm.client.getEtree(ctx,
+		spec.GetURL(id),
 		"application/xml",
 		"failed get element "+id, 0)
 	if err != nil {
@@ -123,8 +125,9 @@ func CCMGet[T CCMObject](ccm *CCMApplication, id string) (T, error) {
 	return value, spec.Load(ccm, reflect.ValueOf(&value), root.FindElement(spec.ElementID))
 }
 
-func (a *CCMApplication) get(spec *CCMObjectSpec, value reflect.Value, id string) error {
-	resp, root, err := a.client.getEtree(spec.GetURL(id),
+func (a *CCMApplication) get(ctx context.Context, spec *CCMObjectSpec, value reflect.Value, id string) error {
+	resp, root, err := a.client.getEtree(ctx,
+		spec.GetURL(id),
 		"application/xml",
 		"failed get element "+id, 0)
 	if err != nil {
