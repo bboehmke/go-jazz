@@ -157,19 +157,7 @@ func QMGet[T QMObject](ctx context.Context, proj *QMProject, id string) (T, erro
 
 // QMGetFilter object of the given filter
 func QMGetFilter[T QMObject](ctx context.Context, proj *QMProject, filter QMFilter) (T, error) {
-	var nul T
-	entries, err := QMList[T](ctx, proj, filter)
-	if err != nil {
-		return nul, err
-	}
-	if len(entries) == 0 {
-		return nul, fmt.Errorf("no object matching filter found")
-	}
-	if len(entries) > 1 {
-		return nul, fmt.Errorf("more then one object (%d) found", len(entries))
-	}
-
-	return entries[0], nil
+	return listOnlyOnce(QMList[T](ctx, proj, filter))
 }
 
 // QMSave object of the given type

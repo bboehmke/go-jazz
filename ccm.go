@@ -125,6 +125,11 @@ func CCMGet[T CCMObject](ctx context.Context, ccm *CCMApplication, id string) (T
 	return value, spec.Load(ccm, reflect.ValueOf(&value), root.FindElement(spec.ElementID))
 }
 
+// CCMGetFilter object of the given filter
+func CCMGetFilter[T CCMObject](ctx context.Context, ccm *CCMApplication, filter CCMFilter) (T, error) {
+	return listOnlyOnce(CCMList[T](ctx, ccm, filter))
+}
+
 func (a *CCMApplication) get(ctx context.Context, spec *CCMObjectSpec, value reflect.Value, id string) error {
 	resp, root, err := a.client.getEtree(ctx,
 		spec.GetURL(id),

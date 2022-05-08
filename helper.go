@@ -15,7 +15,7 @@
 package jazz
 
 import (
-	"encoding/json"
+	"fmt"
 	"sync"
 )
 
@@ -43,18 +43,17 @@ func Chan2List[T any](f func(ch chan T) error) ([]T, error) {
 	return entries, err
 }
 
-// UnmarshalJSONOptionalList handles broken list in json on if single response
-func UnmarshalJSONOptionalList[T any](b []byte) ([]T, error) {
-	var entries []T
-	err := json.Unmarshal(b, &entries)
-	if err == nil {
-		return entries, nil
-	} else if _, ok := err.(*json.UnmarshalTypeError); ok {
-		var entry T
-		err = json.Unmarshal(b, &entry)
-		if err == nil {
-			entries = append(entries, entry)
-		}
+func listOnlyOnce[T any](entries []T, err error) (T, error) {
+	var nul T
+	if err != nil {
+		return nul, err
 	}
-	return entries, err
+	if len(entries) == 0 {
+		return nul, fmt.Errorf("no object matching filter found")
+	}
+	if len(entries) > 1 {
+		return nul, fmt.Errorf("more then one object (%d) found", len(entries))
+	}
+
+	return entries[0], nil
 }
