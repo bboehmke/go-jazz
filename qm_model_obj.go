@@ -307,6 +307,9 @@ type QMTestExecutionResult struct {
 
 	// ManualTestScriptRef contains reference to last execution QMManualTestScript
 	ManualTestScriptRef QMRef `xml:"testscript" jazz:"qm:testscript"`
+
+	// AttachmentRefs contains reference to last execution QMAttachment
+	AttachmentRefs QMRefList `xml:"attachment" jazz:"qm:attachment"`
 }
 
 // Spec returns the specification object for QMManualTestScript
@@ -339,6 +342,11 @@ func (o *QMTestExecutionResult) AutomaticTestScript(ctx context.Context) (*QMAut
 // ManualTestScript of this QMTestExecutionResult
 func (o *QMTestExecutionResult) ManualTestScript(ctx context.Context) (*QMManualTestScript, error) {
 	return QMGet[*QMManualTestScript](ctx, o.proj, o.ManualTestScriptRef.Href)
+}
+
+// Attachments that are part of this QMAttachment
+func (o *QMTestExecutionResult) Attachments(ctx context.Context) ([]*QMAttachment, error) {
+	return qmGetList[*QMAttachment](ctx, o.proj, o.AttachmentRefs.IDList())
 }
 
 // QMTestPlan implements the RQM "testplan" resource
