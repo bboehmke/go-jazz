@@ -1,3 +1,6 @@
+[![Go Reference](https://pkg.go.dev/badge/gitlab.com/bboehmke/go-jazz.svg)](https://pkg.go.dev/gitlab.com/bboehmke/go-jazz)
+[![Go Report Card](https://goreportcard.com/badge/gitlab.com/bboehmke/go-jazz)](https://goreportcard.com/report/gitlab.com/bboehmke/go-jazz)
+
 # go-jazz
 
 This package provides access to the API of the 
