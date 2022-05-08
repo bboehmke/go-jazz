@@ -15,10 +15,8 @@
 package jazz
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 )
 
 type feedEntry struct {
@@ -106,11 +104,8 @@ func (c *Client) requestFeed(url string, entries chan feedEntry, noGc bool) erro
 			return err
 		}
 
-		bla, _ := io.ReadAll(response.Body)
-		buffer := bytes.NewBuffer(bla)
-
 		var feed rawFeed
-		err = json.NewDecoder(buffer).Decode(&feed)
+		err = json.NewDecoder(response.Body).Decode(&feed)
 		response.Body.Close()
 		if err != nil {
 			return fmt.Errorf("failed to parse feed: %w", err)

@@ -15,7 +15,6 @@
 package jazz
 
 import (
-	"bytes"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -93,11 +92,8 @@ func (c *Client) SimpleGet(url, contentType, errorMessage string, statusCode int
 		return nil, nil, errors.New(errorMessage)
 	}
 
-	bla, _ := io.ReadAll(response.Body)
-
 	doc := etree.NewDocument()
-	err = doc.ReadFromBytes(bla)
-	//_, err = doc.ReadFrom(response.Body)
+	_, err = doc.ReadFrom(response.Body)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to parse XML response: %w", err)
 	}
@@ -115,8 +111,8 @@ func (c *Client) Get(url, contentType string, noGc bool) (*http.Response, error)
 	return c.sendRequest(request, noGc)
 }
 
-func (c *Client) Put(url, contentType string, content []byte) (*http.Response, error) {
-	request, err := http.NewRequest("PUT", c.buildUrl(url), bytes.NewBuffer(content))
+func (c *Client) Put(url, contentType string, reader io.Reader) (*http.Response, error) {
+	request, err := http.NewRequest("PUT", c.buildUrl(url), reader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create put request: %w", err)
 	}

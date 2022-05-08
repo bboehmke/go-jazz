@@ -16,9 +16,10 @@ package jazz
 
 import (
 	"bytes"
-	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"io"
+	"mime/multipart"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -134,7 +135,7 @@ func QMGet[T QMObject](proj *QMProject, id string) (T, error) {
 	spec := value.Spec()
 
 	response, err := proj.qm.client.Get(spec.GetURL(proj, id),
-		"application/json", false)
+		"application/xml", false)
 	if err != nil {
 		return value, fmt.Errorf("failed to get %s: %w", spec.ResourceID, err)
 	}
@@ -143,17 +144,13 @@ func QMGet[T QMObject](proj *QMProject, id string) (T, error) {
 		return value, fmt.Errorf("failed to get %s: %s", spec.ResourceID, response.Status)
 	}
 
-	bla, _ := io.ReadAll(response.Body) // TODO remove
-	buffer := bytes.NewBuffer(bla)
-
-	var tmpData map[string]T
-	err = json.NewDecoder(buffer).Decode(&tmpData)
+	err = xml.NewDecoder(response.Body).Decode(&value)
 	if err != nil {
 		return value, fmt.Errorf("failed to parse %s: %w", spec.ResourceID, err)
 	}
 
-	tmpData[spec.ResourceID].SetProj(proj)
-	return tmpData[spec.ResourceID], nil
+	value.SetProj(proj)
+	return value, nil
 }
 
 // QMGetFilter object of the given filter
@@ -189,7 +186,7 @@ func QMSave[T QMObject](proj *QMProject, obj T) (T, error) {
 	data := obj.Spec().DumpXml(obj)
 
 	// send request to server
-	response, err := proj.qm.client.Put(obj.Ref().Href, "application/xml", data)
+	response, err := proj.qm.client.Put(obj.Ref().Href, "application/xml", bytes.NewBuffer(data))
 	if err != nil {
 		return obj, fmt.Errorf("failed to save object: %w", err)
 	}
@@ -201,4 +198,56 @@ func QMSave[T QMObject](proj *QMProject, obj T) (T, error) {
 
 	// load created object from server
 	return QMGet[T](proj, obj.Ref().Href)
+}
+
+// UploadAttachment with the given file name and content
+func (p *QMProject) UploadAttachment(fileName string, fileReader io.Reader) (*QMAttachment, error) {
+	// get new UUID
+	uuid, err := p.NewUUID()
+	if err != nil {
+		return nil, fmt.Errorf("failed to upload attachment: %w", err)
+	}
+
+	// create multipart writer
+	r, w := io.Pipe()
+	defer r.Close()
+	m := multipart.NewWriter(w)
+
+	// copy file content to multipart writer
+	go func() {
+		part, err := m.CreateFormFile("file", fileName)
+		if err != nil {
+			// The error is returned from read on the pipe.
+			w.CloseWithError(err)
+			return
+		}
+		if _, err := io.Copy(part, fileReader); err != nil {
+			// The error is returned from read on the pipe.
+			w.CloseWithError(err)
+			return
+		}
+
+		// add closing boundary (missing in multipart writer)
+		fmt.Fprintf(w, "\r\n--%s--", m.Boundary())
+
+		// The http.Post function reads the pipe until
+		// an error or EOF. Close to return an EOF to
+		// http.Post.
+		w.Close()
+	}()
+
+	// send response to server
+	url := new(QMAttachment).Spec().GetURL(p, "go_"+uuid)
+	response, err := p.qm.client.Put(url, m.FormDataContentType(), r)
+	if err != nil {
+		return nil, fmt.Errorf("failed to save object: %w", err)
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 300 {
+		return nil, fmt.Errorf("failed to save object: %s", response.Status)
+	}
+
+	// load uploaded attachment
+	return QMGet[*QMAttachment](p, url)
 }

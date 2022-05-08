@@ -15,6 +15,8 @@
 package jazz
 
 import (
+	"fmt"
+	"io"
 	"time"
 )
 
@@ -26,13 +28,13 @@ type QMAttachment struct {
 	QMBaseObject
 
 	// Title of object
-	Title string `json:"title"`
+	Title string `xml:"title"`
 
 	// Numeric identifier shown in webinterface
-	WebId int `json:"webId,string"`
+	WebId int `xml:"webId"`
 
 	// FileSize of attachment
-	FileSize int `json:"fileSize"`
+	FileSize float64 `xml:"fileSize"`
 }
 
 // Spec returns the specification object for QMAttachment
@@ -42,16 +44,33 @@ func (o *QMAttachment) Spec() *QMObjectSpec {
 	}
 }
 
+// Download content of attachment
+func (o *QMAttachment) Download(w io.Writer) error {
+	// copy attachment content
+	response, err := o.proj.qm.client.Get(o.ResourceUrl, "application/octet-stream", false)
+	if err != nil {
+		return fmt.Errorf("failed to get attachment: %w", err)
+	}
+	defer response.Body.Close()
+
+	// copy attachment content
+	_, err = io.Copy(w, response.Body)
+	if err != nil {
+		return fmt.Errorf("failed to get attachment: %w", err)
+	}
+	return nil
+}
+
 // QMTestEnvironment implements the RQM "configuration" resource
 // (WebUI Name: "Test Environment")
 type QMTestEnvironment struct {
 	QMBaseObject
 
 	// Title of object
-	Title string `json:"title"`
+	Title string `xml:"title"`
 
 	// Summary of configuration
-	Summary string `json:"summary"`
+	Summary string `xml:"summary"`
 }
 
 // Spec returns the specification object for QMTestEnvironment
@@ -66,36 +85,36 @@ type QMTestCase struct {
 	QMBaseObject
 
 	// Title of object
-	Title string `json:"title"`
+	Title string `xml:"title"`
 
 	// Numeric identifier shown in webinterface
-	WebId int `json:"webId,string"`
+	WebId int `xml:"webId"`
 
 	// Description of object
-	Description QMString `json:"description"`
+	Description string `xml:"description"`
 
 	// TODO state
 
 	// Owner of test case
-	Owner QMUser `json:"owner"`
+	Owner string `xml:"owner"`
 
 	// Creator of test case
-	Creator QMUser `json:"creator"`
+	Creator string `xml:"creator"`
 
 	// Updated contains last update time
-	Updated time.Time `json:"updated"`
+	Updated time.Time `xml:"updated"`
 
 	// estimated execution time
-	Estimate QMDuration `json:"estimate,string"`
+	Estimate QMDuration `xml:"estimate"`
 
 	// Categories of test case
-	Categories QMCategoryList `json:"category"`
+	Categories []QMCategory `xml:"category"`
 
 	// AutomaticTestScriptRefs contains list of resource URLs for QMAutomaticTestScript
-	AutomaticTestScriptRefs QMRefList `json:"remotescript"`
+	AutomaticTestScriptRefs QMRefList `xml:"remotescript"`
 
 	// ManualTestScriptRefs contains list of resource URLs for QMManualTestScript
-	ManualTestScriptRefs QMRefList `json:"testscript"`
+	ManualTestScriptRefs QMRefList `xml:"testscript"`
 }
 
 // Spec returns the specification object for QMTestEnvironment
@@ -120,24 +139,24 @@ type QMManualTestScript struct {
 	QMBaseObject
 
 	// Title of object
-	Title string `json:"title"`
+	Title string `xml:"title"`
 
 	// Numeric identifier shown in webinterface
-	WebId int `json:"webId,string"`
+	WebId int `xml:"webId"`
 
 	// Description of object
-	Description QMString `json:"description"`
+	Description string `xml:"description"`
 
 	// TODO state
 
 	// Owner of test script
-	Owner QMUser `json:"owner"`
+	Owner string `xml:"owner"`
 
 	// Creator of test script
-	Creator QMUser `json:"creator"`
+	Creator string `xml:"creator"`
 
 	// Updated contains last update time
-	Updated time.Time `json:"updated"`
+	Updated time.Time `xml:"updated"`
 }
 
 // Spec returns the specification object for QMManualTestScript
@@ -152,30 +171,30 @@ type QMAutomaticTestScript struct {
 	QMBaseObject
 
 	// Title of object
-	Title string `json:"title"`
+	Title string `xml:"title"`
 
 	// Numeric identifier shown in webinterface
-	WebId int `json:"webId,string"`
+	WebId int `xml:"webId"`
 
 	// Description of object
-	Description QMString `json:"description"`
+	Description string `xml:"description"`
 
 	// TODO state
 
 	// Owner of test case
-	Owner QMUser `json:"owner"`
+	Owner string `xml:"owner"`
 
 	// Creator of test case
-	Creator QMUser `json:"creator"`
+	Creator string `xml:"creator"`
 
 	// Updated contains last update time
-	Updated time.Time `json:"updated"`
+	Updated time.Time `xml:"updated"`
 
 	// Command for automatic test script
-	Command string `json:"command"`
+	Command string `xml:"command"`
 
 	// Arguments for automatic test script
-	Arguments string `json:"arguments"`
+	Arguments string `xml:"arguments"`
 }
 
 // Spec returns the specification object for QMManualTestScript
@@ -190,39 +209,39 @@ type QMTestExecutionRecord struct {
 	QMBaseObject
 
 	// Title of object
-	Title string `json:"title"`
+	Title string `xml:"title"`
 
 	// Numeric identifier shown in webinterface
-	WebId int `json:"webId,string"`
+	WebId int `xml:"webId"`
 
 	// Description of object
-	Description QMString `json:"description"`
+	Description string `xml:"description"`
 
 	// TODO state
 
 	// estimated execution time
-	Estimate QMDuration `json:"estimate,string"`
+	Estimate QMDuration `xml:"estimate"`
 
 	// Owner of test case
-	Owner QMUser `json:"owner"`
+	Owner string `xml:"owner"`
 
 	// Creator of test case
-	Creator QMUser `json:"creator"`
+	Creator string `xml:"creator"`
 
 	// Updated contains last update time
-	Updated time.Time `json:"updated"`
+	Updated time.Time `xml:"updated"`
 
 	// TestCaseRef contains reference to last execution QMTestCase
-	TestCaseRef QMRef `json:"testcase"`
+	TestCaseRef QMRef `xml:"testcase"`
 
 	// TestEnvironmentRef contains reference to last execution QMTestEnvironment
-	TestEnvironmentRef QMRef `json:"configuration"`
+	TestEnvironmentRef QMRef `xml:"configuration"`
 
 	// LastExecutionResultRef contains reference to last execution QMTestExecutionResult
-	LastExecutionResultRef QMRef `json:"currentexecutionresult"`
+	LastExecutionResultRef QMRef `xml:"currentexecutionresult"`
 
 	// TestExecutionResults contains list of resource URLs for QMTestExecutionResult
-	TestExecutionResults QMRefList `json:"executionresult"`
+	TestExecutionResults QMRefList `xml:"executionresult"`
 }
 
 // Spec returns the specification object for QMManualTestScript
@@ -247,46 +266,46 @@ type QMTestExecutionResult struct {
 	QMBaseObject
 
 	// Title of object
-	Title string `json:"title"`
+	Title string `xml:"title"`
 
 	// Numeric identifier shown in webinterface
-	WebId int `json:"webId,string" jazz:"qm:webId"`
+	WebId int `xml:"webId" jazz:"qm:webId"`
 
 	// State of test execution
-	State string `json:"state" jazz:"alm:state"`
+	State string `xml:"state" jazz:"alm:state"`
 
 	// Creator of entry
-	Creator QMUser `json:"creator"`
+	Creator string `xml:"creator"`
 
 	// Updated contains last update time
-	Updated time.Time `json:"updated"`
+	Updated time.Time `xml:"updated"`
 
 	// Machine of where test was executed
-	Machine string `json:"machine" jazz:"qmresult:machine"`
+	Machine string `xml:"machine" jazz:"qmresult:machine"`
 
 	// StartTime of test execution
-	StartTime time.Time `json:"starttime" jazz:"qmresult:starttime"`
+	StartTime time.Time `xml:"starttime" jazz:"qmresult:starttime"`
 
 	// EndTime of test execution
-	EndTime time.Time `json:"endtime" jazz:"qmresult:endtime"`
+	EndTime time.Time `xml:"endtime" jazz:"qmresult:endtime"`
 
 	// Variables of test execution result
-	Variables QMVariableMap `json:"variables" jazz:"qm:variables"`
+	Variables QMVariableMap `xml:"variables" jazz:"qm:variables"`
 
 	// TestCaseRef contains reference to last execution QMTestCase
-	TestCaseRef QMRef `json:"testcase" jazz:"qm:testcase"`
+	TestCaseRef QMRef `xml:"testcase" jazz:"qm:testcase"`
 
 	// TestEnvironmentRef contains reference to last execution QMTestEnvironment
-	TestEnvironmentRef QMRef `json:"configuration" jazz:"qm:configuration"`
+	TestEnvironmentRef QMRef `xml:"configuration" jazz:"qm:configuration"`
 
 	// TestExecutionRecordRef contains reference to last execution QMTestExecutionRecord
-	TestExecutionRecordRef QMRef `json:"executionworkitem" jazz:"qm:executionworkitem"`
+	TestExecutionRecordRef QMRef `xml:"executionworkitem" jazz:"qm:executionworkitem"`
 
 	// AutomaticTestScriptRef contains reference to last execution QMAutomaticTestScript
-	AutomaticTestScriptRef QMRef `json:"remotescript" jazz:"qm:remotescript"`
+	AutomaticTestScriptRef QMRef `xml:"remotescript" jazz:"qm:remotescript"`
 
 	// ManualTestScriptRef contains reference to last execution QMManualTestScript
-	ManualTestScriptRef QMRef `json:"testscript" jazz:"qm:testscript"`
+	ManualTestScriptRef QMRef `xml:"testscript" jazz:"qm:testscript"`
 }
 
 // Spec returns the specification object for QMManualTestScript
@@ -326,22 +345,22 @@ type QMTestPlan struct {
 	QMBaseObject
 
 	// Title of object
-	Title string `json:"title"`
+	Title string `xml:"title"`
 
 	// Alias of object (used in resource URL)
-	Alias string `json:"alias"`
+	Alias string `xml:"alias"`
 
 	// Numeric identifier shown in webinterface
-	WebId int `json:"webId,string"`
+	WebId int `xml:"webId"`
 
 	// Description of object
-	Description QMString `json:"description"`
+	Description string `xml:"description"`
 
 	// TestEnvironmentRefs contains list of resource URLs for QMTestEnvironment
-	TestEnvironmentRefs QMRefList `json:"configuration"`
+	TestEnvironmentRefs QMRefList `xml:"configuration"`
 
 	// TestCaseRefs contains list of resource URLs for QMTestCase
-	TestCaseRefs QMRefList `json:"testcase"`
+	TestCaseRefs QMRefList `xml:"testcase"`
 }
 
 // Spec returns the specification object for QMTestPlan

@@ -16,7 +16,7 @@ package jazz
 
 import (
 	"encoding/json"
-	"strings"
+	"encoding/xml"
 	"time"
 )
 
@@ -46,7 +46,7 @@ type QMObject interface {
 // QMBaseObject for RQM resources
 type QMBaseObject struct {
 	// ResourceUrl of object (used as "identifier")
-	ResourceUrl string `json:"identifier"`
+	ResourceUrl string `json:"identifier" xml:"identifier"`
 
 	// QMProject instance used for interactions with the server
 	proj *QMProject
@@ -69,24 +69,9 @@ func (o *QMBaseObject) SetRef(url string) {
 	o.ResourceUrl = url
 }
 
-// QMString handles json marshalling of broken values
-type QMString string
-
-func (s *QMString) UnmarshalJSON(b []byte) error {
-	str := strings.Trim(string(b), "\"")
-	if str != "true" {
-		*s = QMString(str)
-	}
-	return nil
-}
-
-func (s QMString) String() string {
-	return string(s)
-}
-
 // QMRef reference to object
 type QMRef struct {
-	Href string `json:"href"`
+	Href string `json:"href" xml:"href,attr"`
 }
 
 func (s QMRef) String() string {
@@ -96,14 +81,6 @@ func (s QMRef) String() string {
 // QMRefList list of object references
 type QMRefList []QMRef
 
-func (s *QMRefList) UnmarshalJSON(b []byte) error {
-	entries, err := UnmarshalJSONOptionalList[QMRef](b)
-	if err == nil {
-		*s = entries
-	}
-	return err
-}
-
 func (s QMRefList) IDList() []string {
 	ids := make([]string, len(s))
 	for i, ref := range s {
@@ -112,34 +89,22 @@ func (s QMRefList) IDList() []string {
 	return ids
 }
 
-// QMUser provides name and ID of user
-type QMUser struct {
-	Id   string `json:"content"`
-	Name string `json:"name"`
-}
-
 // QMCategory entry of test case
 type QMCategory struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
-}
-
-// QMCategoryList contains list of categories
-type QMCategoryList []QMCategory
-
-func (l *QMCategoryList) UnmarshalJSON(b []byte) error {
-	entries, err := UnmarshalJSONOptionalList[QMCategory](b)
-	if err == nil {
-		*l = entries
-	}
-	return err
+	Name  string `xml:"term,attr"`
+	Value string `xml:"value,attr"`
 }
 
 // QMDuration used in QM objects (stored as milliseconds)
 type QMDuration time.Duration
 
-func (d *QMDuration) UnmarshalJSON(b []byte) error {
-	duration, err := time.ParseDuration(string(b) + "ms")
+func (d *QMDuration) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) error {
+	var s string
+	err := decoder.DecodeElement(&s, &start)
+	if err != nil {
+		return err
+	}
+	duration, err := time.ParseDuration(s + "ms")
 	if err != nil {
 		return err
 	}
@@ -150,7 +115,7 @@ func (d *QMDuration) UnmarshalJSON(b []byte) error {
 // QMVariableMap contains list of variables
 type QMVariableMap map[string]string
 
-func (d *QMVariableMap) UnmarshalJSON(b []byte) error {
+func (m *QMVariableMap) UnmarshalJSON(b []byte) error {
 	var buffer struct {
 		Variables []struct {
 			Name  string `json:"name"`
@@ -159,10 +124,30 @@ func (d *QMVariableMap) UnmarshalJSON(b []byte) error {
 	}
 	err := json.Unmarshal(b, &buffer)
 	if err == nil {
-		*d = make(map[string]string, len(buffer.Variables))
+		*m = make(map[string]string, len(buffer.Variables))
 		for _, v := range buffer.Variables {
-			(*d)[v.Name] = v.Value
+			(*m)[v.Name] = v.Value
 		}
 	}
 	return err
+}
+
+func (m *QMVariableMap) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) error {
+	var buffer struct {
+		Variables []struct {
+			Name  string `xml:"name"`
+			Value string `xml:"value"`
+		} `xml:"variable"`
+	}
+	err := decoder.DecodeElement(&buffer, &start)
+	if err != nil {
+		return err
+	}
+
+	*m = make(map[string]string, len(buffer.Variables))
+	for _, variable := range buffer.Variables {
+		(*m)[variable.Name] = variable.Value
+	}
+
+	return nil
 }
