@@ -143,7 +143,7 @@ func QMGet[T QMObject](ctx context.Context, proj *QMProject, id string) (T, erro
 	}
 	defer response.Body.Close()
 	if response.StatusCode != 200 {
-		return value, fmt.Errorf("failed to get %s: %s", spec.ResourceID, response.Status)
+		return value, errorFromResponse(fmt.Sprintf("failed to get %s", spec.ResourceID), response)
 	}
 
 	err = xml.NewDecoder(response.Body).Decode(&value)
@@ -183,7 +183,7 @@ func QMSave[T QMObject](ctx context.Context, proj *QMProject, obj T) (T, error) 
 	defer response.Body.Close()
 
 	if response.StatusCode >= 300 {
-		return obj, fmt.Errorf("failed to save object: %s", response.Status)
+		return obj, errorFromResponse("failed to save object", response)
 	}
 
 	// load created object from server
@@ -235,7 +235,7 @@ func (p *QMProject) UploadAttachment(ctx context.Context, fileName string, fileR
 	defer response.Body.Close()
 
 	if response.StatusCode >= 300 {
-		return nil, fmt.Errorf("failed to save object: %s", response.Status)
+		return nil, errorFromResponse("failed to save object", response)
 	}
 
 	// load uploaded attachment

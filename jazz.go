@@ -14,6 +14,12 @@
 
 package jazz
 
+import (
+	"fmt"
+	"io"
+	"net/http"
+)
+
 type Application interface {
 	Name() string
 	ID() string
@@ -28,5 +34,23 @@ func (a *App) RootServices() *RootService {
 	return &RootService{
 		client: a.Client(),
 		base:   a.ID(),
+	}
+}
+
+// Error for responses of jazz server
+type Error struct {
+	Msg     string
+	Details string
+}
+
+func (e Error) Error() string {
+	return e.Msg
+}
+
+func errorFromResponse(msg string, response *http.Response) error {
+	body, _ := io.ReadAll(response.Body)
+	return &Error{
+		Msg:     fmt.Sprintf("%s: %s", msg, response.Status),
+		Details: string(body),
 	}
 }
