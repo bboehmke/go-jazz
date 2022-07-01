@@ -39,18 +39,20 @@ func (a *App) RootServices() *RootService {
 
 // Error for responses of jazz server
 type Error struct {
-	Msg     string
-	Details string
+	Msg      string
+	Details  string
+	PostData []byte
 }
 
 func (e Error) Error() string {
 	return e.Msg
 }
 
-func errorFromResponse(msg string, response *http.Response) error {
+func errorFromResponse(msg string, response *http.Response, data []byte) error {
 	body, _ := io.ReadAll(response.Body)
 	return &Error{
-		Msg:     fmt.Sprintf("%s: %s", msg, response.Status),
-		Details: string(body),
+		Msg:      fmt.Sprintf("%s: %s", msg, response.Status),
+		Details:  string(body),
+		PostData: data,
 	}
 }
