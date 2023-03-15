@@ -293,6 +293,10 @@ type QMTestExecutionResult struct {
 	// Variables of test execution result
 	Variables QMVariableMap `xml:"variables" jazz:"qm:variables"`
 
+	// TestPlanRef contains reference to last execution QMTestPlan
+	TestPlanRef QMRef `xml:"testplan" jazz:"qm:testplan"`
+
+
 	// TestCaseRef contains reference to last execution QMTestCase
 	TestCaseRef QMRef `xml:"testcase" jazz:"qm:testcase"`
 
