@@ -59,10 +59,8 @@ func QMList[T QMObject](ctx context.Context, proj *QMProject, filter QMFilter) (
 
 // QMListChan object of the given type returned via a channel
 func QMListChan[T QMObject](ctx context.Context, proj *QMProject, filter QMFilter, results chan T) error {
-	spec := (*new(T)).Spec()
-
 	// load object returned by list
-	requestChan := make(chan feedEntry, 100)
+	requestChan := make(chan FeedEntry, 100)
 	g := new(errgroup.Group)
 	for i := 0; i < proj.qm.client.Worker; i++ {
 		g.Go(func() error {
@@ -77,14 +75,8 @@ func QMListChan[T QMObject](ctx context.Context, proj *QMProject, filter QMFilte
 		})
 	}
 
-	// get initial URL request
-	url, err := spec.ListURL(proj, filter)
-	if err != nil {
-		return err
-	}
-
 	// request object list
-	err = proj.qm.client.requestFeed(ctx, url, requestChan, false)
+	err := QMListEntryChan[T](ctx, proj, filter, requestChan)
 	if err != nil {
 		return err
 	}
@@ -93,6 +85,20 @@ func QMListChan[T QMObject](ctx context.Context, proj *QMProject, filter QMFilte
 	close(requestChan)
 	err = g.Wait()
 	return err
+}
+
+// QMListEntryChan queries only the references of objects (without loading)
+func QMListEntryChan[T QMObject](ctx context.Context, proj *QMProject, filter QMFilter, results chan FeedEntry) error {
+	spec := (*new(T)).Spec()
+
+	// get initial URL request
+	url, err := spec.ListURL(proj, filter)
+	if err != nil {
+		return err
+	}
+
+	// request object list
+	return proj.qm.client.requestFeed(ctx, url, results, false)
 }
 
 // qmGetList object of the given type

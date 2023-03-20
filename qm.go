@@ -42,7 +42,7 @@ func (a *QMApplication) Client() *Client {
 // Projects of available (and accessible)
 func (a *QMApplication) Projects(ctx context.Context) ([]*QMProject, error) {
 	// https://jazz.net/wiki/bin/view/Main/RqmApi#Project_Feed_Service
-	entries, err := Chan2List[feedEntry](func(ch chan feedEntry) error {
+	entries, err := Chan2List[FeedEntry](func(ch chan FeedEntry) error {
 		return a.client.requestFeed(ctx,
 			"qm/service/com.ibm.rqm.integration.service.IIntegrationService/projects",
 			ch, true)

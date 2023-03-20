@@ -20,7 +20,7 @@ import (
 	"fmt"
 )
 
-type feedEntry struct {
+type FeedEntry struct {
 	Id    string
 	Title string
 	Alias string
@@ -40,8 +40,8 @@ type rawEntry struct {
 	} `json:"content"`
 }
 
-func (e *rawEntry) entry() feedEntry {
-	return feedEntry{
+func (e *rawEntry) entry() FeedEntry {
+	return FeedEntry{
 		Id:    e.Id,
 		Title: e.Title.Content,
 		Alias: e.Content.Project.Alias.Content,
@@ -97,7 +97,7 @@ type rawFeed struct {
 	Feed subFeed `json:"feed"`
 }
 
-func (c *Client) requestFeed(ctx context.Context, url string, entries chan feedEntry, noGc bool) error {
+func (c *Client) requestFeed(ctx context.Context, url string, entries chan FeedEntry, noGc bool) error {
 	// request list until last page reached
 	for url != "" {
 		response, err := c.get(ctx, url, "application/json", noGc)
