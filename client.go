@@ -48,6 +48,9 @@ type Client struct {
 	// GlobalConfiguration used for API requests
 	ConfigContext *GlobalConfiguration
 
+	// Logger instance used for debug logging
+	Logger *zap.Logger
+
 	baseUrl   string
 	user      string
 	password  string
@@ -74,6 +77,8 @@ func NewClient(baseUrl, user, password string) (*Client, error) {
 		// hide password in debugger
 		password: base64.StdEncoding.EncodeToString([]byte(password)),
 		Worker:   20,
+
+		Logger: zap.NewNop(),
 	}
 
 	// register applications
@@ -157,7 +162,7 @@ func (c *Client) sendRequest(request *http.Request, noGc bool) (*http.Response, 
 			return nil, fmt.Errorf("server authentication error: %s", authMsg)
 		}
 
-		zap.S().Debugf("Login to %s as %s (Form challenge)", c.baseUrl, c.user)
+		c.Logger.Sugar().Debugf("Login to %s as %s (Form challenge)", c.baseUrl, c.user)
 
 		// send the login request
 		values := make(url.Values)
@@ -187,7 +192,7 @@ func (c *Client) sendRequest(request *http.Request, noGc bool) (*http.Response, 
 	if response.StatusCode == 401 && response.Header.Get("www-authenticate") != "" {
 		// close response as it is not used
 		_ = response.Body.Close()
-		zap.S().Debugf("Login to %s as %s (basic auth)", c.baseUrl, c.user)
+		c.Logger.Sugar().Debugf("Login to %s as %s (basic auth)", c.baseUrl, c.user)
 
 		c.basicAuth = true
 
@@ -215,7 +220,7 @@ func (c *Client) sendRequest(request *http.Request, noGc bool) (*http.Response, 
 // sendRawRequest to server
 func (c *Client) sendRawRequest(request *http.Request, log, noGc bool) (*http.Response, error) {
 	if log {
-		zap.S().Debugf("Send %s request to %s", request.Method, request.URL)
+		c.Logger.Sugar().Debugf("Send %s request to %s", request.Method, request.URL)
 	}
 
 	if request.Header.Get("Accept") == "" {
