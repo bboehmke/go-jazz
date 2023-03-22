@@ -89,6 +89,7 @@ There are 3 request types:
 1. `QMList`, `QMListChan`: returns a list of objects
 2. `QMGet`, `QMGetFilter`: returns only one object
 3. `QMSave`: is used to modify an object (only supported for some objects)
+4. `QMListEntryChan`: similar to QMListChan but does not load the objects and only returns resource URLs
 
 > Note: currently only some fields and objects are supported for write operations
 
