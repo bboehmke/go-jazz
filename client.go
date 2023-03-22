@@ -46,7 +46,7 @@ type Client struct {
 	QM *QMApplication
 
 	// GlobalConfiguration used for API requests
-	ConfigContext *GlobalConfiguration
+	configContext *GlobalConfiguration
 
 	// Logger instance used for debug logging
 	Logger *zap.Logger
@@ -87,6 +87,29 @@ func NewClient(baseUrl, user, password string) (*Client, error) {
 	client.QM = &QMApplication{client: client}
 
 	return client, nil
+}
+
+// WithConfig creates a new client (copy of existing) with the given global configuration
+func (c *Client) WithConfig(config *GlobalConfiguration) *Client {
+	client := &Client{
+		HttpClient: c.HttpClient,
+		baseUrl:    c.baseUrl,
+		user:       c.user,
+		password:   c.password,
+		Worker:     c.Worker,
+		basicAuth:  c.basicAuth,
+
+		Logger: c.Logger,
+
+		configContext: config,
+	}
+
+	// register applications
+	client.GC = &GCApplication{client: client}
+	client.CCM = &CCMApplication{client: client}
+	client.QM = &QMApplication{client: client}
+
+	return client
 }
 
 // buildUrl for the given path.
@@ -231,8 +254,8 @@ func (c *Client) sendRawRequest(request *http.Request, log, noGc bool) (*http.Re
 	request.Header.Set("OSLC-Core-Version", "2.0")
 
 	// set configuration context if enabled and set
-	if !noGc && c.ConfigContext != nil {
-		request.Header.Set("Configuration-Context", c.ConfigContext.URL)
+	if !noGc && c.configContext != nil {
+		request.Header.Set("Configuration-Context", c.configContext.URL)
 	}
 
 	// only add basic auth data if it was enabled
