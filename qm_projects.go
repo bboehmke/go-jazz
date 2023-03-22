@@ -76,7 +76,7 @@ func QMListChan[T QMObject](ctx context.Context, proj *QMProject, filter QMFilte
 	}
 
 	// request object list
-	err := QMListEntryChan[T](ctx, proj, filter, requestChan)
+	err := QMListEntryChan[T](ctx, proj, filter, requestChan, false)
 	if err != nil {
 		return err
 	}
@@ -88,7 +88,8 @@ func QMListChan[T QMObject](ctx context.Context, proj *QMProject, filter QMFilte
 }
 
 // QMListEntryChan queries only the references of objects (without loading)
-func QMListEntryChan[T QMObject](ctx context.Context, proj *QMProject, filter QMFilter, results chan FeedEntry) error {
+// if fastMode is set an experimental parallel feed request is used
+func QMListEntryChan[T QMObject](ctx context.Context, proj *QMProject, filter QMFilter, results chan FeedEntry, fastMode bool) error {
 	spec := (*new(T)).Spec()
 
 	// get initial URL request
@@ -98,6 +99,9 @@ func QMListEntryChan[T QMObject](ctx context.Context, proj *QMProject, filter QM
 	}
 
 	// request object list
+	if fastMode {
+		return proj.qm.client.requestFeedFast(ctx, url, results, false)
+	}
 	return proj.qm.client.requestFeed(ctx, url, results, false)
 }
 
