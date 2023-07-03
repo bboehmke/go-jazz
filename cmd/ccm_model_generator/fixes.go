@@ -32,6 +32,9 @@ var skipFields = map[string]map[string]struct{}{
 	"com.ibm.team.workitem.Approval": {
 		"approvalDescriptor": {}, // causes infinite recursion
 	},
+	"com.ibm.team.build.BuildResult": {
+		"compilationResults": {}, // invalid field?
+	},
 }
 
 // mapping of invalid element IDs to correct ones

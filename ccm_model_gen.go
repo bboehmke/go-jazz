@@ -908,9 +908,6 @@ type CCMBuildResult struct {
 	// The engine the build ran on
 	BuildEngine *CCMBuildEngine `jazz:"buildEngine"`
 
-	// Code compilation results
-	CompilationResults []*CCMCompilationResult `jazz:"compilationResults"`
-
 	// Unit test results
 	UnitTestResults []*CCMUnitTestResult `jazz:"unitTestResults"`
 
@@ -948,7 +945,6 @@ func (o *CCMBuildResult) LoadAllFields(ctx context.Context) error {
 		o.BuildDefinition,
 		o.Creator,
 		o.BuildEngine,
-		o.CompilationResults,
 		o.UnitTestResults,
 		o.UnitTestEvents,
 	)
