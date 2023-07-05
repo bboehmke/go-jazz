@@ -133,6 +133,21 @@ func (c *Client) getEtree(ctx context.Context, url, contentType, errorMessage st
 		return nil, nil, errors.New(errorMessage)
 	}
 
+	// for non XML responses
+	if !strings.Contains(response.Header.Get("Content-Type"), "xml") {
+		// read raw content
+		all, err := io.ReadAll(response.Body)
+		if err != nil {
+			return nil, nil, fmt.Errorf("failed to read response body: %w", err)
+		}
+
+		// and store in dummy XML element
+		e := etree.NewElement("error")
+		e.SetText(string(all))
+		return response, e, nil
+	}
+
+	// load XML response
 	doc := etree.NewDocument()
 	_, err = doc.ReadFrom(response.Body)
 	if err != nil {

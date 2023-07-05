@@ -19,6 +19,7 @@ import (
 	"errors"
 	"reflect"
 
+	"github.com/beevik/etree"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -84,7 +85,7 @@ func CCMListChan[T CCMObject](ctx context.Context, ccm *CCMApplication, filter C
 			return err
 		}
 		if resp.StatusCode != 200 {
-			return errors.New(root.FindElement("//qm:message/text()").Text())
+			return ccmResponse2error(root)
 		}
 
 		// extract item IDs from result
@@ -139,8 +140,21 @@ func (a *CCMApplication) get(ctx context.Context, spec *CCMObjectSpec, value ref
 		return err
 	}
 	if resp.StatusCode != 200 {
-		return errors.New(root.FindElement("//qm:message/text()").Text())
+		return ccmResponse2error(root)
 	}
 
 	return spec.Load(a, value, root.FindElement(spec.ElementID))
+}
+
+func ccmResponse2error(root *etree.Element) error {
+	element := root.FindElement("//qm:message/text()")
+	if element != nil {
+		return errors.New(element.Text())
+	}
+
+	element = root.FindElement("/error/text()")
+	if element != nil {
+		return errors.New(element.Text())
+	}
+	return errors.New("unknown error")
 }
