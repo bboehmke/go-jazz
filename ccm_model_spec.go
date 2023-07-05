@@ -17,6 +17,7 @@ package jazz
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"reflect"
 	"strings"
 	"time"
@@ -147,8 +148,9 @@ func (o *CCMObjectSpec) ListURL(filter CCMFilter) (string, error) {
 	}
 
 	return fmt.Sprintf(
-		"ccm/rpt/repository/%s?fields=%s/%s%s/(itemId)",
-		o.ResourceID, o.ElementID, o.ElementID, filterQuery), nil
+		"ccm/rpt/repository/%s?fields=%s",
+		o.ResourceID,
+		url.QueryEscape(fmt.Sprintf("%s/%s%s/(itemId)", o.ElementID, o.ElementID, filterQuery))), nil
 }
 
 // GetURL returns the URL to get an object
