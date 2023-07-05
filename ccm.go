@@ -52,16 +52,14 @@ func CCMList[T CCMObject](ctx context.Context, ccm *CCMApplication, filter CCMFi
 
 // CCMListChan object of the given type returned via a channel
 func CCMListChan[T CCMObject](ctx context.Context, ccm *CCMApplication, filter CCMFilter, results chan T) error {
-	spec := (*new(T)).Spec()
-
 	// load object returned by list
 	requestChan := make(chan string, 100*2)
 	g := new(errgroup.Group)
 	for i := 0; i < ccm.client.Worker; i++ {
 		g.Go(func() error {
 			for id := range requestChan {
-				var obj T
-				if err := ccm.get(ctx, spec, reflect.ValueOf(&obj), id); err != nil {
+				obj, err := CCMGet[T](ctx, ccm, id)
+				if err != nil {
 					return err
 				} else {
 					results <- obj
@@ -70,6 +68,21 @@ func CCMListChan[T CCMObject](ctx context.Context, ccm *CCMApplication, filter C
 			return nil
 		})
 	}
+
+	err := CCMListEntryChan[T](ctx, ccm, filter, requestChan)
+	if err != nil {
+		return err
+	}
+
+	// stop background worker and wait for work is done
+	close(requestChan)
+	err = g.Wait()
+	return err
+}
+
+// CCMListEntryChan queries only the references of objects (without loading)
+func CCMListEntryChan[T CCMObject](ctx context.Context, ccm *CCMApplication, filter CCMFilter, results chan string) error {
+	spec := (*new(T)).Spec()
 
 	// get initial URL request
 	url, err := spec.ListURL(filter)
@@ -91,7 +104,7 @@ func CCMListChan[T CCMObject](ctx context.Context, ccm *CCMApplication, filter C
 		// extract item IDs from result
 		entries := root.FindElements(spec.ElementID + "/itemId")
 		for _, entry := range entries {
-			requestChan <- entry.Text()
+			results <- entry.Text()
 		}
 
 		if len(entries) >= 100 {
@@ -100,11 +113,7 @@ func CCMListChan[T CCMObject](ctx context.Context, ccm *CCMApplication, filter C
 			url = ""
 		}
 	}
-
-	// stop background worker and wait for work is done
-	close(requestChan)
-	err = g.Wait()
-	return err
+	return nil
 }
 
 // CCMGet object of the given type
@@ -112,18 +121,8 @@ func CCMGet[T CCMObject](ctx context.Context, ccm *CCMApplication, id string) (T
 	var value T
 	spec := value.Spec()
 
-	resp, root, err := ccm.client.getEtree(ctx,
-		spec.GetURL(id),
-		"application/xml",
-		"failed get element "+id, 0)
-	if err != nil {
-		return value, err
-	}
-	if resp.StatusCode != 200 {
-		return value, errors.New(root.FindElement("//qm:message/text()").Text())
-	}
-
-	return value, spec.Load(ccm, reflect.ValueOf(&value), root.FindElement(spec.ElementID))
+	err := ccm.get(ctx, spec, reflect.ValueOf(&value), id)
+	return value, err
 }
 
 // CCMGetFilter object of the given filter
