@@ -28,6 +28,13 @@ import (
 // CCMFilter is used to filter results in CCM list queries
 type CCMFilter map[string][]interface{}
 
+// CCMRawFilter creates a filter from a raw query
+func CCMRawFilter(query string) CCMFilter {
+	return map[string][]interface{}{
+		"_raw": {query},
+	}
+}
+
 // ccmObjectSpecs contains specifications of all supported object types
 var ccmObjectSpecs = make(map[string]*CCMObjectSpec)
 
@@ -67,27 +74,36 @@ func (o *CCMObjectSpec) buildFilterQuery(filter CCMFilter) (string, error) {
 
 	var filterList []string
 	for key, values := range filter {
-		// error if field with name does not exist
-		field, ok := o.Type.FieldByName(key)
-		if !ok {
-			return "", fmt.Errorf("no field with name \"%s\"", key)
-		}
-
-		// non jazz fields are not supported
-		fieldName := field.Tag.Get("jazz")
-		if fieldName == "" {
-			return "", fmt.Errorf("no field with name \"%s\"", key)
-		}
-
-		// special handling for jazz fields
-		_, err := CCMLoadObjectSpec(field.Type)
-		if err == nil {
-			fieldName = fieldName + "/itemId"
-		}
-
 		orFilter := make([]string, len(values))
-		for i, value := range values {
-			orFilter[i] = fmt.Sprintf("%s=\"%s\"", fieldName, cast.ToString(value))
+
+		// special handling to pass raw filter queries
+		if key == "_raw" {
+			for i, value := range values {
+				orFilter[i] = cast.ToString(value)
+			}
+
+		} else {
+			// error if field with name does not exist
+			field, ok := o.Type.FieldByName(key)
+			if !ok {
+				return "", fmt.Errorf("no field with name \"%s\"", key)
+			}
+
+			// non jazz fields are not supported
+			fieldName := field.Tag.Get("jazz")
+			if fieldName == "" {
+				return "", fmt.Errorf("no field with name \"%s\"", key)
+			}
+
+			// special handling for jazz fields
+			_, err := CCMLoadObjectSpec(field.Type)
+			if err == nil {
+				fieldName = fieldName + "/itemId"
+			}
+
+			for i, value := range values {
+				orFilter[i] = fmt.Sprintf("%s=\"%s\"", fieldName, cast.ToString(value))
+			}
 		}
 
 		if len(orFilter) == 1 {
