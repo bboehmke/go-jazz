@@ -23,6 +23,9 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// CCMErrorEmptyResponse is returned if an empty XML response was received
+var CCMErrorEmptyResponse = errors.New("empty response XML -> item maybe deleted")
+
 // CCMApplication interface
 type CCMApplication struct {
 	client *Client
@@ -140,6 +143,11 @@ func (a *CCMApplication) get(ctx context.Context, spec *CCMObjectSpec, value ref
 	}
 	if resp.StatusCode != 200 {
 		return ccmResponse2error(root)
+	}
+
+	// catch empty elements
+	if len(root.ChildElements()) == 0 {
+		return CCMErrorEmptyResponse
 	}
 
 	return spec.Load(a, value, root.FindElement(spec.ElementID))
