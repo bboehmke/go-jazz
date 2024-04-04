@@ -27,9 +27,6 @@ This package provides access to the API of the
 
 ## Usage
 
-> Note: At least [Go 1.18](https://tip.golang.org/doc/go1.18) is required as 
-> this package is using generics.
-
 ```go
 import "github.com/bboehmke/go-jazz"
 ```
