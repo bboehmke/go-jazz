@@ -1,4 +1,4 @@
-module gitlab.com/bboehmke/go-jazz
+module github.com/bboehmke/go-jazz
 
 go 1.18
 
