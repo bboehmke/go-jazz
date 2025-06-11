@@ -240,6 +240,7 @@ func (c *Client) sendRequest(request *http.Request, noGc bool) (*http.Response, 
 			return nil, err
 		}
 		if response.StatusCode == 401 {
+			_ = response.Body.Close()
 			return nil, errors.New("server authentication failed")
 		}
 
