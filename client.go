@@ -15,6 +15,7 @@
 package jazz
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"errors"
@@ -50,6 +51,8 @@ type Client struct {
 
 	// Logger instance used for debug logging
 	Logger *zap.Logger
+	// LogHttp enables logging of HTTP requests and responses
+	LogHttp bool
 
 	baseUrl   string
 	user      string
@@ -99,7 +102,8 @@ func (c *Client) WithConfig(config *GlobalConfiguration) *Client {
 		Worker:     c.Worker,
 		basicAuth:  c.basicAuth,
 
-		Logger: c.Logger,
+		Logger:  c.Logger,
+		LogHttp: c.LogHttp,
 
 		configContext: config,
 	}
@@ -280,5 +284,33 @@ func (c *Client) sendRawRequest(request *http.Request, log, noGc bool) (*http.Re
 		request.SetBasicAuth(c.user, string(pass))
 	}
 
-	return c.HttpClient.Do(request)
+	// if HTTP log is disabled return directly
+	if !c.LogHttp {
+		return c.HttpClient.Do(request)
+	}
+
+	// log request
+	var requestBuffer bytes.Buffer
+	_ = request.Write(&requestBuffer)
+	c.Logger.Sugar().Debugf("request: %s", requestBuffer.String())
+
+	// do request
+	response, err := c.HttpClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+
+	// log response
+	var bodyBuffer bytes.Buffer
+	bodyBuffer.ReadFrom(response.Body)
+	_ = response.Body.Close()
+	response.Body = io.NopCloser(bytes.NewReader(bodyBuffer.Bytes()))
+
+	var responseBuffer bytes.Buffer
+	_ = response.Write(&responseBuffer)
+	c.Logger.Sugar().Debugf("response: %s", responseBuffer.String())
+
+	response.Body = io.NopCloser(bytes.NewReader(bodyBuffer.Bytes()))
+
+	return response, nil
 }
