@@ -151,3 +151,20 @@ func (m *QMVariableMap) UnmarshalXML(decoder *xml.Decoder, start xml.StartElemen
 
 	return nil
 }
+
+// QMXmlText is a custom type to handle XML text content
+type QMXmlText string
+
+func (t *QMXmlText) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) error {
+	var buffer struct {
+		Data string `xml:",innerxml"`
+	}
+	err := decoder.DecodeElement(&buffer, &start)
+	if err != nil {
+		return err
+	}
+
+	*t = QMXmlText(buffer.Data)
+
+	return nil
+}

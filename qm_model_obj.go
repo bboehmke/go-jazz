@@ -102,6 +102,15 @@ type QMTestCase struct {
 	// Creator of test case
 	Creator string `xml:"creator"`
 
+	// PreCondition of test case
+	PreCondition QMXmlText `xml:"com.ibm.rqm.planning.editor.section.testCasePreCondition"`
+
+	// Design of test case
+	Design QMXmlText `xml:"com.ibm.rqm.planning.editor.section.testCaseDesign"`
+
+	// PostCondition of test case
+	PostCondition QMXmlText `xml:"com.ibm.rqm.planning.editor.section.testCasePostCondition"`
+
 	// Updated contains last update time
 	Updated time.Time `xml:"updated"`
 
@@ -295,7 +304,6 @@ type QMTestExecutionResult struct {
 
 	// TestPlanRef contains reference to last execution QMTestPlan
 	TestPlanRef QMRef `xml:"testplan" jazz:"qm:testplan"`
-
 
 	// TestCaseRef contains reference to last execution QMTestCase
 	TestCaseRef QMRef `xml:"testcase" jazz:"qm:testcase"`
